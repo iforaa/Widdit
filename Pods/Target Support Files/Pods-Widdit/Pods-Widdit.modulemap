@@ -1,0 +1,6 @@
+framework module Pods_Widdit {
+  umbrella header "Pods-Widdit-umbrella.h"
+
+  export *
+  module * { export * }
+}

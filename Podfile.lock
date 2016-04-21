@@ -1,0 +1,16 @@
+PODS:
+  - CircleSlider (0.2.0)
+  - SlackTextViewController (1.9.2)
+  - SnapKit (0.20.0)
+
+DEPENDENCIES:
+  - CircleSlider
+  - SlackTextViewController
+  - SnapKit
+
+SPEC CHECKSUMS:
+  CircleSlider: 66e5bf0059f5feffc954e5666f5286f4a331ebe3
+  SlackTextViewController: bac3350ccc639bc446bb14cbd09da238f5e01f32
+  SnapKit: 5fce3c1bbbf1fbd31de9aa92f33eb9fa03f15650
+
+COCOAPODS: 0.39.0
