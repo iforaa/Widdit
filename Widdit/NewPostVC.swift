@@ -16,6 +16,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     @IBOutlet weak var postBtn: UIButton!
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
     @IBOutlet weak var remainingLabel: UILabel!
+    @IBOutlet var postDurationLabel: UILabel!
+    @IBOutlet var sliderView: UIView!
     private var valueLabel: UILabel!
     private var progressLabel: UILabel!
 
@@ -33,22 +35,15 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
 
     private var sliderOptions: [CircleSliderOption] {
       return [
-        .BarColor(UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)),
-        .ThumbColor(UIColor(red: 141/255, green: 185/255, blue: 204/255, alpha: 1)),
-        .TrackingColor(UIColor(red: 78/255, green: 136/255, blue: 185/255, alpha: 1)),
-        .BarWidth(20),
-        .StartAngle(-45),
-        .MaxValue(150),
-        .MinValue(20)
-      ]
-    }
-
-    private var progressOptions: [CircleSliderOption] {
-      return [
-        .BarColor(UIColor(red: 255/255, green: 190/255, blue: 190/255, alpha: 0.3)),
-        .TrackingColor(UIColor(red: 159/255, green: 0/255, blue: 0/255, alpha: 1)),
-        .BarWidth(30),
-        .SliderEnabled(false)
+        //default bar color: UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)
+        .BarColor(UIColor.blueColor()),
+        .ThumbColor(UIColor.whiteColor()),
+        .ThumbWidth(CGFloat(30)),
+        .TrackingColor(UIColor.blueColor()),
+        .BarWidth(5),
+        .StartAngle(270),
+        .MaxValue(24),
+        .MinValue(0)
       ]
     }
 
@@ -58,6 +53,9 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
         // disable post button
         postBtn.enabled = false
+
+
+        self.postDurationLabel.text = "Use dial to set post expiration"
 
         // hide keyboard tap
         let hideTap = UITapGestureRecognizer(target: self, action: "hideKeyboardTap")
@@ -88,20 +86,20 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
 
     private func buildCircleSlider() {
-      self.circleSlider = CircleSlider(frame: CGRect(x: 0, y: 0, width: 300, height: 300), options: self.sliderOptions)
+      self.circleSlider = CircleSlider(frame: CGRect(x: 0, y: 0, width: 200, height: 200), options: self.sliderOptions)
       self.circleSlider?.addTarget(self, action: Selector("valueChange:"), forControlEvents: .ValueChanged)
-      self.circleSlider.center = view.center
-      self.view.addSubview(self.circleSlider!)
+      self.sliderView.addSubview(self.circleSlider!)
       self.valueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
       self.valueLabel.textAlignment = .Center
-      self.valueLabel.center = self.circleSlider.center
-      self.view.addSubview(self.valueLabel)
+      self.valueLabel.center = CGPoint(x: CGRectGetWidth(self.circleSlider.bounds) * 0.5, y: CGRectGetHeight(self.circleSlider.bounds) * 0.5)
+      self.circleSlider.addSubview(self.valueLabel)
     }
 
     func valueChange(sender: CircleSlider) {
       switch sender.tag {
       case 0:
         self.valueLabel.text = "\(Int(sender.value))"
+        self.postDurationLabel.text = "Post will be visible for \(Int(sender.value)) hours"
       case 1:
         self.progressLabel.text = "\(Int(sender.value))%"
       default:
@@ -134,7 +132,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             
             remainingLabel.text = "\(remainingChar)"
             
-            if remainingChar >= 0 && remainingChar <= 139 {
+            if remainingChar >= 0 && remainingChar <= 139 && self.valueLabel.text != nil {
                 self.postBtn.enabled = true
             } else {
                 self.postBtn.enabled = false
@@ -165,6 +163,20 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         object["ava"] = PFUser.currentUser()?.valueForKey("ava") as! PFFile
         object["postText"] = postTxt.text
         object["firstName"] = PFUser.currentUser()?.valueForKey("firstName") as! String
+
+        func toLocalTime(date: NSDate) -> NSDate {
+          let tz = NSTimeZone.localTimeZone()
+          let seconds = tz.secondsFromGMTForDate(date)
+          return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
+        }
+
+
+        if let valueText = self.valueLabel.text {
+          let today = NSDate()
+          let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: Int(valueText)!, toDate: toLocalTime(today), options: NSCalendarOptions(rawValue: 0))
+          print(tomorrow!)
+          object["hoursexpired"] = tomorrow
+        }
 
         let uuid = NSUUID().UUIDString
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"

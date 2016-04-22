@@ -45,8 +45,8 @@ class FeedVC: UICollectionViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: "downed", object: nil)
         
         // Indicator's x (horizontal) center
-//        indicator.center.x = collectionView!.center.x
-        
+        indicator.center.x = collectionView!.center.x
+
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploaded:", name: "uploaded", object: nil)
         
@@ -108,7 +108,32 @@ class FeedVC: UICollectionViewController {
                             self.usernameArray.append(object.objectForKey("username") as! String)
                             self.avaArray.append(object.objectForKey("ava") as! PFFile)
                             self.dateArray.append(object.createdAt)
-                            self.postsArray.append(object.objectForKey("postText") as! String)
+
+                            //delete posts after allocated time
+                            func toLocalTime(date: NSDate) -> NSDate {
+                              let tz = NSTimeZone.localTimeZone()
+                              let seconds = tz.secondsFromGMTForDate(date)
+                              return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
+                            }
+                            let currentDate = toLocalTime(NSDate())
+                            let parseDate = object.objectForKey("hoursexpired") as! NSDate
+
+                            if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
+                              let delete = PFObject(outDataWithClassName: "posts", objectId: object.objectId)
+                              delete.deleteInBackgroundWithBlock({ (success, err) in
+                                if success {
+                                  print("Successfully deleted expired post")
+                                  dispatch_async(dispatch_get_main_queue(), { 
+                                    self.refresh()
+                                  })
+                                } else {
+                                  print("Failed to delete expired post: \(err)")
+                                }
+                              })
+                            } else {
+                              self.postsArray.append(object.objectForKey("postText") as! String)
+                            }
+
                             self.uuidArray.append(object.objectForKey("uuid") as! String)
                             self.firstNameArray.append(object.objectForKey("firstName") as! String)
                         }
