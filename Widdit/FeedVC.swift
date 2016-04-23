@@ -21,7 +21,7 @@ class FeedVC: UICollectionViewController {
     var usernameArray = [String]()
     var avaArray = [PFFile]()
     var dateArray = [NSDate?]()
-    var postsArray = [String]()
+    var postsArray = [String?]()
     var uuidArray = [String]()
     var usersArray = [String]()
     var firstNameArray = [String]()
@@ -45,7 +45,7 @@ class FeedVC: UICollectionViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: "downed", object: nil)
         
         // Indicator's x (horizontal) center
-        indicator.center.x = collectionView!.center.x
+//        indicator.center.x = collectionView!.center.x
 
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploaded:", name: "uploaded", object: nil)
@@ -259,9 +259,25 @@ class FeedVC: UICollectionViewController {
         cell.userNameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
         cell.userNameBtn.sizeToFit()
         cell.uuidLbl.text = uuidArray[indexPath.row]
-        cell.postText.text = postsArray[indexPath.row]
+        if self.postsArray.count == 0 {
+          cell.postText.text = "Awaiting first post..."
+          cell.userNameBtn.setTitle("Admin", forState: .Normal)
+          cell.firstNameLbl.text = "Admin"
+          cell.imDownBtn.hidden = true
+          cell.replyBtn.hidden = true
+          cell.userNameBtn.hidden = true
+          cell.moreBtn.hidden = true
+        } else {
+          cell.postText.text = self.postsArray[indexPath.row]
+          cell.firstNameLbl.text = firstNameArray[indexPath.row]
+          cell.imDownBtn.hidden = false
+          cell.replyBtn.hidden = false
+          cell.userNameBtn.hidden = false
+          cell.moreBtn.hidden = false
+        }
+
 //        cell.postText.sizeToFit()
-        cell.firstNameLbl.text = firstNameArray[indexPath.row]
+
         
         
         cell.layer.borderWidth = 1
