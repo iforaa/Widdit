@@ -155,7 +155,7 @@ class FeedVC: UICollectionViewController {
                               })
                             } else {
                               //otherwise add it to the tableview
-                              self.postsArray.append(object.objectForKey("postText") as! String)
+                              self.postsArray.append(object.objectForKey("postText") as? String)
                             }
 
                             self.uuidArray.append(object.objectForKey("uuid") as! String)
