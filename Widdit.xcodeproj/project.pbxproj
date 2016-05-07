@@ -22,7 +22,6 @@
 		31F12EA71C9E12D400E63A2E /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EA51C9E12D400E63A2E /* Bolts.framework */; };
 		31F12EA81C9E12D400E63A2E /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EA61C9E12D400E63A2E /* Parse.framework */; };
 		31F12EAF1C9E135800E63A2E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */; };
-		31F12EB11C9E137400E63A2E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EB01C9E137400E63A2E /* StoreKit.framework */; };
 		31F12EB31C9E137F00E63A2E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EB21C9E137F00E63A2E /* Security.framework */; };
 		31F12EB51C9E138800E63A2E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EB41C9E138800E63A2E /* QuartzCore.framework */; };
 		31F12EB71C9E139200E63A2E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EB61C9E139200E63A2E /* CoreLocation.framework */; };
@@ -42,6 +41,7 @@
 		31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ED71C9E65E300E63A2E /* PostCell.swift */; };
 		31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */; };
 		31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FF6CF31CAF84D4001D1654 /* FBInfo.swift */; };
+		79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */; };
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
@@ -69,7 +69,6 @@
 		31F12EA51C9E12D400E63A2E /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Widdit/Bolts.framework; sourceTree = "<group>"; };
 		31F12EA61C9E12D400E63A2E /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Widdit/Parse.framework; sourceTree = "<group>"; };
 		31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		31F12EB01C9E137400E63A2E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		31F12EB21C9E137F00E63A2E /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		31F12EB41C9E138800E63A2E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		31F12EB61C9E139200E63A2E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -90,6 +89,7 @@
 		31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
 		31FF6CF31CAF84D4001D1654 /* FBInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBInfo.swift; sourceTree = "<group>"; };
 		54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserMorePostsViewController.swift; sourceTree = "<group>"; };
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -110,7 +110,6 @@
 				31F12EB51C9E138800E63A2E /* QuartzCore.framework in Frameworks */,
 				31F12EB31C9E137F00E63A2E /* Security.framework in Frameworks */,
 				3111475C1CAB210F00150ECD /* FBSDKCoreKit.framework in Frameworks */,
-				31F12EB11C9E137400E63A2E /* StoreKit.framework in Frameworks */,
 				31F12EAF1C9E135800E63A2E /* SystemConfiguration.framework in Frameworks */,
 				31F12EA81C9E12D400E63A2E /* Parse.framework in Frameworks */,
 				31F12EA71C9E12D400E63A2E /* Bolts.framework in Frameworks */,
@@ -159,6 +158,7 @@
 				31F12EA11C9E124500E63A2E /* SignUpVC.swift */,
 				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
 				311147651CAB42AE00150ECD /* Main.storyboard */,
+				79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */,
 				79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */,
 				79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */,
 				31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */,
@@ -185,7 +185,6 @@
 				31F12EB61C9E139200E63A2E /* CoreLocation.framework */,
 				31F12EB41C9E138800E63A2E /* QuartzCore.framework */,
 				31F12EB21C9E137F00E63A2E /* Security.framework */,
-				31F12EB01C9E137400E63A2E /* StoreKit.framework */,
 				31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */,
 				31F12EA61C9E12D400E63A2E /* Parse.framework */,
 				31F12EA51C9E12D400E63A2E /* Bolts.framework */,
@@ -239,6 +238,11 @@
 					31F12E861C9E115B00E63A2E = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = M68K5K6P9P;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -339,6 +343,7 @@
 				31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
+				79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */,
 				31AFC6111CB20ABA00DBEBFA /* YourDownsVC.swift in Sources */,
 				79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */,
 				31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */,
@@ -458,17 +463,19 @@
 			baseConfigurationReference = 225AEC7B010EFD6CD5D0DFE5 /* Pods-Widdit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Widdit",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Widdit/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = JohnMcCants.Widdit;
+				PRODUCT_BUNDLE_IDENTIFIER = Widdit.Widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";
@@ -481,17 +488,19 @@
 			baseConfigurationReference = 043DD11764F74FBA0F56B667 /* Pods-Widdit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Widdit",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Widdit/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = JohnMcCants.Widdit;
+				PRODUCT_BUNDLE_IDENTIFIER = Widdit.Widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";

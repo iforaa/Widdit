@@ -180,21 +180,25 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
 
         let uuid = NSUUID().UUIDString
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"
-        
+
+        let user = PFUser.currentUser()
+
+        user!["posts"] = object
+
         // Save Information
         object.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
             if error == nil {
                 
                 // send notification with name "uploaded"
                 NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
-                
+
                 // dismiss editVC
                 self.dismissViewControllerAnimated(true, completion: nil)
                 
                 
                 // Reset Everything
                 self.viewDidLoad()
-                
+
             }
         }
     }

@@ -9,7 +9,6 @@
 import UIKit
 import Parse
 
-
 class FeedVC: UICollectionViewController {
     
     // UI Objects
@@ -18,7 +17,6 @@ class FeedVC: UICollectionViewController {
     var refresher = UIRefreshControl()
     
     // Arrays to hold server data
-    var usernameArray = [String]()
     var avaArray = [PFFile]()
     var dateArray = [NSDate?]()
     var postsArray = [String?]()
@@ -26,10 +24,13 @@ class FeedVC: UICollectionViewController {
     var usersArray = [String]()
     var firstNameArray = [String]()
     var countArray = [String]()
-    
+    var usernameArray: [String] = []
+    var indexOfFirstPostByUsername: [String: Int] = [:]
+    var numberOfPostsByUsername: [String: Int] = [:]
+
     // Page Size
     var page : Int = 10
-    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,56 +70,78 @@ class FeedVC: UICollectionViewController {
     
     
     func loadPosts() {
-        
+
         // Step 1 : Find Posts Related to the entire user base
-        let userQuery = PFQuery(className: "User")
-        userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                
+//        let userQuery = PFQuery(className: "User")
+//        userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
+//            if error == nil {
+
                 // Clean Up
-                self.usersArray.removeAll(keepCapacity: false)
-                
+//                self.usersArray.removeAll(keepCapacity: false)
+
+
                 // find related objects
-                for object in objects! {
-                    self.usersArray.append(object.objectForKey("User") as! String)
-                    
-                }
-                
+//                for object in objects! {
+//                    self.usersArray.append(object.objectForKey("User") as! String)
+//                }
+
                 // Append current user to see own posts in feed
-                self.usersArray.append(PFUser.currentUser()!.username!)
-                
+//                self.usersArray.append(PFUser.currentUser()!.username!)
+
                 // Step 2 : Find Posts made by the entire user base
                 let query = PFQuery(className: "posts")
                 query.limit = self.page
                 query.addDescendingOrder("createdAt")
                 query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
                     if error == nil {
-                        
-                        
+
                         // Clean Up
                         self.usernameArray.removeAll(keepCapacity: false)
+                        self.indexOfFirstPostByUsername.removeAll()
+                        self.numberOfPostsByUsername.removeAll()
                         self.avaArray.removeAll(keepCapacity: false)
                         self.dateArray.removeAll(keepCapacity: false)
                         self.postsArray.removeAll(keepCapacity: false)
                         self.uuidArray.removeAll(keepCapacity: false)
                         self.firstNameArray.removeAll(keepCapacity: false)
-                        
+
+
                         // Find Related Objects
+                        var index = 0
                         for object in objects! {
-                            self.usernameArray.append(object.objectForKey("username") as! String)
+
+//                            self.usernameArray.append(object.objectForKey("username") as! String)
                             self.avaArray.append(object.objectForKey("ava") as! PFFile)
                             self.dateArray.append(object.createdAt)
 
-                            //delete posts after allocated time
+                            let username = object.objectForKey("username") as! String
+                            if self.indexOfFirstPostByUsername[username] == nil {
+                                self.usernameArray.append(username)
+                                self.indexOfFirstPostByUsername[username] = index
+                                self.numberOfPostsByUsername[username] = 1
+                            } else {
+                                let count = self.numberOfPostsByUsername[username] ?? 0
+                                self.numberOfPostsByUsername[username] = count + 1
+                            }
+                            index = index + 1
+
+
+
+                            //convert to local time via device's local time
                             func toLocalTime(date: NSDate) -> NSDate {
                               let tz = NSTimeZone.localTimeZone()
                               let seconds = tz.secondsFromGMTForDate(date)
                               return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
                             }
+
                             let currentDate = toLocalTime(NSDate())
                             let parseDate = object.objectForKey("hoursexpired") as! NSDate
 
+
+                            //if time expired
                             if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
+
+                              //delete the expired post
                               let delete = PFObject(outDataWithClassName: "posts", objectId: object.objectId)
                               delete.deleteInBackgroundWithBlock({ (success, err) in
                                 if success {
@@ -131,6 +154,7 @@ class FeedVC: UICollectionViewController {
                                 }
                               })
                             } else {
+                              //otherwise add it to the tableview
                               self.postsArray.append(object.objectForKey("postText") as! String)
                             }
 
@@ -145,13 +169,13 @@ class FeedVC: UICollectionViewController {
                         print(error?.localizedDescription)
                     }
                 })
-                
-            } else {
-                print(error?.localizedDescription)
-            }
-        }
+
+//            } else {
+//                print(error?.localizedDescription)
+//            }
+//        }
     }
-    
+
     func loadMore() {
         
         // if posts on the server are more than shown
@@ -198,6 +222,7 @@ class FeedVC: UICollectionViewController {
                             
                             // Find Related Objects
                             for object in objects! {
+                                
                                 self.usernameArray.append(object.objectForKey("username") as! String)
                                 self.avaArray.append(object.objectForKey("ava") as! PFFile)
                                 self.dateArray.append(object.createdAt)
@@ -239,7 +264,11 @@ class FeedVC: UICollectionViewController {
         let destVC = segue.destinationViewController as! ReplyViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
         destVC.toUser = usernameArray[i.row]
-      }
+      } else if segue.identifier == "segueToMorePosts" {
+        let destVC = segue.destinationViewController as! UserMorePostsViewController
+        let i = sender?.layer.valueForKey("index") as! NSIndexPath
+        destVC.currentUser = usernameArray[i.row]
+    }
     }
 
     // MARK: UICollectionViewDataSource
@@ -254,11 +283,21 @@ class FeedVC: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! PostCell
-        
+        self.collectionView?.layoutIfNeeded()
+        let username = self.usernameArray[indexPath.row]
+        let index = self.indexOfFirstPostByUsername[username]
+        print("Username: \(username) index: \(index!) username Array: \(self.usernameArray) number of posts by username: \(self.numberOfPostsByUsername)")
         // Connect objects with our information from arrays
         cell.userNameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
         cell.userNameBtn.sizeToFit()
-        cell.uuidLbl.text = uuidArray[indexPath.row]
+        cell.uuidLbl.text = uuidArray[index!]
+
+        if self.numberOfPostsByUsername[username] > 1 {
+            cell.morePostsButton.hidden = false
+        } else {
+            cell.morePostsButton.hidden = true
+        }
+
         if self.postsArray.count == 0 {
           cell.postText.text = "Awaiting first post..."
           cell.userNameBtn.setTitle("Admin", forState: .Normal)
@@ -268,8 +307,8 @@ class FeedVC: UICollectionViewController {
           cell.userNameBtn.hidden = true
           cell.moreBtn.hidden = true
         } else {
-          cell.postText.text = self.postsArray[indexPath.row]
-          cell.firstNameLbl.text = firstNameArray[indexPath.row]
+          cell.postText.text = self.postsArray[index!]
+          cell.firstNameLbl.text = firstNameArray[index!]
           cell.imDownBtn.hidden = false
           cell.replyBtn.hidden = false
           cell.userNameBtn.hidden = false
@@ -300,17 +339,19 @@ class FeedVC: UICollectionViewController {
         }
 
         // Place Profile Picture
-        avaArray[indexPath.row].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+        avaArray[index!].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             cell.avaImage.image = UIImage(data: data!)
         }
         
         
         cell.moreBtn.layer.setValue(indexPath, forKey: "index")
 
+        cell.morePostsButton.layer.setValue(indexPath, forKey: "index")
+
         cell.replyBtn.layer.setValue(indexPath, forKey: "index")
         
         // Calculate Post Date
-        let from = dateArray[indexPath.row]
+        let from = dateArray[index!]
         let now = NSDate()
         let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
         let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
@@ -463,6 +504,7 @@ class FeedVC: UICollectionViewController {
     @IBAction func openSlack(sender: UIButton) {
 
     }
+
     // MARK: UICollectionViewDelegate
 
     /*
@@ -494,4 +536,27 @@ class FeedVC: UICollectionViewController {
     }
     */
 
+}
+
+extension Array where Element: Equatable {
+
+  public func uniq() -> [Element] {
+    var arrayCopy = self
+    arrayCopy.uniqInPlace()
+    return arrayCopy
+  }
+
+  mutating public func uniqInPlace() {
+    var seen = [Element]()
+    var index = 0
+    for element in self {
+      if seen.contains(element) {
+        removeAtIndex(index)
+        print(seen.count)
+      } else {
+        seen.append(element)
+        index += 1
+      }
+    }
+  }
 }

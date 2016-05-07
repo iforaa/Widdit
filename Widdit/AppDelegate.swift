@@ -19,7 +19,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        
+
+        //app wide navigation bar changes
+        UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
+        UINavigationBar.appearance().barTintColor = UIColor.blueColor()
+        UINavigationBar.appearance().tintColor = UIColor.whiteColor()
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+
+        //app wide bar button item changes
+        UITabBar.appearance().backgroundColor = UIColor.blackColor()
+//        UITabBar.appearance().barTintColor = UIColor.blueColor()
+
+        //app wide status bar changes
+//        UIApplication.sharedApplication().statusBarStyle = .LightContent
+        UINavigationBar.appearance().barStyle = .Black
+
         // [Optional] Power your app with Local Datastore. For more info, go to
         // https://parse.com/docs/ios_guide#localdatastore/iOS
         Parse.enableLocalDatastore()
@@ -38,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .whiteColor()
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        }
+    }
     
     func login() {
         

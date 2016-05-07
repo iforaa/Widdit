@@ -21,6 +21,7 @@ class PostCell: UICollectionViewCell {
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var moreBtn: UIButton!
     @IBOutlet var replyBtn: UIButton!
+    @IBOutlet var morePostsButton: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -52,6 +53,10 @@ class PostCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         self.cardSetup()
+    }
+
+    @IBAction func morePostsButtonPressed(sender: UIButton) {
+
     }
     
     @IBAction func downBtnTapped(sender: AnyObject) {
