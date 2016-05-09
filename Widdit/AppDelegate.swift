@@ -22,12 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         //app wide navigation bar changes
         UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
-        UINavigationBar.appearance().barTintColor = UIColor.blueColor()
+        UINavigationBar.appearance().barTintColor = UIColor(red: 0.00, green: 0.51, blue: 1.00, alpha: 1.0)
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
 
         //app wide bar button item changes
         UITabBar.appearance().backgroundColor = UIColor.blackColor()
+        UITabBar.appearance().tintColor = UIColor(red: 0.00, green: 0.51, blue: 1.00, alpha: 1.0)
 //        UITabBar.appearance().barTintColor = UIColor.blueColor()
 
         //app wide status bar changes

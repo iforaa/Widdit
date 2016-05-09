@@ -42,13 +42,20 @@ class PostCell: UICollectionViewCell {
     func cardSetup() {
         self.cardView.alpha = 1
         self.cardView.layer.masksToBounds = false
-        self.cardView.layer.cornerRadius = 1
-        self.cardView.layer.shadowOffset = CGSizeMake(-0.2, 0.2)
-        self.cardView.layer.shadowRadius = 1
+        self.cardView.layer.cornerRadius = 2
+        self.cardView.layer.shadowOffset = CGSizeMake(0, 1)
+        self.cardView.layer.shadowRadius = 5
         let path = UIBezierPath()
-        self.cardView.layer.shadowOpacity = 0.2
+        self.cardView.layer.shadowOpacity = 0.5
         self.cardView.layer.shadowPath = path.CGPath
- 
+//        self.layer.shadowColor = UIColor.blackColor().CGColor
+//        self.layer.shadowOffset = CGSizeMake(0, 1)
+//        self.layer.shadowOpacity = 1
+//        self.layer.shadowRadius = 1.0
+//        self.clipsToBounds = false
+//        self.layer.masksToBounds = false
+        self.backgroundColor = UIColor.whiteColor()
+//        self.cardView.backgroundColor = UIColor.lightGrayColor()
     }
     
     override func layoutSubviews() {

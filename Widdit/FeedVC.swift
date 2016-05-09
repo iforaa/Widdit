@@ -13,7 +13,7 @@ class FeedVC: UICollectionViewController {
     
     // UI Objects
     @IBOutlet weak var indicator: UIActivityIndicatorView!
-    @IBOutlet weak var countBtn: UIBarButtonItem!
+//    @IBOutlet weak var countBtn: UIBarButtonItem!
     var refresher = UIRefreshControl()
     
     // Arrays to hold server data
@@ -54,7 +54,7 @@ class FeedVC: UICollectionViewController {
         // Calling function to load posts
         loadPosts()
         
-        self.collectionView?.backgroundColor = UIColor .whiteColor()
+        self.collectionView?.backgroundColor = UIColor .lightGrayColor()
 
     }
     
