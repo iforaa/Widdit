@@ -41,6 +41,7 @@
 		31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ED71C9E65E300E63A2E /* PostCell.swift */; };
 		31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */; };
 		31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FF6CF31CAF84D4001D1654 /* FBInfo.swift */; };
+		7994B5471CE16D7B008EB1D8 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7994B5461CE16D7B008EB1D8 /* notification.mp3 */; };
 		79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */; };
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
@@ -89,6 +90,7 @@
 		31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
 		31FF6CF31CAF84D4001D1654 /* FBInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBInfo.swift; sourceTree = "<group>"; };
 		54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7994B5461CE16D7B008EB1D8 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification.mp3; sourceTree = "<group>"; };
 		79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserMorePostsViewController.swift; sourceTree = "<group>"; };
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				31F12E991C9E115B00E63A2E /* Info.plist */,
 				31F12E911C9E115B00E63A2E /* Widdit.xcdatamodeld */,
 				3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */,
+				7994B5461CE16D7B008EB1D8 /* notification.mp3 */,
 			);
 			path = Widdit;
 			sourceTree = "<group>";
@@ -239,8 +242,14 @@
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = M68K5K6P9P;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
 								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 1;
 							};
 						};
 					};
@@ -269,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7994B5471CE16D7B008EB1D8 /* notification.mp3 in Resources */,
 				31F12E981C9E115B00E63A2E /* LaunchScreen.storyboard in Resources */,
 				31F12E951C9E115B00E63A2E /* Assets.xcassets in Resources */,
 				31F12ED21C9E24D800E63A2E /* Pacifico.ttf in Resources */,
@@ -465,8 +475,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Widdit",
@@ -475,7 +485,7 @@
 				INFOPLIST_FILE = Widdit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Widdit.Widdit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Widdit.Widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";
@@ -490,8 +500,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ethan Thomas (4SX98FH3GA)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Widdit",
@@ -500,7 +510,7 @@
 				INFOPLIST_FILE = Widdit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Widdit.Widdit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Widdit.Widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";

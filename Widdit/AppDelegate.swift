@@ -20,6 +20,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
 
+
+        //configure push notifications
+        let userNotificationTypes: UIUserNotificationType = [.Alert, .Badge, .Sound]
+        let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
+
         //app wide navigation bar changes
         UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
         UINavigationBar.appearance().barTintColor = UIColor(red: 0.00, green: 0.51, blue: 1.00, alpha: 1.0)
@@ -38,6 +45,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // [Optional] Power your app with Local Datastore. For more info, go to
         // https://parse.com/docs/ios_guide#localdatastore/iOS
         Parse.enableLocalDatastore()
+
+        //sets installation to parse
+        let installation = PFInstallation.currentInstallation()
+        installation["user"] = PFUser.currentUser()
+        installation.saveInBackground()
         
         // Initialize Parse.
         Parse.setApplicationId("CbvFKWpmIJFzo8gKzwPXdM5lN1bGPXu2Ln3lbjGx",
@@ -69,6 +81,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
  
         }
         
+    }
+
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let installation = PFInstallation.currentInstallation()
+        installation.setDeviceTokenFromData(deviceToken)
+        installation.channels = ["global"]
+        installation.saveInBackground()
+    }
+
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        PFPush.handlePush(userInfo)
     }
 
     func applicationWillResignActive(application: UIApplication) {

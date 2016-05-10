@@ -53,7 +53,7 @@ class ReplyViewController: SLKTextViewController {
 
     let query = PFQuery.orQueryWithSubqueries([toUser, byUser])
 
-    query.addAscendingOrder("updatedAt")
+    query.addAscendingOrder("createdAt")
 
 
     //querying...
@@ -105,13 +105,25 @@ extension ReplyViewController {
     // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
     self.textView.refreshFirstResponder()
 
-    let message = MessageModel(name: "Ethan", body: self.textView.text)
+    let message = MessageModel(name: PFUser.currentUser()!.username!, body: self.textView.text)
 
     let parseMessage = PFObject(className: "replies")
 
     parseMessage["by"] = PFUser.currentUser()?.username
     parseMessage["to"] = toUser
     parseMessage["body"] = self.textView.text
+
+    let userQuery = PFUser.query()
+    userQuery?.whereKey("username", equalTo: toUser)
+
+    let pushQuery = PFInstallation.query()
+    pushQuery?.whereKey("user", matchesQuery: userQuery!)
+
+    let push = PFPush()
+    let data = ["alert": "New message from \(PFUser.currentUser()!.username!): \(self.textView.text)", "badge": "Increment", "sound": "notification.mp3"]
+    push.setData(data)
+    push.setQuery(pushQuery)
+    push.sendPushInBackground()
 
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 

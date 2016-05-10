@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>FacebookAppID</key>
 	<string>204136079946143</string>
 	<key>FacebookDisplayName</key>
@@ -49,6 +49,10 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pacifico.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
