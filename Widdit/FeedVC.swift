@@ -27,6 +27,7 @@ class FeedVC: UICollectionViewController {
     var usernameArray: [String] = []
     var indexOfFirstPostByUsername: [String: Int] = [:]
     var numberOfPostsByUsername: [String: Int] = [:]
+    var collectionOfPosts = [PFObject]()
 
     // Page Size
     var page : Int = 10
@@ -104,6 +105,7 @@ class FeedVC: UICollectionViewController {
                         self.postsArray.removeAll(keepCapacity: false)
                         self.uuidArray.removeAll(keepCapacity: false)
                         self.firstNameArray.removeAll(keepCapacity: false)
+                        self.collectionOfPosts.removeAll(keepCapacity: false)
 
 
                         // Find Related Objects
@@ -113,6 +115,7 @@ class FeedVC: UICollectionViewController {
 //                            self.usernameArray.append(object.objectForKey("username") as! String)
                             self.avaArray.append(object.objectForKey("ava") as! PFFile)
                             self.dateArray.append(object.createdAt)
+                            self.collectionOfPosts.append(object)
 
                             let username = object.objectForKey("username") as! String
                             if self.indexOfFirstPostByUsername[username] == nil {
@@ -263,7 +266,10 @@ class FeedVC: UICollectionViewController {
       if segue.identifier == "segueToSlack" {
         let destVC = segue.destinationViewController as! ReplyViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
+        let username = usernameArray[i.row]
+        let indexPath = indexOfFirstPostByUsername[username]
         destVC.toUser = usernameArray[i.row]
+        destVC.usersPost = collectionOfPosts[indexPath!]
       } else if segue.identifier == "segueToMorePosts" {
         let destVC = segue.destinationViewController as! UserMorePostsViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath

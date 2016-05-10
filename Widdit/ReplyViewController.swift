@@ -13,6 +13,7 @@ import Parse
 class ReplyViewController: SLKTextViewController {
   //list of messages
   var messages = [MessageModel]()
+    var usersPost: PFObject!
 
   //what user we are sending the message to
   var toUser: String!
@@ -24,6 +25,16 @@ class ReplyViewController: SLKTextViewController {
   // MARK: View Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
+    print(self.toUser)
+    print(usersPost)
+
+    
+    // Associate the device with a user
+    let installation = PFInstallation.currentInstallation()
+    installation["user"] = PFUser.currentUser()
+    installation.saveInBackground()
+
+
     self.tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
 //    print(toUser)
     self.inverted = false
@@ -42,19 +53,11 @@ class ReplyViewController: SLKTextViewController {
     self.textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
 
 
-    //build our queries
-    let toUser = PFQuery(className: "replies")
-    toUser.whereKey("to", equalTo: (PFUser.currentUser()?.username)!)
-    toUser.whereKey("by", equalTo: self.toUser)
+    var query = PFQuery(className: "replies")
 
-    let byUser = PFQuery(className: "replies")
-    byUser.whereKey("to", equalTo: self.toUser)
-    byUser.whereKey("by", equalTo: (PFUser.currentUser()?.username)!)
-
-    let query = PFQuery.orQueryWithSubqueries([toUser, byUser])
+    query.whereKey("post", equalTo: usersPost)
 
     query.addAscendingOrder("createdAt")
-
 
     //querying...
     query.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error) in
@@ -124,13 +127,17 @@ extension ReplyViewController {
     push.setData(data)
     push.setQuery(pushQuery)
     push.sendPushInBackground()
+    
 
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+
+    parseMessage["post"] = PFObject(outDataWithClassName: "posts", objectId: self.usersPost.objectId)
 
     //sends message
     parseMessage.saveInBackgroundWithBlock { (bool, error) in
       if bool {
         print("Sent message")
+        print(parseMessage)
         let rowAnimation: UITableViewRowAnimation = self.inverted ? .Bottom : .Top
         let scrollPosition: UITableViewScrollPosition = self.inverted ? .Bottom : .Top
         self.tableView!.beginUpdates()
