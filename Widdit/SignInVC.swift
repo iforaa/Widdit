@@ -95,45 +95,48 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
     {
-        
-        FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields":"first_name, picture.type(large), email, gender, bio"]).startWithCompletionHandler { (connection, result, error) -> Void in
-            
-            let strFirstName: String = (result.objectForKey("first_name") as? String)!
-            let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
-            let strEmail: String = (result.objectForKey("email") as? String)!
-            let strGender: String = (result.objectForKey("gender") as? String)!
-            let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: strPictureURL)!)!)!
-            
-            
-            self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: strGender)
-            self.avaImg = avaImage
-            self.firstName = strFirstName
-            self.emailTxt = strEmail
-            
-            
-            
-//             Send Data to Server
-            let user = PFUser()
-            user.email = strEmail.lowercaseString
-            user["firstName"] = strFirstName.lowercaseString
-            user["gender"] = strGender
 
-     
-//             Convert image for sending to server
-            let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
-            let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-            user["ava"] = avaFile
-            
-            let next = self.storyboard?.instantiateViewControllerWithIdentifier("FBSignUpVC") as! FBSignUpVC
-            self.presentViewController(next, animated: true, completion: nil)
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-    
+        if error == nil {
+            FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields":"first_name, picture.type(large), email, gender, bio"]).startWithCompletionHandler { (connection, result, error) -> Void in
+
+                let strFirstName: String = (result.objectForKey("first_name") as? String)!
+                let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
+                let strEmail: String = (result.objectForKey("email") as? String)!
+                let strGender: String = (result.objectForKey("gender") as? String)!
+                let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: strPictureURL)!)!)!
+
+
+                self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: strGender)
+                self.avaImg = avaImage
+                self.firstName = strFirstName
+                self.emailTxt = strEmail
+
+
+
+                //             Send Data to Server
+                let user = PFUser()
+                user.email = strEmail.lowercaseString
+                user["firstName"] = strFirstName.lowercaseString
+                user["gender"] = strGender
+
+
+                //             Convert image for sending to server
+                let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
+                let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+                user["ava"] = avaFile
+
+                let next = self.storyboard?.instantiateViewControllerWithIdentifier("FBSignUpVC") as! FBSignUpVC
+                self.presentViewController(next, animated: true, completion: nil)
                 
-            })
-
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    
+                })
+                
+            }
+        } else {
+            print("Error signing up with facebook: \(error)")
         }
-  
     }
     
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!)
