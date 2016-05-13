@@ -15,6 +15,8 @@ class ReplyViewController: SLKTextViewController {
   var messages = [MessageModel]()
     var usersPost: PFObject!
 
+    var userObjArray = [PFObject]()
+
   //what user we are sending the message to
   var toUser: String!
 
@@ -34,6 +36,33 @@ class ReplyViewController: SLKTextViewController {
     installation["user"] = PFUser.currentUser()
     installation.saveInBackground()
 
+    let userQuery = PFQuery(className: "_User")
+
+    userQuery.whereKey("username", equalTo: toUser)
+
+    userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
+        if err == nil {
+            let replyQuery = PFQuery(className: "replies")
+            let recipient = objects?.first as! PFUser
+
+            replyQuery.whereKey("recipient", equalTo: recipient)
+
+            replyQuery.findObjectsInBackgroundWithBlock({ (objs: [PFObject]?, err) in
+                if err == nil {
+                    if objects?.count > 0 {
+                        print(objects)
+                    } else {
+                        print("No objects")
+                    }
+                } else {
+                    print(err)
+                }
+            })
+        } else {
+            print(err)
+        }
+    }
+
 
     self.tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
 //    print(toUser)
@@ -51,30 +80,6 @@ class ReplyViewController: SLKTextViewController {
     self.textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
     self.textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
     self.textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
-
-
-    var query = PFQuery(className: "replies")
-
-    query.whereKey("post", equalTo: usersPost)
-
-    query.addAscendingOrder("createdAt")
-
-    //querying...
-    query.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error) in
-      if error == nil {
-        self.messages.removeAll()
-        for object in objects! {
-          let message = MessageModel(name: (object.objectForKey("by") as! String), body: (object.objectForKey("body") as! String))
-          let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-          self.tableView!.beginUpdates()
-          self.messages.insert(message, atIndex: 0)
-          self.tableView?.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-          self.tableView?.endUpdates()
-        }
-      } else {
-        print("Error getting posts: \(error)")
-      }
-    }
   }
 
   // MARK: UITableView Delegate
@@ -112,8 +117,29 @@ extension ReplyViewController {
 
     let parseMessage = PFObject(className: "replies")
 
-    parseMessage["by"] = PFUser.currentUser()?.username
-    parseMessage["to"] = toUser
+    parseMessage["sender"] = PFUser.currentUser()
+
+    let recipientQuery = PFQuery(className: "_User")
+
+    recipientQuery.whereKey("username", equalTo: toUser)
+
+    recipientQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
+        if err == nil {
+            if objects?.count > 0 {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let pointer = objects?.first
+                    parseMessage["recipient"] = pointer
+                    parseMessage.saveInBackground()
+                })
+            } else {
+                print("No objects")
+            }
+        } else {
+            print(err)
+        }
+    }
+
+
     parseMessage["body"] = self.textView.text
 
     let userQuery = PFUser.query()
