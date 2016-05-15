@@ -158,6 +158,8 @@ class SignInVC: UIViewController {
     }
     
     //    MARK: FBSDKLoginButtonDelegate Methods
+
+    //WE NEED TO USE THIS BUTTON OR A CUSTOM IMAGE FOR IT
     
 //    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
 //    {
