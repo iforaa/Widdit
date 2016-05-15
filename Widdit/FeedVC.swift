@@ -321,7 +321,8 @@ class FeedVC: UICollectionViewController {
           cell.moreBtn.hidden = false
         }
 
-//        cell.postText.sizeToFit()
+
+        cell.postText.sizeToFit()
 
         
         

@@ -30,6 +30,8 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print(info)
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showKeyboard:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "hideKeyboard:", name: UIKeyboardWillShowNotification, object: nil)
         
@@ -147,9 +149,10 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
         user["bio"] = ""
         
         // Convert image for sending to server
-        let avaData = UIImageJPEGRepresentation(avaImg.image!, 0.5)
-        let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-        user["ava"] = avaFile
+        if let avaImage = UIImageJPEGRepresentation(avaImg.image!, 0.5) {
+            let avaFile = PFFile(name: "ava.jpg", data: avaImage)
+            user["ava"] = avaFile
+        }
         
         user.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
             if success {

@@ -58,8 +58,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // color of window
         window?.backgroundColor = .whiteColor()
+
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        return true
     }
     
     func login() {
@@ -110,6 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             installation.badge = 0
             installation.saveEventually()
         }
+        FBSDKAppEvents.activateApp()
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool
