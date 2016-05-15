@@ -1,16 +1,41 @@
 PODS:
+  - Bolts (1.7.0):
+    - Bolts/AppLinks (= 1.7.0)
+    - Bolts/Tasks (= 1.7.0)
+  - Bolts/AppLinks (1.7.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.7.0)
   - CircleSlider (0.2.0)
-  - SlackTextViewController (1.9.2)
-  - SnapKit (0.20.0)
+  - FBSDKCoreKit (4.11.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.11.0):
+    - FBSDKCoreKit
+  - Parse (1.13.0):
+    - Bolts/Tasks (~> 1.6)
+  - ParseFacebookUtilsV4 (1.11.1):
+    - Bolts/Tasks (>= 1.6)
+    - FBSDKCoreKit (~> 4.10)
+    - FBSDKLoginKit (~> 4.10)
+    - FBSDKTVOSKit (~> 4.10)
+    - Parse (~> 1.12)
+  - SlackTextViewController (1.9.3)
+  - SnapKit (0.21.0)
 
 DEPENDENCIES:
+  - Bolts
   - CircleSlider
+  - ParseFacebookUtilsV4
   - SlackTextViewController
   - SnapKit
 
 SPEC CHECKSUMS:
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   CircleSlider: 66e5bf0059f5feffc954e5666f5286f4a331ebe3
-  SlackTextViewController: bac3350ccc639bc446bb14cbd09da238f5e01f32
-  SnapKit: 5fce3c1bbbf1fbd31de9aa92f33eb9fa03f15650
+  FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b
+  FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
+  Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
+  ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
+  SlackTextViewController: bd2a34c188d4f7dec93cf42388f38551263fac82
+  SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
 
 COCOAPODS: 0.39.0

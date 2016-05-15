@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import ParseFacebookUtilsV4
 
 class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -21,6 +22,7 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
     @IBOutlet weak var cancelBtn: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     var info : FBInfo?
+    var user : PFUser?
     
     
     var scrollViewHeight : CGFloat = 0
@@ -136,31 +138,34 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
         }
         
         // Send Data to Server
-        let user = PFUser()
-        user.username = usernameTxt.text?.lowercaseString
-        user.email = emailTxt.text?.lowercaseString
-        user.password = passwordTxt.text
-        user["firstName"] = firstNameTxt.text?.lowercaseString
+//        let user = PFUser()
+        self.user!.username = usernameTxt.text?.lowercaseString
+        self.user!.email = emailTxt.text?.lowercaseString
+        self.user!.password = passwordTxt.text
+        user!["firstName"] = firstNameTxt.text?.lowercaseString
         
         // In Edit Profile this will be assigned
-        user["phoneNumber"] = ""
-        user["gender"] = ""
-        user["location"] = ""
-        user["bio"] = ""
-        
+//        user["phoneNumber"] = ""
+//        user["gender"] = ""
+//        user["location"] = ""
+//        user["bio"] = ""
+
         // Convert image for sending to server
         if let avaImage = UIImageJPEGRepresentation(avaImg.image!, 0.5) {
             let avaFile = PFFile(name: "ava.jpg", data: avaImage)
-            user["ava"] = avaFile
+            user!["ava"] = avaFile
         }
         
-        user.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
+        user!.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
             if success {
                 print("registered")
-                
+
                 // Remember Logged User
-                NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
+                NSUserDefaults.standardUserDefaults().setObject(self.user!.username, forKey: "username")
                 NSUserDefaults.standardUserDefaults().synchronize()
+
+//                PFFacebookUtils.linkUserInBackground(self.user!, withReadPermissions: nil)
+
                 
                 let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.login()

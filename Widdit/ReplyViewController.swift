@@ -157,7 +157,7 @@ extension ReplyViewController {
 
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 
-    parseMessage["post"] = PFObject(outDataWithClassName: "posts", objectId: self.usersPost.objectId)
+    parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
 
     //sends message
     parseMessage.saveInBackgroundWithBlock { (bool, error) in

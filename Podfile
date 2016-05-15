@@ -8,6 +8,8 @@ target 'Widdit' do
 pod "SlackTextViewController"
 pod 'SnapKit'
 pod "CircleSlider"
+pod 'Bolts'
+pod 'ParseFacebookUtilsV4'
 
 end
 

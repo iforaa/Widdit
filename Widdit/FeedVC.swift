@@ -145,7 +145,7 @@ class FeedVC: UICollectionViewController {
                             if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
 
                               //delete the expired post
-                              let delete = PFObject(outDataWithClassName: "posts", objectId: object.objectId)
+                              let delete = PFObject(withoutDataWithClassName: "posts", objectId: object.objectId)
                               delete.deleteInBackgroundWithBlock({ (success, err) in
                                 if success {
                                   print("Successfully deleted expired post")

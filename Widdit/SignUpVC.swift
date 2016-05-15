@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import ParseFacebookUtilsV4
 
 class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -154,7 +155,6 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         user.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
             if success {
                 print("registered")
-                
                 // Remember Logged User
                 NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
                 NSUserDefaults.standardUserDefaults().synchronize()

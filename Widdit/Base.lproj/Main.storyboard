@@ -1014,12 +1014,15 @@
                                     <segue destination="pCg-Zr-kCS" kind="modal" id="lJl-nB-JRi"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmz-vo-VEm" customClass="FBSDKLoginButton">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmz-vo-VEm">
                                 <rect key="frame" x="20" y="327" width="280" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="8j8-Wd-YxE"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Sign in with Facebook"/>
+                                <connections>
+                                    <action selector="loginToFacebook:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jCb-n4-dxo"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

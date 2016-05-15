@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import Parse
 import Bolts
+import ParseFacebookUtilsV4
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -58,6 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // color of window
         window?.backgroundColor = .whiteColor()
+
+        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
 
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         

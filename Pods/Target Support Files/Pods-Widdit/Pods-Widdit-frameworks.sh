@@ -84,12 +84,22 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods-Widdit/Bolts.framework"
   install_framework "Pods-Widdit/CircleSlider.framework"
+  install_framework "Pods-Widdit/FBSDKCoreKit.framework"
+  install_framework "Pods-Widdit/FBSDKLoginKit.framework"
+  install_framework "Pods-Widdit/Parse.framework"
+  install_framework "Pods-Widdit/ParseFacebookUtilsV4.framework"
   install_framework "Pods-Widdit/SlackTextViewController.framework"
   install_framework "Pods-Widdit/SnapKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods-Widdit/Bolts.framework"
   install_framework "Pods-Widdit/CircleSlider.framework"
+  install_framework "Pods-Widdit/FBSDKCoreKit.framework"
+  install_framework "Pods-Widdit/FBSDKLoginKit.framework"
+  install_framework "Pods-Widdit/Parse.framework"
+  install_framework "Pods-Widdit/ParseFacebookUtilsV4.framework"
   install_framework "Pods-Widdit/SlackTextViewController.framework"
   install_framework "Pods-Widdit/SnapKit.framework"
 fi
