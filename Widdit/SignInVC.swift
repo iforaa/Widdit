@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import ParseFacebookUtilsV4
 
-class SignInVC: UIViewController {
+class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     
     
     @IBOutlet weak var label: UILabel!
@@ -91,61 +91,13 @@ class SignInVC: UIViewController {
         }
     }
     
-    @IBAction func loginToFacebook(sender: AnyObject?) {
+    func loginToFacebook(sender: AnyObject?) {
         PFFacebookUtils.logInInBackgroundWithReadPermissions(["email"], block: { (user, err) in
             if err == nil {
                 if let user = user {
                     if user.isNew {
                         print("User is new lets segue to customizations")
-                        FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields":"first_name, picture.type(large), email, gender, bio"]).startWithCompletionHandler { (connection, result, error) -> Void in
 
-                            if result.count > 0 {
-                                let strFirstName: String = (result.objectForKey("first_name") as? String)!
-                                let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
-                                let strEmail: String = (result.objectForKey("email") as? String)!
-                                let strGender: String = (result.objectForKey("gender") as? String)!
-                                let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: strPictureURL)!)!)!
-
-
-                                self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: strGender)
-                                print("FBINFO: \(self.info)")
-                                self.avaImg = avaImage
-                                self.firstName = strFirstName
-                                self.emailTxt = strEmail
-
-
-
-
-
-                                //             Send Data to Server
-                                //                    let user = PFUser()
-                                //                    user.email = strEmail.lowercaseString
-                                //                    user["firstName"] = strFirstName.lowercaseString
-                                //                    user["gender"] = strGender
-                                //
-                                //
-                                //                    //             Convert image for sending to server
-                                //                    let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
-                                //                    let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-                                //                    user["ava"] = avaFile
-
-                                let next = self.storyboard?.instantiateViewControllerWithIdentifier("FBSignUpVC") as! FBSignUpVC
-
-                                next.info = self.info
-
-                                next.user = user
-
-                                self.presentViewController(next, animated: true, completion: nil)
-
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-
-
-                                })
-                            } else {
-                                print("Error completing facebook signup")
-                            }
-
-                        }
                     } else {
                         print("User is in our DB already")
                         let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -161,29 +113,99 @@ class SignInVC: UIViewController {
 
     //WE NEED TO USE THIS BUTTON OR A CUSTOM IMAGE FOR IT
     
-//    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
-//    {
-//        print("User Logged In")
-//
-//        if ((error) != nil)
-//        {
-//            // Process error
-//            print(error)
-//        } else if result.isCancelled {
-//            // Handle cancellations
-//            print("User cancelled")
-//        } else {
-//            // If you ask for multiple permissions at once, you
-//            // should check if specific permissions missing
-//            if result.grantedPermissions.contains("email")
-//            {
-//                // Do work
-//                dispatch_async(dispatch_get_main_queue(), { 
-//                    self.loginToFacebook(nil)
-//                })
-//            }
-//        }
-//    }
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
+    {
+        print("User Logged In")
+
+        if ((error) != nil)
+        {
+            // Process error
+            print(error)
+        } else if result.isCancelled {
+            // Handle cancellations
+            print("User cancelled")
+        } else {
+            // If you ask for multiple permissions at once, you
+            // should check if specific permissions missing
+            if result.grantedPermissions.contains("email")
+            {
+                FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields":"first_name, picture.type(large), email, gender, bio"]).startWithCompletionHandler { (connection, result, error) -> Void in
+
+                    if result.count > 0 {
+
+
+                        let userQuery = PFQuery(className: "_User")
+
+                        userQuery.whereKey("email", equalTo: result.objectForKey("email") as! String)
+
+                        userQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, err) in
+                            if err == nil {
+                                if let object = objects!.first {
+                                    print("User is in our DB")
+                                    let user = object as! PFUser
+                                    PFFacebookUtils.linkUserInBackground(user, withAccessToken: FBSDKAccessToken.currentAccessToken())
+                                    let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                                    let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
+                                    self.view.window?.rootViewController = myTabBar
+                                } else {
+                                    let strFirstName: String = (result.objectForKey("first_name") as? String)!
+                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
+                                    let strEmail: String = (result.objectForKey("email") as? String)!
+                                    let strGender: String = (result.objectForKey("gender") as? String)!
+                                    let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: strPictureURL)!)!)!
+
+
+                                    self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: strGender)
+                                    print("FBINFO: \(self.info)")
+                                    self.avaImg = avaImage
+                                    self.firstName = strFirstName
+                                    self.emailTxt = strEmail
+
+
+
+
+
+                                    //             Send Data to Server
+                                    let user = PFUser()
+                                    user.email = strEmail.lowercaseString
+                                    user["firstName"] = strFirstName.lowercaseString
+                                    user["gender"] = strGender
+
+
+                                    //             Convert image for sending to server
+                                    let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
+                                    let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+                                    user["ava"] = avaFile
+
+                                    let next = self.storyboard?.instantiateViewControllerWithIdentifier("FBSignUpVC") as! FBSignUpVC
+                                    
+                                    next.info = self.info
+                                    
+                                    next.user = user
+                                    
+                                    next.FBAccessToken = FBSDKAccessToken.currentAccessToken()
+                                    
+                                    print("Access token: \(FBSDKAccessToken.currentAccessToken())")
+                                    
+                                    self.presentViewController(next, animated: true, completion: nil)
+                                    
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        
+                                        
+                                    })
+                                }
+                            } else {
+                                print(err)
+                            }
+                        })
+                    } else {
+                        print("Error completing facebook signup")
+                    }
+                    
+                }
+            }
+        }
+    }
 
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!)
     {

@@ -23,6 +23,7 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
     @IBOutlet weak var scrollView: UIScrollView!
     var info : FBInfo?
     var user : PFUser?
+    var FBAccessToken: FBSDKAccessToken?
     
     
     var scrollViewHeight : CGFloat = 0
@@ -156,7 +157,7 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
             user!["ava"] = avaFile
         }
         
-        user!.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
+        user!.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
             if success {
                 print("registered")
 
@@ -164,8 +165,7 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
                 NSUserDefaults.standardUserDefaults().setObject(self.user!.username, forKey: "username")
                 NSUserDefaults.standardUserDefaults().synchronize()
 
-//                PFFacebookUtils.linkUserInBackground(self.user!, withReadPermissions: nil)
-
+                PFFacebookUtils.linkUserInBackground(self.user!, withAccessToken: self.FBAccessToken!)
                 
                 let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.login()
