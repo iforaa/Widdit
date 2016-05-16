@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import ParseFacebookUtilsV4
 
 
 class HomeVC: UICollectionViewController {
@@ -95,6 +96,8 @@ class HomeVC: UICollectionViewController {
                 // remove logged in user from App memory
                 NSUserDefaults.standardUserDefaults().removeObjectForKey("username")
                 NSUserDefaults.standardUserDefaults().synchronize()
+
+                FBSDKLoginManager().logOut()
                 
                 let signIn = self.storyboard?.instantiateViewControllerWithIdentifier("SignInVC") as! SignInVC
                 let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

@@ -133,7 +133,6 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
 
                     if result.count > 0 {
 
-
                         let userQuery = PFQuery(className: "_User")
 
                         userQuery.whereKey("email", equalTo: result.objectForKey("email") as! String)
