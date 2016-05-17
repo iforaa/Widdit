@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import ParseFacebookUtilsV4
 
-class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var avaImg: UIImageView!
     @IBOutlet weak var usernameTxt: UITextField!
@@ -86,6 +86,14 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
     func hideKeyboardTap(recognizer : UITapGestureRecognizer) {
         
         self.view.endEditing(true)
+    }
+
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if self.usernameTxt.text?.characters.count > 16 {
+            return false
+        } else {
+            return true
+        }
     }
     
     func showKeyboard(notification : NSNotification) {

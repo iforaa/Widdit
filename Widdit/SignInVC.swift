@@ -49,7 +49,7 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
         self.view.userInteractionEnabled = true
         self.view.addGestureRecognizer(hideTap)
         
-//        configureFacebook()
+        configureFacebook()
 
     }
     
@@ -129,13 +129,13 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
             // should check if specific permissions missing
             if result.grantedPermissions.contains("email")
             {
-                FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields":"first_name, picture.type(large), email, gender, bio"]).startWithCompletionHandler { (connection, result, error) -> Void in
+                FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email"]).startWithCompletionHandler { (connection, result, error) -> Void in
 
                     if result.count > 0 {
 
                         let userQuery = PFQuery(className: "_User")
 
-                        userQuery.whereKey("email", equalTo: result.objectForKey("email") as! String)
+                        userQuery.whereKey("email", equalTo: result.valueForKey("email") as! String)
 
                         userQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, err) in
                             if err == nil {
@@ -148,13 +148,14 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
                                     self.view.window?.rootViewController = myTabBar
                                 } else {
                                     let strFirstName: String = (result.objectForKey("first_name") as? String)!
-                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
+//                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
                                     let strEmail: String = (result.objectForKey("email") as? String)!
-                                    let strGender: String = (result.objectForKey("gender") as? String)!
-                                    let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: strPictureURL)!)!)!
+//                                    let strGender: String = (result.objectForKey("gender") as? String)!
+                                    let userID = result.valueForKey("id") as! String
+                                    let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!)!
 
 
-                                    self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: strGender)
+                                    self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: "")
                                     print("FBINFO: \(self.info)")
                                     self.avaImg = avaImage
                                     self.firstName = strFirstName
@@ -168,7 +169,7 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
                                     let user = PFUser()
                                     user.email = strEmail.lowercaseString
                                     user["firstName"] = strFirstName.lowercaseString
-                                    user["gender"] = strGender
+//                                    user["gender"] = strGender
 
 
                                     //             Convert image for sending to server
@@ -216,11 +217,11 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     
     //    MARK: Other Methods
     
-//    func configureFacebook()
-//    {
-//        btnFacebook.readPermissions = ["public_profile", "email", "user_friends"]
-//        btnFacebook.delegate = self
-//    }
+    func configureFacebook()
+    {
+        btnFacebook.readPermissions = ["public_profile", "email", "user_friends"]
+        btnFacebook.delegate = self
+    }
 
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

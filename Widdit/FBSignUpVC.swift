@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import ParseFacebookUtilsV4
 
-class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var avaImg: UIImageView!
     @IBOutlet weak var usernameTxt: UITextField!
@@ -111,6 +111,15 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
         }
         
     }
+
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if (usernameTxt.text?.characters.count) > 15 {
+            return false
+        } else {
+            return true
+        }
+    }
+
     
     @IBAction func signUpBtnTapped(sender: AnyObject) {
         
@@ -137,6 +146,8 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
             alert.addAction(ok)
             self.presentViewController(alert, animated: true, completion: nil)
         }
+
+        
         
         // Send Data to Server
 //        let user = PFUser()
