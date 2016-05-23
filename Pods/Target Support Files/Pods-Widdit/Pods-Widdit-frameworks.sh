@@ -90,6 +90,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Widdit/FBSDKLoginKit.framework"
   install_framework "Pods-Widdit/Parse.framework"
   install_framework "Pods-Widdit/ParseFacebookUtilsV4.framework"
+  install_framework "${PODS_ROOT}/SinchVerification-Swift/swift/SinchVerification.framework"
   install_framework "Pods-Widdit/SlackTextViewController.framework"
   install_framework "Pods-Widdit/SnapKit.framework"
 fi
@@ -100,6 +101,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Widdit/FBSDKLoginKit.framework"
   install_framework "Pods-Widdit/Parse.framework"
   install_framework "Pods-Widdit/ParseFacebookUtilsV4.framework"
+  install_framework "${PODS_ROOT}/SinchVerification-Swift/swift/SinchVerification.framework"
   install_framework "Pods-Widdit/SlackTextViewController.framework"
   install_framework "Pods-Widdit/SnapKit.framework"
 fi

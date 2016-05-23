@@ -24,6 +24,8 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
     var info : FBInfo?
     var user : PFUser?
     var FBAccessToken: FBSDKAccessToken?
+    var allowedCharacters = NSCharacterSet(charactersInString: "1234567890")
+    var phoneNumber: String?
     
     
     var scrollViewHeight : CGFloat = 0
@@ -136,59 +138,65 @@ class FBSignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigatio
             alert.addAction(ok)
             self.presentViewController(alert, animated: true, completion: nil)
             
-        }
-        
-        // Passwords do not match
-        if passwordTxt.text != repeatPasswordTxt.text {
-            
+        } else if passwordTxt.text != repeatPasswordTxt.text {
+            // Passwords do not match
+
             let alert = UIAlertController(title: "Yo", message: "Your passwords don't match", preferredStyle: UIAlertControllerStyle.Alert)
             let ok = UIAlertAction(title: "Got it", style: .Cancel, handler: nil)
             alert.addAction(ok)
             self.presentViewController(alert, animated: true, completion: nil)
-        }
+        } else if passwordTxt.text?.rangeOfCharacterFromSet(allowedCharacters) == nil && passwordTxt.text?.characters.count >= 6 {
+            self.loginError("OK", message: "Your password must be at least 6 characters long and needs to have a number in it!")
+        } else {
+            // Send Data to Server
+            //        let user = PFUser()
+            self.user!.username = usernameTxt.text?.lowercaseString
+            self.user!.email = emailTxt.text?.lowercaseString
+            self.user!.password = passwordTxt.text
+            user!["firstName"] = firstNameTxt.text?.lowercaseString
 
-        
-        
-        // Send Data to Server
-//        let user = PFUser()
-        self.user!.username = usernameTxt.text?.lowercaseString
-        self.user!.email = emailTxt.text?.lowercaseString
-        self.user!.password = passwordTxt.text
-        user!["firstName"] = firstNameTxt.text?.lowercaseString
-        
-        // In Edit Profile this will be assigned
-//        user["phoneNumber"] = ""
-//        user["gender"] = ""
-//        user["location"] = ""
-//        user["bio"] = ""
+            user!["phoneNumber"] = self.phoneNumber
 
-        // Convert image for sending to server
-        if let avaImage = UIImageJPEGRepresentation(avaImg.image!, 0.5) {
-            let avaFile = PFFile(name: "ava.jpg", data: avaImage)
-            user!["ava"] = avaFile
-        }
-        
-        user!.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
-            if success {
-                print("registered")
+            // In Edit Profile this will be assigned
+            //        user["phoneNumber"] = ""
+            //        user["gender"] = ""
+            //        user["location"] = ""
+            //        user["bio"] = ""
 
-                // Remember Logged User
-                NSUserDefaults.standardUserDefaults().setObject(self.user!.username, forKey: "username")
-                NSUserDefaults.standardUserDefaults().synchronize()
+            // Convert image for sending to server
+            if let avaImage = UIImageJPEGRepresentation(avaImg.image!, 0.5) {
+                let avaFile = PFFile(name: "ava.jpg", data: avaImage)
+                user!["ava"] = avaFile
+            }
 
-                PFFacebookUtils.linkUserInBackground(self.user!, withAccessToken: self.FBAccessToken!)
-                
-                let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.login()
-            } else {
-                print(error?.localizedDescription)
-                let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
-                let ok = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
-                alert.addAction(ok)
-                self.presentViewController(alert, animated: true, completion: nil)
+            user!.signUpInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
+                if success {
+                    print("registered")
+
+                    // Remember Logged User
+                    NSUserDefaults.standardUserDefaults().setObject(self.user!.username, forKey: "username")
+                    NSUserDefaults.standardUserDefaults().synchronize()
+
+                    PFFacebookUtils.linkUserInBackground(self.user!, withAccessToken: self.FBAccessToken!)
+
+                    let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.login()
+                } else {
+                    print(error?.localizedDescription)
+                    let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
+                    let ok = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
+                    alert.addAction(ok)
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
             }
         }
-        
+    }
+
+    func loginError(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        let ok = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alert.addAction(ok)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     @IBAction func cancelBtnTapped(sender: AnyObject) {

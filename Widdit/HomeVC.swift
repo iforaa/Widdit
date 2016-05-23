@@ -98,7 +98,18 @@ class HomeVC: UICollectionViewController {
                 NSUserDefaults.standardUserDefaults().synchronize()
 
                 FBSDKLoginManager().logOut()
-                
+                PFUser.logOut()
+
+                let cookie: NSHTTPCookie?
+                let storage: NSHTTPCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+                for cookie in storage.cookies! {
+                    storage.deleteCookie(cookie)
+                }
+                NSUserDefaults.standardUserDefaults().synchronize()
+
+                FBSDKAccessToken.setCurrentAccessToken(nil)
+                FBSDKProfile.setCurrentProfile(nil)
+
                 let signIn = self.storyboard?.instantiateViewControllerWithIdentifier("SignInVC") as! SignInVC
                 let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.window?.rootViewController = signIn

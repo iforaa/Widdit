@@ -26,6 +26,7 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     var avaImg: UIImage?
     var firstName: String?
     var emailTxt: String?
+    var user: PFUser!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,7 +117,6 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
     {
         print("User Logged In")
-
         if ((error) != nil)
         {
             // Process error
@@ -177,17 +177,13 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
                                     let avaFile = PFFile(name: "ava.jpg", data: avaData!)
                                     user["ava"] = avaFile
 
-                                    let next = self.storyboard?.instantiateViewControllerWithIdentifier("FBSignUpVC") as! FBSignUpVC
-                                    
-                                    next.info = self.info
-                                    
-                                    next.user = user
-                                    
-                                    next.FBAccessToken = FBSDKAccessToken.currentAccessToken()
+                                    self.user = user
+
+                                    self.performSegueWithIdentifier("FBVerifyPin", sender: self)
+
                                     
                                     print("Access token: \(FBSDKAccessToken.currentAccessToken())")
-                                    
-                                    self.presentViewController(next, animated: true, completion: nil)
+
                                     
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                         
@@ -221,13 +217,20 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     {
         btnFacebook.readPermissions = ["public_profile", "email", "user_friends"]
         btnFacebook.delegate = self
+        btnFacebook.loginBehavior = FBSDKLoginBehavior.SystemAccount
     }
 
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
- 
+        if segue.identifier == "FBVerifyPin" {
+            let destVC = segue.destinationViewController as! TextVerifyViewController
+            destVC.userInfo = self.info
 
+            destVC.user = self.user
+
+            destVC.FBAccessToken = FBSDKAccessToken.currentAccessToken()
+        }
     }
-    
+
 
 }

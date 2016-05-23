@@ -43,6 +43,8 @@
 		31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FF6CF31CAF84D4001D1654 /* FBInfo.swift */; };
 		7994B5471CE16D7B008EB1D8 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7994B5461CE16D7B008EB1D8 /* notification.mp3 */; };
 		79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */; };
+		79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */; };
+		79B4230E1CEE824100888461 /* EnterVerifyPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4230D1CEE824100888461 /* EnterVerifyPinViewController.swift */; };
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
@@ -92,6 +94,8 @@
 		54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7994B5461CE16D7B008EB1D8 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification.mp3; sourceTree = "<group>"; };
 		79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserMorePostsViewController.swift; sourceTree = "<group>"; };
+		79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextVerifyViewController.swift; sourceTree = "<group>"; };
+		79B4230D1CEE824100888461 /* EnterVerifyPinViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterVerifyPinViewController.swift; sourceTree = "<group>"; };
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 				31F12EA11C9E124500E63A2E /* SignUpVC.swift */,
 				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
 				311147651CAB42AE00150ECD /* Main.storyboard */,
+				79B4230D1CEE824100888461 /* EnterVerifyPinViewController.swift */,
+				79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */,
 				79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */,
 				79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */,
 				79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */,
@@ -350,7 +356,9 @@
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
 				31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */,
 				31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */,
+				79B4230E1CEE824100888461 /* EnterVerifyPinViewController.swift in Sources */,
 				31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */,
+				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
 				79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */,

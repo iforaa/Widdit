@@ -10,6 +10,7 @@ pod 'SnapKit'
 pod "CircleSlider"
 pod 'Bolts'
 pod 'ParseFacebookUtilsV4'
+pod 'SinchVerification-Swift'
 
 end
 

@@ -18,6 +18,7 @@ PODS:
     - FBSDKLoginKit (~> 4.10)
     - FBSDKTVOSKit (~> 4.10)
     - Parse (~> 1.12)
+  - SinchVerification-Swift (1.4.4)
   - SlackTextViewController (1.9.3)
   - SnapKit (0.21.0)
 
@@ -25,6 +26,7 @@ DEPENDENCIES:
   - Bolts
   - CircleSlider
   - ParseFacebookUtilsV4
+  - SinchVerification-Swift
   - SlackTextViewController
   - SnapKit
 
@@ -35,6 +37,7 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
+  SinchVerification-Swift: b62b0472825ce2be237d84c9ccc323eeccb4e0b6
   SlackTextViewController: bd2a34c188d4f7dec93cf42388f38551263fac82
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
 

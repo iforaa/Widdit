@@ -27,6 +27,8 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
     
     var keyboard = CGRect()
 
+    var phoneNumber: String!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -154,6 +156,7 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         user["gender"] = ""
         user["location"] = ""
         user["bio"] = ""
+        user["phoneNumber"] = phoneNumber
         
         // Convert image for sending to server
         let avaData = UIImageJPEGRepresentation(avaImg.image!, 0.5)
@@ -196,14 +199,13 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
 
 
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "segueToVerify" {
+            let destVC = segue.destinationViewController as! TextVerifyViewController
+        }
     }
-    */
 
 }
