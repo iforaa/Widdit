@@ -35,6 +35,10 @@ class EnterVerifyPinViewController: UIViewController {
                 }
             } else {
                 print("Error authentication pin: \(err)")
+                let alert = UIAlertController(title: "Error verifying PIN", message: err!.localizedDescription, preferredStyle: .Alert)
+                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                alert.addAction(ok)
+                self.presentViewController(alert, animated: true, completion: nil)
             }
         }
     }
@@ -50,5 +54,9 @@ class EnterVerifyPinViewController: UIViewController {
             destVC.user = user
             destVC.phoneNumber = phoneNumber
         }
+    }
+    
+    @IBAction func closePIN(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

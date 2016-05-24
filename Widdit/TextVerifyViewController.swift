@@ -46,16 +46,22 @@ class TextVerifyViewController: UIViewController {
 
     @IBAction func verifySMS(sender: UIButton) {
         verification = SMSVerification(applicationKey: applicationKey, phoneNumber: phoneNumber.text!)
-
+        self.spinner.startAnimating()
         verification.initiate { (success, err) in
             if success {
+                self.spinner.stopAnimating()
                 if self.FBAccessToken != nil {
                     self.performSegueWithIdentifier("verifyPinFB", sender: self)
                 } else {
                     self.performSegueWithIdentifier("enterPin", sender: self)
                 }
             } else {
+                self.spinner.stopAnimating()
                 print("Error sending sms: \(err)")
+                let alert = UIAlertController(title: "Error sending SMS", message: err!.localizedDescription, preferredStyle: .Alert)
+                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                alert.addAction(ok)
+                self.presentViewController(alert, animated: true, completion: nil)
             }
         }
     }
@@ -69,12 +75,18 @@ class TextVerifyViewController: UIViewController {
                 self.spinner.stopAnimating()
                 self.statusLabel.text = "Verified!"
             } else {
-                print("Error sending callout: \(err?.localizedDescription)")
+                self.spinner.stopAnimating()
+                print("Error sending callout: \(err!.localizedDescription)")
+                let alert = UIAlertController(title: "Uh oh!", message: err!.localizedDescription, preferredStyle: .Alert)
+                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                alert.addAction(ok)
+                self.presentViewController(alert, animated: true, completion: nil)
             }
         }
     }
 
     @IBAction func dismissVerify(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
+        FBSDKLoginManager().logOut()
     }
 }

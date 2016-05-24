@@ -1195,13 +1195,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your phone number" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ega-f6-YoM">
-                                <rect key="frame" x="15" y="52" width="289" height="50"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3V-KT-E5n">
                                 <rect key="frame" x="133" y="269" width="54" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="54" id="7vQ-xI-dtA"/>
+                                </constraints>
                                 <state key="normal" title="Verify"/>
                                 <connections>
                                     <action selector="verifySMS:" destination="ZwH-jn-PFg" eventType="touchUpInside" id="3hl-sb-faQ"/>
@@ -1209,40 +1207,66 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7u7-za-xlf">
                                 <rect key="frame" x="132" y="307" width="57" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="57" id="OYy-b3-5Ql"/>
+                                </constraints>
                                 <state key="normal" title="Callout"/>
                                 <connections>
                                     <action selector="calloutVerification:" destination="ZwH-jn-PFg" eventType="touchUpInside" id="sD9-VM-KHE"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Verification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FrE-ZF-VBK">
-                                <rect key="frame" x="98" y="184" width="125" height="21"/>
+                                <rect key="frame" x="98" y="240" width="125" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ENa-eW-abU">
-                                <rect key="frame" x="130" y="110" width="60" height="60"/>
+                                <rect key="frame" x="130" y="172" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="JRO-Ms-KJo"/>
+                                    <constraint firstAttribute="height" constant="60" id="X5Y-Hp-aAB"/>
+                                </constraints>
                             </activityIndicatorView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zdv-48-9qX">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="bSW-gX-IQI"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Verify your Phone" id="tBb-FK-bxb">
+                                        <barButtonItem key="leftBarButtonItem" title="Done" id="uxx-oV-gUG">
+                                            <connections>
+                                                <action selector="dismissVerify:" destination="ZwH-jn-PFg" id="fGZ-ds-Sxk"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your phone number" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ega-f6-YoM">
+                                <rect key="frame" x="12" y="90" width="297" height="74"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ENa-eW-abU" firstAttribute="top" secondItem="ega-f6-YoM" secondAttribute="bottom" constant="8" id="0rS-gq-dKe"/>
-                            <constraint firstItem="X3V-KT-E5n" firstAttribute="top" secondItem="ega-f6-YoM" secondAttribute="bottom" constant="167" id="2HB-c6-FZg"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="X3V-KT-E5n" secondAttribute="trailing" constant="117" id="7CE-8x-N8J"/>
-                            <constraint firstItem="7u7-za-xlf" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="116" id="7bH-Fn-4nA"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="7u7-za-xlf" secondAttribute="trailing" constant="115" id="JZa-co-hcF"/>
-                            <constraint firstItem="X3V-KT-E5n" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="117" id="TML-ZB-knW"/>
-                            <constraint firstItem="NCz-v7-7wM" firstAttribute="top" secondItem="ega-f6-YoM" secondAttribute="bottom" constant="466" id="ayH-p0-r34"/>
-                            <constraint firstItem="7u7-za-xlf" firstAttribute="top" secondItem="X3V-KT-E5n" secondAttribute="bottom" constant="8" id="eY2-nc-U3O"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="FrE-ZF-VBK" secondAttribute="trailing" constant="81" id="jVV-gQ-eQN"/>
-                            <constraint firstItem="ENa-eW-abU" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leading" constant="130" id="lML-jj-tVU"/>
-                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="82" id="nDP-Om-TgG"/>
-                            <constraint firstItem="ega-f6-YoM" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="-1" id="qNB-gX-AWe"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="ega-f6-YoM" secondAttribute="trailing" id="uaS-06-aIn"/>
-                            <constraint firstAttribute="trailing" secondItem="ENa-eW-abU" secondAttribute="trailing" constant="130" id="xGi-j6-ow2"/>
-                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="top" secondItem="ega-f6-YoM" secondAttribute="bottom" constant="82" id="y4h-es-CvB"/>
-                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="top" secondItem="ENa-eW-abU" secondAttribute="bottom" constant="14" id="zNt-45-EJT"/>
-                            <constraint firstItem="ega-f6-YoM" firstAttribute="top" secondItem="bJW-K7-Ppr" secondAttribute="bottom" constant="8" id="zUQ-QD-73t"/>
+                            <constraint firstItem="ENa-eW-abU" firstAttribute="centerX" secondItem="FrE-ZF-VBK" secondAttribute="centerX" id="1kc-mM-v5r"/>
+                            <constraint firstItem="ega-f6-YoM" firstAttribute="top" secondItem="Zdv-48-9qX" secondAttribute="bottom" constant="26" id="4mj-0W-Bww"/>
+                            <constraint firstItem="Zdv-48-9qX" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leading" id="9oO-qg-HBz"/>
+                            <constraint firstItem="X3V-KT-E5n" firstAttribute="top" secondItem="FrE-ZF-VBK" secondAttribute="bottom" constant="8" symbolic="YES" id="A2J-y7-jrH"/>
+                            <constraint firstItem="7u7-za-xlf" firstAttribute="top" secondItem="X3V-KT-E5n" secondAttribute="bottom" constant="8" symbolic="YES" id="Bla-7t-Xs1"/>
+                            <constraint firstItem="ENa-eW-abU" firstAttribute="top" secondItem="ega-f6-YoM" secondAttribute="bottom" constant="8" symbolic="YES" id="Ccr-cH-wH6"/>
+                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="top" secondItem="ENa-eW-abU" secondAttribute="bottom" constant="8" symbolic="YES" id="DNN-mF-uvr"/>
+                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="82" id="GNa-mW-8Ea"/>
+                            <constraint firstItem="ega-f6-YoM" firstAttribute="centerX" secondItem="ENa-eW-abU" secondAttribute="centerX" id="M1v-f1-C5t"/>
+                            <constraint firstItem="X3V-KT-E5n" firstAttribute="centerY" secondItem="Msr-tW-GWU" secondAttribute="centerY" id="PCj-hz-Yft"/>
+                            <constraint firstItem="Zdv-48-9qX" firstAttribute="top" secondItem="bJW-K7-Ppr" secondAttribute="bottom" id="WXA-5J-0jS"/>
+                            <constraint firstItem="FrE-ZF-VBK" firstAttribute="centerX" secondItem="X3V-KT-E5n" secondAttribute="centerX" id="lwX-Gt-zC7"/>
+                            <constraint firstItem="Zdv-48-9qX" firstAttribute="centerX" secondItem="ega-f6-YoM" secondAttribute="centerX" id="oSO-No-aii"/>
+                            <constraint firstItem="ega-f6-YoM" firstAttribute="leading" secondItem="Msr-tW-GWU" secondAttribute="leadingMargin" constant="-4" id="uIP-kG-Zhq"/>
+                            <constraint firstAttribute="trailing" secondItem="Zdv-48-9qX" secondAttribute="trailing" id="wiP-Gc-vKS"/>
+                            <constraint firstItem="X3V-KT-E5n" firstAttribute="centerX" secondItem="7u7-za-xlf" secondAttribute="centerX" id="yt6-cc-ujl"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="4bS-ak-UNR">
@@ -1277,7 +1301,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter PIN from text" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bBW-xL-P5p">
-                                <rect key="frame" x="16" y="52" width="288" height="30"/>
+                                <rect key="frame" x="12" y="231" width="296" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -1288,15 +1312,30 @@
                                     <action selector="verifyPin:" destination="7q1-wo-1tu" eventType="touchUpInside" id="yMQ-qc-rwu"/>
                                 </connections>
                             </button>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Sx-t5-jy6">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <items>
+                                    <navigationItem title="Verify PIN" id="o0F-pL-aiM">
+                                        <barButtonItem key="leftBarButtonItem" title="Done" id="0ou-5W-pbb">
+                                            <connections>
+                                                <action selector="closePIN:" destination="7q1-wo-1tu" id="4sE-lA-vrs"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="DJa-rY-Vc5" firstAttribute="leading" secondItem="Vh3-5i-KK5" secondAttribute="leadingMargin" constant="120" id="1Ho-I4-FMI"/>
+                            <constraint firstItem="4Sx-t5-jy6" firstAttribute="top" secondItem="Vh3-5i-KK5" secondAttribute="top" constant="20" id="7We-5d-fM4"/>
+                            <constraint firstItem="4Sx-t5-jy6" firstAttribute="leading" secondItem="Vh3-5i-KK5" secondAttribute="leading" id="Cf6-AD-vJX"/>
+                            <constraint firstAttribute="trailing" secondItem="4Sx-t5-jy6" secondAttribute="trailing" id="Hmu-W3-x7d"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DJa-rY-Vc5" secondAttribute="trailing" constant="120" id="Nu5-zd-Uhv"/>
-                            <constraint firstItem="bBW-xL-P5p" firstAttribute="top" secondItem="9Ki-ke-9yF" secondAttribute="bottom" constant="8" id="Sbk-AM-70B"/>
-                            <constraint firstItem="bBW-xL-P5p" firstAttribute="leading" secondItem="Vh3-5i-KK5" secondAttribute="leadingMargin" id="jsY-c5-CE4"/>
-                            <constraint firstItem="bBW-xL-P5p" firstAttribute="trailing" secondItem="Vh3-5i-KK5" secondAttribute="trailingMargin" id="q3H-do-tnh"/>
-                            <constraint firstItem="DJa-rY-Vc5" firstAttribute="top" secondItem="bBW-xL-P5p" secondAttribute="bottom" constant="187" id="yFL-XL-LFt"/>
+                            <constraint firstItem="bBW-xL-P5p" firstAttribute="top" secondItem="9Ki-ke-9yF" secondAttribute="bottom" constant="211" id="Sbk-AM-70B"/>
+                            <constraint firstItem="bBW-xL-P5p" firstAttribute="leading" secondItem="Vh3-5i-KK5" secondAttribute="leadingMargin" constant="-4" id="jsY-c5-CE4"/>
+                            <constraint firstItem="bBW-xL-P5p" firstAttribute="trailing" secondItem="Vh3-5i-KK5" secondAttribute="trailingMargin" constant="4" id="q3H-do-tnh"/>
+                            <constraint firstItem="DJa-rY-Vc5" firstAttribute="top" secondItem="bBW-xL-P5p" secondAttribute="bottom" constant="8" id="yFL-XL-LFt"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="zLV-CD-UIc"/>
