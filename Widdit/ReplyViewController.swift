@@ -40,17 +40,40 @@ class ReplyViewController: SLKTextViewController {
 
     userQuery.whereKey("username", equalTo: toUser)
 
-    userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
+    userQuery.findObjectsInBackgroundWithBlock { (users: [PFObject]?, err) in
         if err == nil {
+            print(users)
             let replyQuery = PFQuery(className: "replies")
-            let recipient = objects?.first as! PFUser
-
+            let recipient = users?.first as! PFUser
+            
+            replyQuery.includeKey("sender")
             replyQuery.whereKey("recipient", equalTo: recipient)
-
-            replyQuery.findObjectsInBackgroundWithBlock({ (objs: [PFObject]?, err) in
+            replyQuery.addDescendingOrder("createdAt")
+            
+            
+            replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
                 if err == nil {
-                    if objects?.count > 0 {
-                        print(objects)
+                    if replies?.count > 0 {
+                        self.messages = replies!.map({ (reply) -> MessageModel in
+                            
+                            var message = MessageModel(name: "", body: "")
+                            
+                            let sender = reply["sender"] as! PFUser
+
+                            if let firstName = sender["firstName"]  {
+                                message.name = firstName as! String
+                            } else {
+                                message.name = "No name"
+                            }
+                            
+                            if let body = reply["body"] {
+                                message.body = body as! String
+                            }
+                            
+                            return message
+                        })
+                        
+                        self.tableView?.reloadData()
                     } else {
                         print("No objects")
                     }
