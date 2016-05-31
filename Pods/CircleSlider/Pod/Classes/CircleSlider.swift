@@ -43,10 +43,6 @@ public class CircleSlider: UIControl {
         self.thumbView.backgroundColor = self.thumbColor
         self.thumbView.center = self.thumbCenter(self.startAngle)
         self.thumbView.layer.cornerRadius = self.thumbView!.bounds.size.width * 0.5
-        self.thumbView.layer.shadowColor = UIColor.blackColor().CGColor
-        self.thumbView.layer.shadowOpacity = 0.5
-        self.thumbView.layer.shadowRadius = 1
-        self.thumbView.layer.shadowOffset = CGSizeMake(1.0, 1.0)
         self.addSubview(self.thumbView)
       } else {
         self.thumbView.hidden = true

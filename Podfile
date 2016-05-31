@@ -5,12 +5,12 @@ use_frameworks!
 
 target 'Widdit' do
 
-pod "SlackTextViewController"
+pod 'SlackTextViewController'
 pod 'SnapKit'
-pod "CircleSlider"
+pod 'CircleSlider'
 pod 'Bolts'
 pod 'ParseFacebookUtilsV4'
 pod 'SinchVerification-Swift'
-
+pod 'JSQMessagesViewController'
 end
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E3924CE6F8E5329D9A2B301 /* Pods_Widdit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B0032CE04787FA854080E9E /* Pods_Widdit.framework */; };
 		3111475C1CAB210F00150ECD /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3111475A1CAB210F00150ECD /* FBSDKCoreKit.framework */; };
 		3111475D1CAB210F00150ECD /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3111475B1CAB210F00150ECD /* FBSDKLoginKit.framework */; };
 		311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311147631CAB335A00150ECD /* FBSignUpVC.swift */; };
@@ -48,12 +49,11 @@
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
-		AC3A3C584DD28013378106F7 /* Pods_Widdit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */; };
+		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
+		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		043DD11764F74FBA0F56B667 /* Pods-Widdit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Widdit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Widdit/Pods-Widdit.release.xcconfig"; sourceTree = "<group>"; };
-		225AEC7B010EFD6CD5D0DFE5 /* Pods-Widdit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Widdit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Widdit/Pods-Widdit.debug.xcconfig"; sourceTree = "<group>"; };
 		3111475A1CAB210F00150ECD /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		3111475B1CAB210F00150ECD /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Widdit-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -91,7 +91,9 @@
 		31F12ED71C9E65E300E63A2E /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
 		31FF6CF31CAF84D4001D1654 /* FBInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBInfo.swift; sourceTree = "<group>"; };
-		54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		68D742D5C0E3C53D9E07BC7F /* Pods-Widdit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Widdit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Widdit/Pods-Widdit.debug.xcconfig"; sourceTree = "<group>"; };
+		6B0032CE04787FA854080E9E /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D40BFB75DA61F740B7C5F63 /* Pods-Widdit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Widdit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Widdit/Pods-Widdit.release.xcconfig"; sourceTree = "<group>"; };
 		7994B5461CE16D7B008EB1D8 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification.mp3; sourceTree = "<group>"; };
 		79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserMorePostsViewController.swift; sourceTree = "<group>"; };
 		79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextVerifyViewController.swift; sourceTree = "<group>"; };
@@ -99,6 +101,8 @@
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
+		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +123,7 @@
 				31F12EAF1C9E135800E63A2E /* SystemConfiguration.framework in Frameworks */,
 				31F12EA81C9E12D400E63A2E /* Parse.framework in Frameworks */,
 				31F12EA71C9E12D400E63A2E /* Bolts.framework in Frameworks */,
-				AC3A3C584DD28013378106F7 /* Pods_Widdit.framework in Frameworks */,
+				2E3924CE6F8E5329D9A2B301 /* Pods_Widdit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +136,7 @@
 				31F12EC21C9E13F300E63A2E /* Frameworks */,
 				31F12E891C9E115B00E63A2E /* Widdit */,
 				31F12E881C9E115B00E63A2E /* Products */,
-				D5CC940C19009E4DF2BF753E /* Pods */,
+				9CBB8014852512D1F88C82BA /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +151,8 @@
 		31F12E891C9E115B00E63A2E /* Widdit */ = {
 			isa = PBXGroup;
 			children = (
+				31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */,
+				A6E153061CFD967F00787394 /* Extension */,
 				311147631CAB335A00150ECD /* FBSignUpVC.swift */,
 				31F12ECF1C9E191000E63A2E /* NewPostVC.swift */,
 				31F12ECD1C9E188600E63A2E /* HeaderView.swift */,
@@ -157,7 +163,6 @@
 				31F12EC71C9E181F00E63A2E /* ActivityVC.swift */,
 				31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */,
 				31F12EC31C9E17D700E63A2E /* HomeVC.swift */,
-				31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */,
 				31F12E9F1C9E122B00E63A2E /* SignInVC.swift */,
 				31FF6CF31CAF84D4001D1654 /* FBInfo.swift */,
 				79B4D4851CC8102B0073B65D /* MessageModel.swift */,
@@ -197,18 +202,27 @@
 				31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */,
 				31F12EA61C9E12D400E63A2E /* Parse.framework */,
 				31F12EA51C9E12D400E63A2E /* Bolts.framework */,
-				54ABCE4C00FE3C4C59F2C829 /* Pods_Widdit.framework */,
+				6B0032CE04787FA854080E9E /* Pods_Widdit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D5CC940C19009E4DF2BF753E /* Pods */ = {
+		9CBB8014852512D1F88C82BA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				225AEC7B010EFD6CD5D0DFE5 /* Pods-Widdit.debug.xcconfig */,
-				043DD11764F74FBA0F56B667 /* Pods-Widdit.release.xcconfig */,
+				68D742D5C0E3C53D9E07BC7F /* Pods-Widdit.debug.xcconfig */,
+				6D40BFB75DA61F740B7C5F63 /* Pods-Widdit.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		A6E153061CFD967F00787394 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A6E153071CFD96B000787394 /* WDTColor.swift */,
+				A6E1530B1CFE09B600787394 /* WDTFont.swift */,
+			);
+			name = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,12 +232,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 31F12E9C1C9E115B00E63A2E /* Build configuration list for PBXNativeTarget "Widdit" */;
 			buildPhases = (
-				507310A596FA1045D19191AA /* Check Pods Manifest.lock */,
+				B8FB45A7F4DA920C74A1FB57 /* 📦 Check Pods Manifest.lock */,
 				31F12E831C9E115B00E63A2E /* Sources */,
 				31F12E841C9E115B00E63A2E /* Frameworks */,
 				31F12E851C9E115B00E63A2E /* Resources */,
-				C6CCE49E64A6C41B2960B899 /* Embed Pods Frameworks */,
-				896E2256FCBA969CFEF3FE76 /* Copy Pods Resources */,
+				51F6D64152ADB0ED1D4A21D1 /* 📦 Embed Pods Frameworks */,
+				35543814FB421C7570C8A099 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -295,29 +309,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		507310A596FA1045D19191AA /* Check Pods Manifest.lock */ = {
+		35543814FB421C7570C8A099 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		896E2256FCBA969CFEF3FE76 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -325,19 +324,34 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Widdit/Pods-Widdit-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C6CCE49E64A6C41B2960B899 /* Embed Pods Frameworks */ = {
+		51F6D64152ADB0ED1D4A21D1 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Widdit/Pods-Widdit-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B8FB45A7F4DA920C74A1FB57 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -355,10 +369,12 @@
 				31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */,
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
 				31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */,
+				A6E153081CFD96B000787394 /* WDTColor.swift in Sources */,
 				31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */,
 				79B4230E1CEE824100888461 /* EnterVerifyPinViewController.swift in Sources */,
 				31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */,
 				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
+				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
 				79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */,
@@ -478,7 +494,7 @@
 		};
 		31F12E9D1C9E115B00E63A2E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 225AEC7B010EFD6CD5D0DFE5 /* Pods-Widdit.debug.xcconfig */;
+			baseConfigurationReference = 68D742D5C0E3C53D9E07BC7F /* Pods-Widdit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
@@ -503,7 +519,7 @@
 		};
 		31F12E9E1C9E115B00E63A2E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 043DD11764F74FBA0F56B667 /* Pods-Widdit.release.xcconfig */;
+			baseConfigurationReference = 6D40BFB75DA61F740B7C5F63 /* Pods-Widdit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";

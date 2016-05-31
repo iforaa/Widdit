@@ -29,18 +29,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
 
         //app wide navigation bar changes
-        UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
-        UINavigationBar.appearance().barTintColor = UIColor(red: 0.00, green: 0.51, blue: 1.00, alpha: 1.0)
-        UINavigationBar.appearance().tintColor = UIColor.whiteColor()
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+//        UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
+        UINavigationBar.appearance().barTintColor = UIColor.WDTGrayBlueColor()
+        UINavigationBar.appearance().tintColor = UIColor.WDTBlueColor()
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.WDTBlueColor()]
 
         //app wide bar button item changes
         UITabBar.appearance().backgroundColor = UIColor.blackColor()
-        UITabBar.appearance().tintColor = UIColor(red: 0.00, green: 0.51, blue: 1.00, alpha: 1.0)
+        UITabBar.appearance().tintColor = UIColor.WDTBlueColor()
 //        UITabBar.appearance().barTintColor = UIColor.blueColor()
 
         //app wide status bar changes
-//        UIApplication.sharedApplication().statusBarStyle = .LightContent
+        UIApplication.sharedApplication().statusBarStyle = .Default
         UINavigationBar.appearance().barStyle = .Black
 
         // [Optional] Power your app with Local Datastore. For more info, go to

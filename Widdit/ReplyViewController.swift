@@ -11,6 +11,15 @@ import SlackTextViewController
 import Parse
 
 class ReplyViewController: SLKTextViewController {
+    
+  lazy var dateFormatter: NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.timeStyle = .ShortStyle
+        formatter.dateStyle = .MediumStyle
+        formatter.doesRelativeDateFormatting = true
+        return formatter
+  }()
+    
   //list of messages
   var messages = [MessageModel]()
     var usersPost: PFObject!
@@ -56,7 +65,7 @@ class ReplyViewController: SLKTextViewController {
                     if replies?.count > 0 {
                         self.messages = replies!.map({ (reply) -> MessageModel in
                             
-                            var message = MessageModel(name: "", body: "")
+                            var message = MessageModel(name: "", body: "", createdAt: NSDate())
                             
                             let sender = reply["sender"] as! PFUser
 
@@ -68,6 +77,10 @@ class ReplyViewController: SLKTextViewController {
                             
                             if let body = reply["body"] {
                                 message.body = body as! String
+                            }
+                            
+                            if let createdAt = reply.createdAt {
+                                message.createdAt = createdAt
                             }
                             
                             return message
@@ -120,6 +133,7 @@ class ReplyViewController: SLKTextViewController {
       // Set table cell values
       cell.nameLabel.text = message.name
       cell.bodyLabel.text = message.body
+      cell.createdAtLabel.text = self.dateFormatter.stringFromDate(message.createdAt)
       cell.selectionStyle = .None
 
       return cell
@@ -136,7 +150,7 @@ extension ReplyViewController {
     // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
     self.textView.refreshFirstResponder()
 
-    let message = MessageModel(name: PFUser.currentUser()!.username!, body: self.textView.text)
+    let message = MessageModel(name: PFUser.currentUser()!.username!, body: self.textView.text, createdAt: NSDate())
 
     let parseMessage = PFObject(className: "replies")
 
