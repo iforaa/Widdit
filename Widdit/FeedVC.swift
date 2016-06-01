@@ -255,15 +255,13 @@ class FeedVC: UICollectionViewController {
             loadMore()
         }
     }
-    
-
 
 
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-      if segue.identifier == "segueToSlack" {
+      if segue.identifier == "segueToReply" {
         let destVC = segue.destinationViewController as! ReplyViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
         let username = usernameArray[i.row]

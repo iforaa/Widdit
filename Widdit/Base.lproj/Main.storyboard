@@ -268,10 +268,10 @@
                         </activityIndicatorView>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="pJk-wr-Q24" customClass="PostCell" customModule="Widdit" customModuleProvider="target">
-                                <rect key="frame" x="1" y="64" width="319" height="361"/>
+                                <rect key="frame" x="1" y="64" width="318.5" height="361"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="319" height="361"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="318.5" height="361"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Os-Tb-95c">
@@ -360,7 +360,7 @@
                                             <rect key="frame" x="205" y="325" width="105" height="28"/>
                                             <state key="normal" title="Reply"/>
                                             <connections>
-                                                <segue destination="rFl-wZ-sp1" kind="push" identifier="segueToSlack" id="BUD-l3-EL8"/>
+                                                <segue destination="rFl-wZ-sp1" kind="push" identifier="segueToReply" id="BUD-l3-EL8"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -627,7 +627,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WQ1-3W-4dZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2197" y="2027"/>
+            <point key="canvasLocation" x="2197" y="2140"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="hAg-Ml-VNJ">

@@ -51,6 +51,7 @@
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
 		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
 		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
+		A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153111CFEB73E00787394 /* ReplyVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +104,7 @@
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
 		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
+		A6E153111CFEB73E00787394 /* ReplyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,36 +154,11 @@
 			isa = PBXGroup;
 			children = (
 				31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */,
-				A6E153061CFD967F00787394 /* Extension */,
-				311147631CAB335A00150ECD /* FBSignUpVC.swift */,
-				31F12ECF1C9E191000E63A2E /* NewPostVC.swift */,
-				31F12ECD1C9E188600E63A2E /* HeaderView.swift */,
-				31F12EA31C9E125900E63A2E /* ResetPasswordVC.swift */,
-				31F12ECB1C9E185600E63A2E /* GuestVC.swift */,
-				31F12EC91C9E184100E63A2E /* FeedVC.swift */,
-				31F12ED71C9E65E300E63A2E /* PostCell.swift */,
-				31F12EC71C9E181F00E63A2E /* ActivityVC.swift */,
-				31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */,
-				31F12EC31C9E17D700E63A2E /* HomeVC.swift */,
-				31F12E9F1C9E122B00E63A2E /* SignInVC.swift */,
-				31FF6CF31CAF84D4001D1654 /* FBInfo.swift */,
-				79B4D4851CC8102B0073B65D /* MessageModel.swift */,
-				31F12EA11C9E124500E63A2E /* SignUpVC.swift */,
-				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
 				311147651CAB42AE00150ECD /* Main.storyboard */,
-				79B4230D1CEE824100888461 /* EnterVerifyPinViewController.swift */,
-				79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */,
-				79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */,
-				79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */,
-				79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */,
-				31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */,
-				31F12E941C9E115B00E63A2E /* Assets.xcassets */,
-				31F12ED11C9E24D800E63A2E /* Pacifico.ttf */,
-				31F12E961C9E115B00E63A2E /* LaunchScreen.storyboard */,
-				31F12E991C9E115B00E63A2E /* Info.plist */,
-				31F12E911C9E115B00E63A2E /* Widdit.xcdatamodeld */,
-				3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */,
-				7994B5461CE16D7B008EB1D8 /* notification.mp3 */,
+				A6E153061CFD967F00787394 /* Extension */,
+				A6E1530F1CFEB61D00787394 /* Model */,
+				A6E1530D1CFEB59400787394 /* UI */,
+				A6E153101CFEB65A00787394 /* Supporting files */,
 			);
 			path = Widdit;
 			sourceTree = "<group>";
@@ -223,6 +200,72 @@
 				A6E1530B1CFE09B600787394 /* WDTFont.swift */,
 			);
 			name = Extension;
+			sourceTree = "<group>";
+		};
+		A6E1530D1CFEB59400787394 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A6E1530E1CFEB60000787394 /* View */,
+				A6E153131CFEB75200787394 /* SignUpSignIn */,
+				31F12ECF1C9E191000E63A2E /* NewPostVC.swift */,
+				31F12ECB1C9E185600E63A2E /* GuestVC.swift */,
+				31F12EC91C9E184100E63A2E /* FeedVC.swift */,
+				31F12EC71C9E181F00E63A2E /* ActivityVC.swift */,
+				31F12EC31C9E17D700E63A2E /* HomeVC.swift */,
+				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
+				79AE833F1CD6916900DE2CD7 /* UserMorePostsViewController.swift */,
+				31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */,
+				79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */,
+				A6E153111CFEB73E00787394 /* ReplyVC.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		A6E1530E1CFEB60000787394 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				31F12ECD1C9E188600E63A2E /* HeaderView.swift */,
+				31F12ED71C9E65E300E63A2E /* PostCell.swift */,
+				31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */,
+				79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		A6E1530F1CFEB61D00787394 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				79B4D4851CC8102B0073B65D /* MessageModel.swift */,
+				31FF6CF31CAF84D4001D1654 /* FBInfo.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A6E153101CFEB65A00787394 /* Supporting files */ = {
+			isa = PBXGroup;
+			children = (
+				31F12E941C9E115B00E63A2E /* Assets.xcassets */,
+				31F12ED11C9E24D800E63A2E /* Pacifico.ttf */,
+				7994B5461CE16D7B008EB1D8 /* notification.mp3 */,
+				3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */,
+				31F12E911C9E115B00E63A2E /* Widdit.xcdatamodeld */,
+				31F12E991C9E115B00E63A2E /* Info.plist */,
+				31F12E961C9E115B00E63A2E /* LaunchScreen.storyboard */,
+			);
+			name = "Supporting files";
+			sourceTree = "<group>";
+		};
+		A6E153131CFEB75200787394 /* SignUpSignIn */ = {
+			isa = PBXGroup;
+			children = (
+				31F12EA11C9E124500E63A2E /* SignUpVC.swift */,
+				31F12E9F1C9E122B00E63A2E /* SignInVC.swift */,
+				79B4230D1CEE824100888461 /* EnterVerifyPinViewController.swift */,
+				79B4230B1CEE675D00888461 /* TextVerifyViewController.swift */,
+				311147631CAB335A00150ECD /* FBSignUpVC.swift */,
+				31F12EA31C9E125900E63A2E /* ResetPasswordVC.swift */,
+			);
+			name = SignUpSignIn;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -376,6 +419,7 @@
 				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
 				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
+				A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
 				79AE83401CD6916900DE2CD7 /* UserMorePostsViewController.swift in Sources */,
 				31AFC6111CB20ABA00DBEBFA /* YourDownsVC.swift in Sources */,

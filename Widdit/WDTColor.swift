@@ -2,7 +2,7 @@
 //  WidditColor.swift
 //  Widdit
 //
-//  Created by Игорь Кузнецов on 31.05.16.
+//  Created by Igor Kuznetsov on 31.05.16.
 //  Copyright © 2016 John McCants. All rights reserved.
 //
 

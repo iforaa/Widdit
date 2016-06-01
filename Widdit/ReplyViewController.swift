@@ -46,7 +46,7 @@ class ReplyViewController: SLKTextViewController {
     installation.saveInBackground()
 
     let userQuery = PFQuery(className: "_User")
-
+    
     userQuery.whereKey("username", equalTo: toUser)
 
     userQuery.findObjectsInBackgroundWithBlock { (users: [PFObject]?, err) in
@@ -54,11 +54,12 @@ class ReplyViewController: SLKTextViewController {
             print(users)
             let replyQuery = PFQuery(className: "replies")
             let recipient = users?.first as! PFUser
-            
-            replyQuery.includeKey("sender")
+          
+            replyQuery.whereKey("post", equalTo: self.usersPost)
             replyQuery.whereKey("recipient", equalTo: recipient)
+            replyQuery.includeKey("sender")
             replyQuery.addDescendingOrder("createdAt")
-            
+          
             
             replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
                 if err == nil {
