@@ -18,8 +18,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     @IBOutlet weak var remainingLabel: UILabel!
     @IBOutlet var postDurationLabel: UILabel!
     @IBOutlet var sliderView: UIView!
-    private var valueLabel: UILabel!
     private var progressLabel: UILabel!
+    var sliderValue: Int?
 
     private var circleProgress: CircleSlider! {
       didSet {
@@ -36,10 +36,10 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     private var sliderOptions: [CircleSliderOption] {
       return [
         //default bar color: UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)
-        .BarColor(UIColor.blueColor()),
-        .ThumbColor(UIColor.whiteColor()),
+        .BarColor(UIColor.grayColor()),
+        .ThumbColor(UIColor.WDTGrayBlueColor()),
         .ThumbWidth(CGFloat(30)),
-        .TrackingColor(UIColor.blueColor()),
+        .TrackingColor(UIColor.WDTBlueColor()),
         .BarWidth(5),
         .StartAngle(270),
         .MaxValue(24),
@@ -64,47 +64,24 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         self.view.addGestureRecognizer(hideTap)
         
         self.postTxt.delegate = self
-
         self.buildCircleSlider()
-
-        //progress slider
-//        let progress = KDCircularProgress(frame: CGRect(x: 100, y: 100, width: 300, height: 300))
-//        progress.startAngle = -90
-//        progress.progressThickness = 0.2
-//        progress.trackThickness = 0.7
-//        progress.clockwise = true
-////        progress.center = view.center
-//        progress.gradientRotateSpeed = 2
-//        progress.roundedCorners = true
-//        progress.glowMode = .Forward
-//        progress.angle = 300
-//        progress.setColors(UIColor.cyanColor() ,UIColor.whiteColor(), UIColor.magentaColor())
-//        view.addSubview(progress)
-//      let slider = CircleSlider(frame: CGRect(x: 0, y: 0, width: 300, height: 300), options: nil)
-      
-
     }
 
     private func buildCircleSlider() {
-      self.circleSlider = CircleSlider(frame: CGRect(x: 0, y: 0, width: 200, height: 200), options: self.sliderOptions)
-      self.circleSlider?.addTarget(self, action: Selector("valueChange:"), forControlEvents: .ValueChanged)
+        
+      self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
+      self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
       self.sliderView.addSubview(self.circleSlider!)
-      self.valueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-      self.valueLabel.textAlignment = .Center
-      self.valueLabel.center = CGPoint(x: CGRectGetWidth(self.circleSlider.bounds) * 0.5, y: CGRectGetHeight(self.circleSlider.bounds) * 0.5)
-      self.circleSlider.addSubview(self.valueLabel)
+      
+      self.circleSlider.snp_makeConstraints { (make) in
+        make.edges.equalTo(self.sliderView)
+      }
+      
     }
 
     func valueChange(sender: CircleSlider) {
-      switch sender.tag {
-      case 0:
-        self.valueLabel.text = "\(Int(sender.value))"
+        self.sliderValue = Int(sender.value)
         self.postDurationLabel.text = "Post will be visible for \(Int(sender.value)) hours"
-      case 1:
-        self.progressLabel.text = "\(Int(sender.value))%"
-      default:
-        break
-      }
     }
 
 
@@ -132,7 +109,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             
             remainingLabel.text = "\(remainingChar)"
             
-            if remainingChar >= 0 && remainingChar <= 139 && self.valueLabel.text != nil {
+            if remainingChar >= 0 && remainingChar <= 139 && self.sliderValue != nil {
                 self.postBtn.enabled = true
             } else {
                 self.postBtn.enabled = false
@@ -171,9 +148,9 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         }
 
 
-        if let valueText = self.valueLabel.text {
+        if let sliderValue = self.sliderValue {
           let today = NSDate()
-          let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: Int(valueText)!, toDate: toLocalTime(today), options: NSCalendarOptions(rawValue: 0))
+          let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: toLocalTime(today), options: NSCalendarOptions(rawValue: 0))
           print(tomorrow!)
           object["hoursexpired"] = tomorrow
         }
