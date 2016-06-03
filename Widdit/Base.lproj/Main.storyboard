@@ -189,8 +189,38 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="a3D-Wx-udc" customClass="ActivityCell" customModule="Widdit" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ChatCell" id="7y9-CK-dKl" customClass="ActivityChatCell" customModule="Widdit" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="64" width="320" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fma-Wj-iVU">
+                                            <rect key="frame" x="8" y="8" width="304" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="Post text" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OF9-gs-RNs">
+                                            <rect key="frame" x="8" y="38" width="284" height="44"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <connections>
+                                    <outlet property="postText" destination="OF9-gs-RNs" id="GSW-2H-YvQ"/>
+                                    <outlet property="usernameLbl" destination="Fma-Wj-iVU" id="gS2-3X-T9w"/>
+                                    <segue destination="rFl-wZ-sp1" kind="push" identifier="segueToReply" id="ayX-VD-Irr"/>
+                                </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="a3D-Wx-udc" customClass="ActivityCell" customModule="Widdit" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="164" width="320" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
@@ -212,6 +242,9 @@
                                             <rect key="frame" x="56" y="8" width="100" height="30"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <state key="normal" title="Button"/>
+                                            <connections>
+                                                <segue destination="rFl-wZ-sp1" kind="push" identifier="segueToReply" id="t71-0o-XSQ"/>
+                                            </connections>
                                         </button>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BLk-lp-Cxv">
                                             <rect key="frame" x="4" y="8" width="40" height="40"/>
@@ -1543,6 +1576,7 @@
         <image name="more" width="270" height="270"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="ayX-VD-Irr"/>
         <segue reference="I7T-J6-Cm1"/>
         <segue reference="WFS-3d-vmw"/>
     </inferredMetricsTieBreakers>

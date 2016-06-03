@@ -13,13 +13,18 @@ import Parse
 class ActivityVC: UICollectionViewController {
     
     // arrays to hold data from server
-    var usernameArray = [String]()
-    var avaArray = [PFFile]()
-    var typeArray = [String]()
-    var dateArray = [NSDate?]()
-    var uuidArray = [String]()
-    var ownerArray = [String]()
-    var postTextArray = [String]()
+//    var usernameArray = [String]()
+//    var avaArray = [PFFile]()
+//    var typeArray = [String]()
+//    var dateArray = [NSDate?]()
+//    var uuidArray = [String]()
+//    var ownerArray = [String]()
+//    var postTextArray = [String]()
+    var chats = [PFObject]()
+    
+    override func viewWillAppear(animated: Bool) {
+        
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,51 +33,110 @@ class ActivityVC: UICollectionViewController {
         collectionView?.backgroundColor = UIColor .whiteColor()
         
         // title at the top
-        self.navigationItem.title = "Activity"
+        self.navigationItem.title = "Chats"
         
         // request notifications
-        let query = PFQuery(className: "Activity")
-        query.whereKey("to", equalTo: PFUser.currentUser()!.username!)
-        query.limit = 30
-        query.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                
-                // clean up
-                self.usernameArray.removeAll(keepCapacity: false)
-                self.avaArray.removeAll(keepCapacity: false)
-                self.typeArray.removeAll(keepCapacity: false)
-                self.dateArray.removeAll(keepCapacity: false)
-                self.uuidArray.removeAll(keepCapacity: false)
-                self.ownerArray.removeAll(keepCapacity: false)
-                self.postTextArray.removeAll(keepCapacity: false)
-                
-                // found related objects
-                for object in objects! {
-                    
-                    self.usernameArray.append(object.objectForKey("by") as! String)
-                    self.avaArray.append(object.objectForKey("ava") as! PFFile)
-                    self.typeArray.append(object.objectForKey("type") as! String)
-                    self.dateArray.append(object.createdAt)
-                    self.uuidArray.append(object.objectForKey("uuid") as! String)
-                    self.ownerArray.append(object.objectForKey("owner") as! String)
-                    self.postTextArray.append(object.objectForKey("postText") as! String)
-                    
-                    
-                    // save notifcations as checked
-                    object["checked"] = "yes"
-                    object.saveEventually()
-                    
-                }
-                
-                // reload CollectionView to show received data
-                self.collectionView?.reloadData()
-                
-            }
-        }
+//        let query = PFQuery(className: "Activity")
+//        query.whereKey("to", equalTo: PFUser.currentUser()!.username!)
+//        query.limit = 30
+//        query.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
+//            if error == nil {
+//                
+//                // clean up
+//                self.usernameArray.removeAll(keepCapacity: false)
+//                self.avaArray.removeAll(keepCapacity: false)
+//                self.typeArray.removeAll(keepCapacity: false)
+//                self.dateArray.removeAll(keepCapacity: false)
+//                self.uuidArray.removeAll(keepCapacity: false)
+//                self.ownerArray.removeAll(keepCapacity: false)
+//                self.postTextArray.removeAll(keepCapacity: false)
+//                
+//                // found related objects
+//                for object in objects! {
+//                    
+//                    self.usernameArray.append(object.objectForKey("by") as! String)
+//                    self.avaArray.append(object.objectForKey("ava") as! PFFile)
+//                    self.typeArray.append(object.objectForKey("type") as! String)
+//                    self.dateArray.append(object.createdAt)
+//                    self.uuidArray.append(object.objectForKey("uuid") as! String)
+//                    self.ownerArray.append(object.objectForKey("owner") as! String)
+//                    self.postTextArray.append(object.objectForKey("postText") as! String)
+//                    
+//                    
+//                    // save notifcations as checked
+//                    object["checked"] = "yes"
+//                    object.saveEventually()
+//                    
+//                }
+//                
+//                // reload CollectionView to show received data
+//                self.collectionView?.reloadData()
+//                
+//            }
+//        }
 
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let currentUser = PFUser.currentUser() else {return}
+        
+        let repliesToMeQuery = PFQuery(className: "replies")
+        repliesToMeQuery.whereKey("recipient", equalTo: currentUser)
+        
+        let repliesFromMeQuery = PFQuery(className: "replies")
+        repliesFromMeQuery.whereKey("sender", equalTo: currentUser)
+        
+        let replyQuery = PFQuery.orQueryWithSubqueries([repliesToMeQuery, repliesFromMeQuery])
+        replyQuery.includeKey("sender")
+        replyQuery.includeKey("recipient")
+        replyQuery.includeKey("post")
+        replyQuery.addDescendingOrder("createdAt")
+        
+        replyQuery.findObjectsInBackgroundWithBlock { (replies: [PFObject]?, error: NSError?) -> Void in
+            guard let replies = replies else {return}
+            print("replies = ", replies)
+            // filter replies to get chats
+            self.chats = replies.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
+                if acc.contains( {
+                    if $0["sender"].objectId == current["sender"].objectId{
+                        return true
+                    } else {
+                        return false
+                    }
+                }) {
+                    return acc
+                } else {
+                    return acc + [current]
+                }
+            }).filter({ // if post exists
+                if let _ = $0["post"] {
+                    if  $0["sender"].username != PFUser.currentUser()?.username {
+                        return true
+                    } else {
+                        return false
+                    }
+                    
+                } else {
+                    return false
+                }
+            })
+            
+            self.collectionView?.reloadData()
+        }
+    }
 
-
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "segueToReply" {
+            let destVC = segue.destinationViewController as! ReplyViewController
+            let row = sender?.tag
+            let sender = self.chats[row!]["sender"] as! PFUser
+            print(sender)
+            destVC.recipient = sender
+            destVC.usersPost = self.chats[row!]["post"] as! PFObject
+        }
+    }
 
     /*
     // MARK: - Navigation
@@ -94,63 +158,72 @@ class ActivityVC: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return usernameArray.count
+//        return usernameArray.count
+        return self.chats.count
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! ActivityCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell", forIndexPath: indexPath) as! ActivityChatCell
         
-        cell.usernameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
-        cell.usernameBtn.titleLabel?.text = usernameArray[indexPath.row]
-        cell.infoLbl.text = "is down for your post"
-        avaArray[indexPath.row].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-            if error == nil {
-                cell.avaImg.image = UIImage(data: data!)
-            } else {
-                print(error?.localizedDescription)
-            }
-        }
-        cell.postText.text = postTextArray[indexPath.row]
+//        let recipient = self.chats[indexPath.row]["recipient"] as! PFUser
+        let sender = self.chats[indexPath.row]["sender"] as! PFUser
+        let post = self.chats[indexPath.row]["post"] as! PFObject
+        let firstName = sender["firstName"] as! String
+        cell.usernameLbl.text = "Chat:  Me <->" + firstName
+        cell.postText.text = post["postText"] as! String
         
+//        cell.usernameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
+//        cell.usernameBtn.titleLabel?.text = usernameArray[indexPath.row]
+//        cell.infoLbl.text = "is down for your post"
+//        avaArray[indexPath.row].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+//            if error == nil {
+//                cell.avaImg.image = UIImage(data: data!)
+//            } else {
+//                print(error?.localizedDescription)
+//            }
+//        }
+//        cell.postText.text = postTextArray[indexPath.row]
+//        self.chats[indexPath.row][""]
         // calculate post date
-        let from = dateArray[indexPath.row]
-        let now = NSDate()
-        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
-        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
-        
-        // logic what to show: seconds, minuts, hours, days or weeks
-        if difference.second <= 0 {
-            cell.dateLbl.text = "now"
-        }
-        if difference.second > 0 && difference.minute == 0 {
-            cell.dateLbl.text = "\(difference.second)s."
-        }
-        if difference.minute > 0 && difference.hour == 0 {
-            cell.dateLbl.text = "\(difference.minute)m."
-        }
-        if difference.hour > 0 && difference.day == 0 {
-            cell.dateLbl.text = "\(difference.hour)h."
-        }
-        if difference.day > 0 && difference.weekOfMonth == 0 {
-            cell.dateLbl.text = "\(difference.day)d."
-        }
-        if difference.weekOfMonth > 0 {
-            cell.dateLbl.text = "\(difference.weekOfMonth)w."
-        }
+//        let from = dateArray[indexPath.row]
+//        let now = NSDate()
+//        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
+//        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
+//        
+//        // logic what to show: seconds, minuts, hours, days or weeks
+//        if difference.second <= 0 {
+//            cell.dateLbl.text = "now"
+//        }
+//        if difference.second > 0 && difference.minute == 0 {
+//            cell.dateLbl.text = "\(difference.second)s."
+//        }
+//        if difference.minute > 0 && difference.hour == 0 {
+//            cell.dateLbl.text = "\(difference.minute)m."
+//        }
+//        if difference.hour > 0 && difference.day == 0 {
+//            cell.dateLbl.text = "\(difference.hour)h."
+//        }
+//        if difference.day > 0 && difference.weekOfMonth == 0 {
+//            cell.dateLbl.text = "\(difference.day)d."
+//        }
+//        if difference.weekOfMonth > 0 {
+//            cell.dateLbl.text = "\(difference.weekOfMonth)w."
+//        }
  
         
         // define info text
-        if typeArray[indexPath.row] == "down" {
-            cell.infoLbl.text = "is down for your post"
-        }
+//        if typeArray[indexPath.row] == "down" {
+//            cell.infoLbl.text = "is down for your post"
+//        }
         
         // Asign index of button
-        cell.usernameBtn.layer.setValue(indexPath, forKey: "index")
+//        cell.cell.layer.setValue(indexPath, forKey: "index")
+        cell.tag = indexPath.row
         
         return cell
     }
     
-
+    
 
     // MARK: UICollectionViewDelegate
 

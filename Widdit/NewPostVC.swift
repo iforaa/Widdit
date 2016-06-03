@@ -140,6 +140,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         object["ava"] = PFUser.currentUser()?.valueForKey("ava") as! PFFile
         object["postText"] = postTxt.text
         object["firstName"] = PFUser.currentUser()?.valueForKey("firstName") as! String
+        object["user"] = PFUser.currentUser()!
 
         func toLocalTime(date: NSDate) -> NSDate {
           let tz = NSTimeZone.localTimeZone()
@@ -158,9 +159,9 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         let uuid = NSUUID().UUIDString
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"
 
-        let user = PFUser.currentUser()
-
-        user!["posts"] = object
+//        let user = PFUser.currentUser()
+//
+//        user!["posts"] = object
 
         // Save Information
         object.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in

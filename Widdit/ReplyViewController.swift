@@ -22,12 +22,14 @@ class ReplyViewController: SLKTextViewController {
     
   //list of messages
   var messages = [MessageModel]()
-    var usersPost: PFObject!
-
-    var userObjArray = [PFObject]()
+  var usersPost: PFObject!
+  var userObjArray = [PFObject]()
 
   //what user we are sending the message to
-  var toUser: String!
+//  var toUser: String!
+//  var fromUser: PFUser!
+  var recipient: PFUser!
+//  var sender: PFUser!
 
   override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
     return .Plain
@@ -36,7 +38,7 @@ class ReplyViewController: SLKTextViewController {
   // MARK: View Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    print(self.toUser)
+    
     print(usersPost)
 
     
@@ -45,18 +47,19 @@ class ReplyViewController: SLKTextViewController {
     installation["user"] = PFUser.currentUser()
     installation.saveInBackground()
 
-    let userQuery = PFQuery(className: "_User")
-    
-    userQuery.whereKey("username", equalTo: toUser)
-
-    userQuery.findObjectsInBackgroundWithBlock { (users: [PFObject]?, err) in
-        if err == nil {
-            print(users)
+//    let userQuery = PFQuery(className: "_User")
+//    
+//    userQuery.whereKey("username", equalTo: self.recipientUsername)
+//
+//    userQuery.findObjectsInBackgroundWithBlock { (users: [PFObject]?, err) in
+//        if err == nil {
             let replyQuery = PFQuery(className: "replies")
-            let recipient = users?.first as! PFUser
-          
+//            self.recipient = users?.first as! PFUser
+    
             replyQuery.whereKey("post", equalTo: self.usersPost)
-            replyQuery.whereKey("recipient", equalTo: recipient)
+            replyQuery.whereKey("sender", containedIn: [PFUser.currentUser()!, self.recipient])
+            replyQuery.whereKey("recipient", containedIn: [PFUser.currentUser()!, self.recipient])
+            
             replyQuery.includeKey("sender")
             replyQuery.addDescendingOrder("createdAt")
           
@@ -86,7 +89,7 @@ class ReplyViewController: SLKTextViewController {
                             
                             return message
                         })
-                        
+                        print(replies)
                         self.tableView?.reloadData()
                     } else {
                         print("No objects")
@@ -95,14 +98,13 @@ class ReplyViewController: SLKTextViewController {
                     print(err)
                 }
             })
-        } else {
-            print(err)
-        }
-    }
+//        } else {
+//            print(err)
+//        }
+//    }
 
 
     self.tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
-//    print(toUser)
     self.inverted = false
     self.tableView!.rowHeight = UITableViewAutomaticDimension
     self.tableView!.estimatedRowHeight = 64.0
@@ -151,37 +153,43 @@ extension ReplyViewController {
     // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
     self.textView.refreshFirstResponder()
 
-    let message = MessageModel(name: PFUser.currentUser()!.username!, body: self.textView.text, createdAt: NSDate())
+    let message = MessageModel(name: PFUser.currentUser()!["firstName"] as! String, body: self.textView.text, createdAt: NSDate())
 
     let parseMessage = PFObject(className: "replies")
 
     parseMessage["sender"] = PFUser.currentUser()
-
-    let recipientQuery = PFQuery(className: "_User")
-
-    recipientQuery.whereKey("username", equalTo: toUser)
-
-    recipientQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
-        if err == nil {
-            if objects?.count > 0 {
-                dispatch_async(dispatch_get_main_queue(), {
-                    let pointer = objects?.first
-                    parseMessage["recipient"] = pointer
-                    parseMessage.saveInBackground()
-                })
-            } else {
-                print("No objects")
-            }
-        } else {
-            print(err)
-        }
-    }
-
-
+    parseMessage["recipient"] = self.recipient
+//    let recipientQuery = PFQuery(className: "_User")
+//
+//    recipientQuery.whereKey("username", equalTo: toUser)
+//
+//    recipientQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
+//        if err == nil {
+//            if objects?.count > 0 {
+//                dispatch_async(dispatch_get_main_queue(), {
+//                    let pointer = objects?.first
+//                    parseMessage["recipient"] = pointer
+//                    parseMessage.saveInBackground()
+//                })
+//            } else {
+//                print("No objects")
+//            }
+//        } else {
+//            print(err)
+//        }
+//    }
+    
+//    let acl = PFACL()
+//    acl.setReadAccess(true, forUser: PFUser.currentUser()!)
+//    acl.setReadAccess(true, forUser: self.recipient)
+//    acl.setWriteAccess(true, forUser: PFUser.currentUser()!)
+//    acl.setWriteAccess(true, forUser: self.recipient)
+//    parseMessage.ACL = acl
+    
     parseMessage["body"] = self.textView.text
 
     let userQuery = PFUser.query()
-    userQuery?.whereKey("username", equalTo: toUser)
+    userQuery?.whereKey("username", equalTo: self.recipient.username!)
 
     let pushQuery = PFInstallation.query()
     pushQuery?.whereKey("user", matchesQuery: userQuery!)
@@ -196,7 +204,7 @@ extension ReplyViewController {
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 
     parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
-
+    print(parseMessage)
     //sends message
     parseMessage.saveInBackgroundWithBlock { (bool, error) in
       if bool {

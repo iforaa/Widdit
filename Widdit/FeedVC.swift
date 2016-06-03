@@ -21,7 +21,7 @@ class FeedVC: UICollectionViewController {
     var dateArray = [NSDate?]()
     var postsArray = [String?]()
     var uuidArray = [String]()
-    var usersArray = [String]()
+    var usersArray = [PFUser]()
     var firstNameArray = [String]()
     var countArray = [String]()
     var usernameArray: [String] = []
@@ -93,11 +93,14 @@ class FeedVC: UICollectionViewController {
                 let query = PFQuery(className: "posts")
                 query.limit = self.page
                 query.addDescendingOrder("createdAt")
+                query.includeKey("user")
+                query.whereKeyExists("user")
                 query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
                     if error == nil {
 
                         // Clean Up
                         self.usernameArray.removeAll(keepCapacity: false)
+                        self.usersArray.removeAll(keepCapacity: false)
                         self.indexOfFirstPostByUsername.removeAll()
                         self.numberOfPostsByUsername.removeAll()
                         self.avaArray.removeAll(keepCapacity: false)
@@ -106,7 +109,7 @@ class FeedVC: UICollectionViewController {
                         self.uuidArray.removeAll(keepCapacity: false)
                         self.firstNameArray.removeAll(keepCapacity: false)
                         self.collectionOfPosts.removeAll(keepCapacity: false)
-
+                        
 
                         // Find Related Objects
                         var index = 0
@@ -117,17 +120,19 @@ class FeedVC: UICollectionViewController {
                             self.dateArray.append(object.createdAt)
                             self.collectionOfPosts.append(object)
 
-                            let username = object.objectForKey("username") as! String
-                            if self.indexOfFirstPostByUsername[username] == nil {
-                                self.usernameArray.append(username)
-                                self.indexOfFirstPostByUsername[username] = index
-                                self.numberOfPostsByUsername[username] = 1
+                            let user = object.objectForKey("user") as! PFUser
+                            if self.indexOfFirstPostByUsername[user.username!] == nil {
+                                self.usernameArray.append(user.username!)
+                                self.usersArray.append(user)
+                                self.indexOfFirstPostByUsername[user.username!] = index
+                                self.numberOfPostsByUsername[user.username!] = 1
                             } else {
-                                let count = self.numberOfPostsByUsername[username] ?? 0
-                                self.numberOfPostsByUsername[username] = count + 1
+                                let count = self.numberOfPostsByUsername[user.username!] ?? 0
+                                self.numberOfPostsByUsername[user.username!] = count + 1
                             }
                             index = index + 1
-
+                            
+                            
 
 
                             //convert to local time via device's local time
@@ -180,7 +185,7 @@ class FeedVC: UICollectionViewController {
     }
 
     func loadMore() {
-        
+       /*
         // if posts on the server are more than shown
         if page <= usernameArray.count {
             
@@ -248,6 +253,7 @@ class FeedVC: UICollectionViewController {
                 }
             }
         }
+ */
     }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -266,7 +272,7 @@ class FeedVC: UICollectionViewController {
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
         let username = usernameArray[i.row]
         let indexPath = indexOfFirstPostByUsername[username]
-        destVC.toUser = usernameArray[i.row]
+        destVC.recipient = self.usersArray[i.row]
         destVC.usersPost = collectionOfPosts[indexPath!]
       } else if segue.identifier == "segueToMorePosts" {
         let destVC = segue.destinationViewController as! UserMorePostsViewController
@@ -314,9 +320,15 @@ class FeedVC: UICollectionViewController {
           cell.postText.text = self.postsArray[index!]
           cell.firstNameLbl.text = firstNameArray[index!]
           cell.imDownBtn.hidden = false
-          cell.replyBtn.hidden = false
           cell.userNameBtn.hidden = false
           cell.moreBtn.hidden = false
+            
+          if PFUser.currentUser()?.username == usernameArray[indexPath.row] {
+            cell.replyBtn.hidden = true
+          } else {
+            cell.replyBtn.hidden = false
+          }
+          
         }
 
 

@@ -17,7 +17,7 @@ class ActivityCell: UICollectionViewCell {
     @IBOutlet weak var dateLbl: UILabel!
     @IBOutlet weak var postText: UITextView!
     
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -25,6 +25,22 @@ class ActivityCell: UICollectionViewCell {
         // Rounded Square Image
         avaImg.layer.cornerRadius = 8
         avaImg.clipsToBounds = true
+    }
+    
+}
+
+
+class ActivityChatCell: UICollectionViewCell {
+    
+    // UI objects
+    
+    @IBOutlet weak var usernameLbl: UILabel!
+    @IBOutlet weak var postText: UITextView!
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        usernameLbl.textColor = UIColor.WDTBlueColor()
     }
     
 }
