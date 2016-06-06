@@ -60,7 +60,11 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     @IBAction func signInWithPhoneTapped(sender: UIButton) {
-        self.performSegueWithIdentifier("segueFromPhone", sender: self)
+//        self.performSegueWithIdentifier("segueFromPhone", sender: self)
+        let alert = UIAlertController(title: "Coming soon", message: "Building in progress. Please try again later.", preferredStyle: .Alert)
+        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+        alert.addAction(ok)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
     @IBAction func signInBtnTapped(sender: AnyObject) {
