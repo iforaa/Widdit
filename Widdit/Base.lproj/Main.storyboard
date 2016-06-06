@@ -731,6 +731,20 @@
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bFm-Hy-9bt">
+                                <rect key="frame" x="15" y="171" width="73" height="72"/>
+                                <state key="normal" title="Add Image" image="AddPhotoButton"/>
+                                <connections>
+                                    <action selector="addPhotoButtonTapped:" destination="dzY-LU-qkm" eventType="touchUpInside" id="maZ-hq-bC6"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vFA-F1-hMc">
+                                <rect key="frame" x="73" y="156" width="25" height="39"/>
+                                <state key="normal" title="Button" image="DeletePhotoButton"/>
+                                <connections>
+                                    <action selector="deletePhotoButtonTapped:" destination="dzY-LU-qkm" eventType="touchUpInside" id="iZP-lj-kcF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -767,7 +781,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addPhotoButton" destination="bFm-Hy-9bt" id="1MK-2r-m77"/>
                         <outlet property="cancelBtn" destination="zMp-4R-zXf" id="3cY-8G-QFZ"/>
+                        <outlet property="deletePhotoButton" destination="vFA-F1-hMc" id="1wa-re-Cir"/>
                         <outlet property="postBtn" destination="pGI-Yp-iJg" id="oqB-qC-SnO"/>
                         <outlet property="postDurationLabel" destination="8f8-eF-eRR" id="d2X-bu-yal"/>
                         <outlet property="postTxt" destination="rrb-TP-TZH" id="wb2-Yj-z4W"/>
@@ -1214,7 +1230,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wLU-N9-R17" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3070" y="1385"/>
+            <point key="canvasLocation" x="3154" y="1380"/>
         </scene>
         <!--Text Verify View Controller-->
         <scene sceneID="sGv-5r-A8y">
@@ -1572,11 +1588,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="AddPhotoButton" width="72" height="72"/>
+        <image name="DeletePhotoButton" width="19" height="19"/>
         <image name="empty-profile" width="150" height="150"/>
         <image name="more" width="270" height="270"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ayX-VD-Irr"/>
+        <segue reference="BUD-l3-EL8"/>
         <segue reference="I7T-J6-Cm1"/>
         <segue reference="WFS-3d-vmw"/>
     </inferredMetricsTieBreakers>

@@ -116,7 +116,7 @@ class FeedVC: UICollectionViewController {
                         for object in objects! {
 
 //                            self.usernameArray.append(object.objectForKey("username") as! String)
-                            self.avaArray.append(object.objectForKey("ava") as! PFFile)
+                            self.avaArray.append(object.objectForKey("user")?.objectForKey("ava") as! PFFile)
                             self.dateArray.append(object.createdAt)
                             self.collectionOfPosts.append(object)
 
@@ -167,7 +167,7 @@ class FeedVC: UICollectionViewController {
                             }
 
                             self.uuidArray.append(object.objectForKey("uuid") as! String)
-                            self.firstNameArray.append(object.objectForKey("firstName") as! String)
+                            self.firstNameArray.append(object.objectForKey("user")?.objectForKey("firstName") as! String)
                         }
                         
                         // Reload Collection View and End Spinning of Refresher
