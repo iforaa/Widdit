@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import CircleSlider
 import ImagePicker
+import MBProgressHUD
 
 class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
     
@@ -200,9 +201,11 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             
             object["photoFile"] = photoFile
         }
-
+        
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         // Save Information
         object.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
+            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
             if error == nil {
                 // send notification with name "uploaded"
                 NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
