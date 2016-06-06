@@ -59,6 +59,9 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
         self.view.endEditing(true)
     }
     
+    @IBAction func signInWithPhoneTapped(sender: UIButton) {
+        self.performSegueWithIdentifier("segueFromPhone", sender: self)
+    }
 
     @IBAction func signInBtnTapped(sender: AnyObject) {
         
@@ -229,6 +232,9 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
             destVC.user = self.user
 
             destVC.FBAccessToken = FBSDKAccessToken.currentAccessToken()
+        } else if segue.identifier == "segueFromPhone" {
+            let destVC = segue.destinationViewController as! TextVerifyViewController
+            destVC.isSignIn = true
         }
     }
 

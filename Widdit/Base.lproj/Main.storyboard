@@ -455,7 +455,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="mXo-aa-qBK" customClass="PostCell" customModule="Widdit" customModuleProvider="target">
-                                        <rect key="frame" x="12" y="0.0" width="297" height="217"/>
+                                        <rect key="frame" x="11.5" y="0.0" width="297" height="217"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="297" height="217"/>
@@ -642,7 +642,7 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qsj-F6-cgm" id="f1Q-ZL-yFY">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -761,7 +761,7 @@
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="Cell" id="Swm-FG-x60" customClass="PostCell" customModule="Widdit" customModuleProvider="target">
-                                <rect key="frame" x="7" y="64" width="307" height="169"/>
+                                <rect key="frame" x="6.5" y="64" width="307" height="169"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="307" height="169"/>
@@ -1028,9 +1028,20 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="MWo-Tw-cR4"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Ch-Hv-yVz">
+                                <rect key="frame" x="101" y="327" width="118" height="30"/>
+                                <state key="normal" title="Login with Phone">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="signInWithPhoneTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NPf-aQ-s6V"/>
+                                    <segue destination="ZwH-jn-PFg" kind="modal" identifier="segueFromPhone" id="wTa-xC-caC"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="1Ch-Hv-yVz" firstAttribute="centerX" secondItem="cmz-vo-VEm" secondAttribute="centerX" id="11L-vC-Ngw"/>
                             <constraint firstItem="A0g-6O-mEx" firstAttribute="top" secondItem="AeD-Ba-YDq" secondAttribute="bottom" constant="42" id="5bc-jX-jZx"/>
                             <constraint firstItem="X0I-OE-p2a" firstAttribute="top" secondItem="Le5-hk-AkN" secondAttribute="bottom" constant="8" symbolic="YES" id="5hL-yb-oWE"/>
                             <constraint firstItem="CUV-oM-Snn" firstAttribute="top" secondItem="cmz-vo-VEm" secondAttribute="bottom" constant="211" id="5qB-ai-Gek"/>
@@ -1052,6 +1063,7 @@
                             <constraint firstItem="cmz-vo-VEm" firstAttribute="top" secondItem="X0I-OE-p2a" secondAttribute="bottom" constant="8" symbolic="YES" id="rbn-5X-9mW"/>
                             <constraint firstItem="7mr-I1-4CV" firstAttribute="trailing" secondItem="AeD-Ba-YDq" secondAttribute="trailing" id="sUf-4l-au6"/>
                             <constraint firstItem="Le5-hk-AkN" firstAttribute="top" secondItem="Hbi-rK-0nl" secondAttribute="bottom" constant="8" symbolic="YES" id="uG9-X6-rAN"/>
+                            <constraint firstItem="1Ch-Hv-yVz" firstAttribute="baseline" secondItem="cmz-vo-VEm" secondAttribute="baseline" id="vv3-zl-h9W"/>
                             <constraint firstItem="X0I-OE-p2a" firstAttribute="trailing" secondItem="cmz-vo-VEm" secondAttribute="trailing" id="xdZ-fx-AyZ"/>
                         </constraints>
                     </view>
@@ -1107,7 +1119,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yig-W6-DQ0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1199" y="389"/>
+            <point key="canvasLocation" x="1093" y="221"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="kHk-t3-Zr1">
@@ -1583,6 +1595,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="I7T-J6-Cm1"/>
-        <segue reference="WFS-3d-vmw"/>
+        <segue reference="wTa-xC-caC"/>
     </inferredMetricsTieBreakers>
 </document>

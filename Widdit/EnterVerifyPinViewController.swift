@@ -17,6 +17,7 @@ class EnterVerifyPinViewController: UIViewController {
     var userInfo: FBInfo!
     var user: PFUser!
     var FBAccessToken: FBSDKAccessToken!
+    var isSignIn: Bool?
 
     @IBOutlet var pinText: UITextField!
 
@@ -30,6 +31,51 @@ class EnterVerifyPinViewController: UIViewController {
                 print("Successfully registered!")
                 if self.FBAccessToken != nil {
                     self.performSegueWithIdentifier("segueToFBSignup", sender: self)
+                } else if self.isSignIn == true {
+                    let query = PFQuery(className: "_User")
+                    print(self.phoneNumber)
+                    query.whereKey("phoneNumber", equalTo: self.phoneNumber)
+
+                    query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error) in
+                        if error == nil {
+                            if objects?.count > 0 {
+                                let object = objects?.first as! PFUser
+                                print(objects)
+                                let alert = UIAlertController(title: "Enter Password", message: "Please enter your password for the account: \(object.valueForKey("username")!)", preferredStyle: .Alert)
+                                alert.addTextFieldWithConfigurationHandler({ (textfield) in
+                                    textfield.secureTextEntry = true
+                                })
+                                let ok = UIAlertAction(title: "Ok", style: .Default, handler: { (action) in
+                                    print(alert.textFields![0].text)
+                                    print(object.valueForKey("username") as! String)
+                                    PFUser.logInWithUsernameInBackground((object.valueForKey("username") as! String), password: (alert.textFields![0].text)!, block: { (user, err) in
+                                        if err == nil {
+                                            print("Successfully logged in!")
+                                            print("Current user: \(PFUser.currentUser())")
+                                            self.dismissViewControllerAnimated(true, completion: nil)
+                                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                                            let vc = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
+                                            self.presentViewController(vc, animated: true, completion: nil)
+                                        } else {
+                                            print("Error logging in user: \(err)")
+                                        }
+                                    })
+                                })
+                                alert.addAction(ok)
+                                let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                                alert.addAction(cancel)
+                                self.presentViewController(alert, animated: true, completion: nil)
+                            } else {
+                                print("Couldn't find user")
+                                let alert = UIAlertController(title: "Hey!", message: "We couldn't find a user for this phone number. Please try again", preferredStyle: .Alert)
+                                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                                alert.addAction(ok)
+                                self.presentViewController(alert, animated: true, completion: nil)
+                            }
+                        } else {
+                            print("Error logging in user: \(error)")
+                        }
+                    })
                 } else {
                     self.performSegueWithIdentifier("segueToSignUp", sender: self)
                 }

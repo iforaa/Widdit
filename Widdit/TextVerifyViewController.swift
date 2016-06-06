@@ -24,6 +24,7 @@ class TextVerifyViewController: UIViewController {
     var userInfo: FBInfo!
     var user: PFUser!
     var FBAccessToken: FBSDKAccessToken!
+    var isSignIn: Bool?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +35,13 @@ class TextVerifyViewController: UIViewController {
             let enterCodeVC = segue.destinationViewController as! EnterVerifyPinViewController
             enterCodeVC.verification = self.verification
             enterCodeVC.phoneNumber = phoneNumber.text!
-        } else if segue.identifier == "verifyPinFB" {
+            enterCodeVC.isSignIn = isSignIn
+        } else if segue.identifier == "verifyPinFB" && self.isSignIn == true {
+            let enterCodeVC = segue.destinationViewController as! EnterVerifyPinViewController
+            enterCodeVC.isSignIn = self.isSignIn
+            enterCodeVC.verification = self.verification
+            enterCodeVC.phoneNumber = phoneNumber.text!
+        } else {
             let enterCodeVC = segue.destinationViewController as! EnterVerifyPinViewController
             enterCodeVC.verification = self.verification
             enterCodeVC.phoneNumber = phoneNumber.text!
@@ -51,6 +58,8 @@ class TextVerifyViewController: UIViewController {
             if success {
                 self.spinner.stopAnimating()
                 if self.FBAccessToken != nil {
+                    self.performSegueWithIdentifier("verifyPinFB", sender: self)
+                } else if self.isSignIn == true {
                     self.performSegueWithIdentifier("verifyPinFB", sender: self)
                 } else {
                     self.performSegueWithIdentifier("enterPin", sender: self)
