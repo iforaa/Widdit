@@ -9,61 +9,176 @@
 import UIKit
 import Parse
 
-class PostCell: UICollectionViewCell {
+class PostCell2: UITableViewCell {
     
-    @IBOutlet weak var avaImage: UIImageView!
-    @IBOutlet weak var postText: UITextView!
-    @IBOutlet weak var imDownBtn: UIButton!
-    @IBOutlet weak var timeLbl: UILabel!
-    @IBOutlet weak var firstNameLbl: UILabel!
-    @IBOutlet weak var userNameBtn: UIButton!
-    @IBOutlet weak var uuidLbl: UILabel!
-    @IBOutlet weak var cardView: UIView!
-    @IBOutlet weak var moreBtn: UIButton!
-    @IBOutlet var replyBtn: UIButton!
-    @IBOutlet var morePostsButton: UIButton!
+    var avaImage: UIImageView = UIImageView()
+    var postPhoto: UIImageView = UIImageView()
+    
+    var postText: UITextView = UITextView()
+    var imDownBtn: UIButton = UIButton(type: .Custom)
+    var timeLbl: UILabel = UILabel()
+    var firstNameLbl: UILabel = UILabel()
+    var userNameBtn: UIButton = UIButton(type: .Custom)
+    var uuidLbl: UILabel = UILabel()
+    var cardView: UIView = UIView()
+    var moreBtn: UIButton = UIButton(type: .Custom)
+    var replyBtn: UIButton = UIButton(type: .Custom)
+    var morePostsButton: UIButton = UIButton(type: .Custom)
+    
+    var post: PFObject!
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureSubviews()
+    }
+    
+    // We won’t use this but it’s required for the class to compile
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    func configureSubviews() {
+        
+        self.contentView.addSubview(self.cardView)
+        
+        self.firstNameLbl.textColor = UIColor.grayColor()
+        self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+
+        self.cardView.addSubview(self.avaImage)
+        self.cardView.addSubview(self.postPhoto)
+        self.cardView.addSubview(self.postText)
+        self.cardView.addSubview(self.timeLbl)
+        self.cardView.addSubview(self.firstNameLbl)
+        self.cardView.addSubview(self.userNameBtn)
+        self.cardView.addSubview(self.imDownBtn)
+        self.cardView.addSubview(self.replyBtn)
+        
+        self.replyBtn.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.replyBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        self.replyBtn.setTitle("Reply", forState: .Normal)
+        self.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+        
+        self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.imDownBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        self.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
+        
+        self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.postText.textColor = UIColor.grayColor()
+        
+        self.uuidLbl.hidden = true
+        
+        // Rounded Square Image
+        self.avaImage.layer.cornerRadius = 8.0
+        self.avaImage.clipsToBounds = true
+        
+        self.backgroundColor = UIColor.whiteColor()
+        
+        self.cardSetup()
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-
-        imDownBtn.backgroundColor = UIColor .whiteColor()
-        
-        uuidLbl.hidden = true
+    }
     
-        
-        
-        // Rounded Square Image
-        avaImage.layer.cornerRadius = 8.0
-        avaImage.clipsToBounds = true
-        
-        }
+    var isHeightCalculated: Bool = false
+    
+    override func updateConstraints() {
+
+       // if isHeightCalculated == false {
+
+            self.avaImage.snp_remakeConstraints(closure: { (make) in
+                make.top.equalTo(self.contentView).offset(10)
+                make.left.equalTo(self.contentView).offset(10)
+                make.width.equalTo(50)
+                make.height.equalTo(50)
+            })
+            
+            self.firstNameLbl.snp_remakeConstraints(closure: { (make) in
+                make.left.equalTo(self.avaImage.snp_right).offset(10)
+                make.top.equalTo(self.contentView).offset(10)
+            })
+            
+            self.userNameBtn.snp_remakeConstraints(closure: { (make) in
+                make.left.equalTo(self.avaImage.snp_right).offset(10)
+                make.top.equalTo(self.firstNameLbl.snp_bottom).offset(5)
+                
+            })
+
+            self.timeLbl.snp_remakeConstraints(closure: { (make) in
+                make.right.equalTo(self.contentView).offset(-10)
+                make.top.equalTo(self.contentView).offset(10)
+            })
+            
+            self.postPhoto.snp_remakeConstraints(closure: { (make) in
+                make.top.equalTo(self.avaImage.snp_bottom).offset(10)
+                make.left.equalTo(self.contentView).offset(10)
+                make.right.equalTo(self.contentView).offset(-10)
+                make.height.equalTo(self.postPhoto.snp_width).multipliedBy(0.625)
+            })
+            
+            self.postText.snp_remakeConstraints(closure: { (make) in
+                if let _ = self.postPhoto.image {
+                    make.top.equalTo(self.postPhoto.snp_bottom).offset(10)
+                } else {
+                    make.top.equalTo(self.avaImage.snp_bottom).offset(10)
+                }
+                make.left.equalTo(self.contentView).offset(10)
+                make.right.equalTo(self.contentView).offset(-10)
+                make.height.equalTo(50)
+                
+            })
+            
+            self.replyBtn.snp_remakeConstraints { (make) in
+                make.top.equalTo(self.postText.snp_bottom).offset(10)
+                make.left.equalTo(self.contentView).offset(10)
+                make.bottom.equalTo(self.contentView).priority(750)
+                make.right.equalTo(self.contentView.snp_centerX)
+                
+            }
+
+            self.imDownBtn.snp_remakeConstraints { (make) in
+                make.top.equalTo(self.postText.snp_bottom).offset(10)
+                make.left.equalTo(self.contentView.snp_centerX)
+                make.bottom.equalTo(self.contentView).priority(750)
+                make.right.equalTo(self.contentView).offset(-10)
+                
+            }
+
+            isHeightCalculated = true
+        //}
+        super.updateConstraints()
+    }
+
+    
+    
+
     
     func cardSetup() {
+        self.cardView.snp_makeConstraints { (make) in
+            make.top.equalTo(self.contentView).offset(5)
+            make.left.equalTo(self.contentView).offset(5)
+            make.right.equalTo(self.contentView).offset(-5)
+            make.bottom.equalTo(self.contentView).offset(-5)
+        }
+        
         self.cardView.alpha = 1
         self.cardView.layer.masksToBounds = false
-        self.cardView.layer.cornerRadius = 2
+        self.cardView.layer.cornerRadius = 4
         self.cardView.layer.shadowOffset = CGSizeMake(0, 1)
         self.cardView.layer.shadowRadius = 5
         let path = UIBezierPath()
         self.cardView.layer.shadowOpacity = 0.5
         self.cardView.layer.shadowPath = path.CGPath
-//        self.layer.shadowColor = UIColor.blackColor().CGColor
-//        self.layer.shadowOffset = CGSizeMake(0, 1)
-//        self.layer.shadowOpacity = 1
-//        self.layer.shadowRadius = 1.0
-//        self.clipsToBounds = false
-//        self.layer.masksToBounds = false
-        self.backgroundColor = UIColor.whiteColor()
-//        self.cardView.backgroundColor = UIColor.lightGrayColor()
+        self.cardView.backgroundColor = UIColor.WDTGrayBlueColor()
+        
     }
     
-    override func layoutSubviews() {
-        self.cardSetup()
-    }
-
     @IBAction func morePostsButtonPressed(sender: UIButton) {
 
+    }
+    
+    func replyBtnTapped(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().postNotificationName("replyButtonTapped", object: nil)
     }
     
     @IBAction func downBtnTapped(sender: AnyObject) {
@@ -71,6 +186,202 @@ class PostCell: UICollectionViewCell {
         // declare title of button
         let title = sender.titleForState(.Normal)
        
+        if title == "I'm Down" {
+            
+            let object = PFObject(className: "downs")
+            object["by"] = PFUser.currentUser()?.username
+            object["to"] = userNameBtn.titleLabel?.text
+            object["post"] = self.post
+            object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
+                if success {
+                    print("Downed")
+                    
+                    // send notification if we downed to refresh collectionView
+                    NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
+                    
+                    
+                    // send notification as down
+                    if self.userNameBtn.titleLabel?.text != PFUser.currentUser()?.username {
+                        let activityObj = PFObject(className: "Activity")
+                        activityObj["by"] = PFUser.currentUser()?.username
+                        activityObj["ava"] = PFUser.currentUser()?.objectForKey("ava") as! PFFile
+                        activityObj["to"] = self.userNameBtn.titleLabel?.text
+                        activityObj["owner"] = self.userNameBtn.titleLabel?.text
+                        activityObj["uuid"] = self.uuidLbl.text
+                        activityObj["type"] = "down"
+                        activityObj["postText"] = self.postText.text
+                        activityObj.saveEventually()
+                    }
+                    
+                    
+                }
+            })
+            
+            // to unDown
+        } else {
+            
+
+            // request existing downs of current user to show post
+            let query = PFQuery(className: "downs")
+            query.whereKey("by", equalTo: PFUser.currentUser()!.username!)
+            query.whereKey("to", equalTo: (userNameBtn.titleLabel?.text)!)
+            query.whereKey("post", equalTo: self.post)
+            query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
+                
+                // find objects - downs
+                for object in objects! {
+                    // delete found downs
+                    object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
+                        if success {
+                            print("Undowned")
+                            
+                            
+                            // send notification if we downed to refreash CollectionView
+                            NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
+                            
+                            // delete down notification
+                            let activityQuery = PFQuery(className: "Activity")
+                            activityQuery.whereKey("by", equalTo: PFUser.currentUser()!.username!)
+                            activityQuery.whereKey("to", equalTo: self.userNameBtn.titleLabel!.text!)
+                            activityQuery.whereKey("uuid", equalTo: (self.userNameBtn.titleLabel?.text)!)
+                            activityQuery.whereKey("type", equalTo: "down")
+                            activityQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
+                                if error == nil {
+                                    
+                                    for object in objects! {
+                                        object.deleteEventually()
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
+}
+
+class PostCell: UICollectionViewCell {
+    
+    var avaImage: UIImageView = UIImageView()
+    var postText: UITextView = UITextView()
+    var imDownBtn: UIButton = UIButton(type: .Custom)
+    var timeLbl: UILabel = UILabel()
+    var firstNameLbl: UILabel = UILabel()
+    var userNameBtn: UIButton = UIButton(type: .Custom)
+    var uuidLbl: UILabel = UILabel()
+    var cardView: UIView = UIView()
+    var moreBtn: UIButton = UIButton(type: .Custom)
+    var replyBtn: UIButton = UIButton(type: .Custom)
+    var morePostsButton: UIButton = UIButton(type: .Custom)
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    
+        self.contentView.addSubview(self.cardView)
+        
+        
+        
+        self.cardView.addSubview(self.avaImage)
+        
+        self.avaImage.snp_makeConstraints { (make) in
+            make.left.equalTo(self.contentView).offset(10)
+            make.top.equalTo(self.contentView).offset(10)
+            make.width.equalTo(50)
+            make.height.equalTo(60)
+        }
+        
+        self.cardView.addSubview(self.postText)
+        
+        self.postText.scrollEnabled = false
+        self.postText.snp_makeConstraints { (make) in
+            make.left.equalTo(self.contentView).offset(5)
+            make.right.equalTo(self.contentView).offset(-5)
+            make.top.equalTo(self.avaImage.snp_bottom).offset(5)
+            make.height.equalTo(50)
+        }
+        
+        
+        self.cardView.addSubview(self.imDownBtn)
+        
+        self.imDownBtn.snp_makeConstraints { (make) in
+            make.height.equalTo(25)
+            make.left.equalTo(self.contentView).offset(-5)
+            make.right.equalTo(self.contentView.snp_centerX)
+            make.bottom.equalTo(self.contentView)
+        }
+        
+        self.cardView.addSubview(self.replyBtn)
+        
+        self.replyBtn.snp_makeConstraints { (make) in
+            make.height.equalTo(25)
+            make.left.equalTo(self.contentView.snp_centerX).offset(5)
+            make.right.equalTo(self.contentView)
+            make.bottom.equalTo(self.contentView)
+        }
+        
+        
+        
+        self.cardView.snp_makeConstraints { (make) in
+            make.height.equalTo(self.avaImage.snp_height)
+            
+        }
+        
+        self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.uuidLbl.hidden = true
+        
+        // Rounded Square Image
+        self.avaImage.layer.cornerRadius = 8.0
+        self.avaImage.clipsToBounds = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        
+    }
+    
+    override var bounds: CGRect {
+        didSet {
+            contentView.frame = bounds
+        }
+    }
+    
+    var isHeightCalculated: Bool = false
+    
+    
+    
+    //    func cardSetup() {
+    //        self.cardView.alpha = 1
+    //        self.cardView.layer.masksToBounds = false
+    //        self.cardView.layer.cornerRadius = 2
+    //        self.cardView.layer.shadowOffset = CGSizeMake(0, 1)
+    //        self.cardView.layer.shadowRadius = 5
+    //        let path = UIBezierPath()
+    ////        self.cardView.layer.shadowOpacity = 0.5
+    ////        self.cardView.layer.shadowPath = path.CGPath
+    //        self.cardView.backgroundColor = UIColor.WDTGrayBlueColor()
+    //        self.backgroundColor = UIColor.WDTGrayBlueColor()
+    //    }
+    
+    //    override func layoutSubviews() {
+    //        self.cardSetup()
+    //    }
+    
+    @IBAction func morePostsButtonPressed(sender: UIButton) {
+        
+    }
+    
+    @IBAction func downBtnTapped(sender: AnyObject) {
+        
+        // declare title of button
+        let title = sender.titleForState(.Normal)
+        
         if title == "I'm Down" {
             
             let object = PFObject(className: "downs")
@@ -115,7 +426,7 @@ class PostCell: UICollectionViewCell {
                     object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                         if success {
                             print("Undowned")
-                          
+                            
                             
                             // send notification if we downed to refreash CollectionView
                             NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)

@@ -9,24 +9,13 @@
 import UIKit
 import Parse
 
-class FeedVC: UICollectionViewController {
+class FeedVC: UITableViewController {
     
     // UI Objects
+    @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
-//    @IBOutlet weak var countBtn: UIBarButtonItem!
     var refresher = UIRefreshControl()
     
-    // Arrays to hold server data
-    var avaArray = [PFFile]()
-    var dateArray = [NSDate?]()
-    var postsArray = [String?]()
-    var uuidArray = [String]()
-    var usersArray = [PFUser]()
-    var firstNameArray = [String]()
-    var countArray = [String]()
-    var usernameArray: [String] = []
-    var indexOfFirstPostByUsername: [String: Int] = [:]
-    var numberOfPostsByUsername: [String: Int] = [:]
     var collectionOfPosts = [PFObject]()
 
     // Page Size
@@ -40,28 +29,34 @@ class FeedVC: UICollectionViewController {
         self.navigationItem.title = "The World"
         
         // Pull to Refresh
-        refresher.addTarget(self, action: "loadPosts", forControlEvents: UIControlEvents.ValueChanged)
-        collectionView?.addSubview(refresher)
+        refresher.addTarget(self, action: #selector(loadPosts), forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refresher)
         
         // Receive Notification from PostCell if Post is Downed, to update CollectionView
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: "downed", object: nil)
         
-        // Indicator's x (horizontal) center
-//        indicator.center.x = collectionView!.center.x
+        // Receive Notification from PostCell if reply button tapped
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "replyButtonTapped:", name: "replyButtonTapped", object: nil)
 
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploaded:", name: "uploaded", object: nil)
-        
-        // Calling function to load posts
-        loadPosts()
-        
-        self.collectionView?.backgroundColor = UIColor .lightGrayColor()
+    
+        self.tableView.registerClass(PostCell2.self, forCellReuseIdentifier: "PostCell")
+        self.tableView.backgroundColor = UIColor.whiteColor()
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+        self.tableView.estimatedRowHeight = 150.0;
+        self.tableView.separatorStyle = .None
 
     }
     
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        loadPosts()
+    }
+    
     func refresh() {
-        collectionView?.reloadData()
+        self.tableView.reloadData()
     }
     
     // reloading func with posts after received notification
@@ -70,119 +65,86 @@ class FeedVC: UICollectionViewController {
     }
     
     
+    
     func loadPosts() {
-
-        // Step 1 : Find Posts Related to the entire user base
-//        let userQuery = PFQuery(className: "User")
-//        userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
-//            if error == nil {
-
-                // Clean Up
-//                self.usersArray.removeAll(keepCapacity: false)
-
-
-                // find related objects
-//                for object in objects! {
-//                    self.usersArray.append(object.objectForKey("User") as! String)
-//                }
-
-                // Append current user to see own posts in feed
-//                self.usersArray.append(PFUser.currentUser()!.username!)
-
-                // Step 2 : Find Posts made by the entire user base
-                let query = PFQuery(className: "posts")
-                query.limit = self.page
-                query.addDescendingOrder("createdAt")
-                query.includeKey("user")
-                query.whereKeyExists("user")
-                query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                    if error == nil {
-
-                        // Clean Up
-                        self.usernameArray.removeAll(keepCapacity: false)
-                        self.usersArray.removeAll(keepCapacity: false)
-                        self.indexOfFirstPostByUsername.removeAll()
-                        self.numberOfPostsByUsername.removeAll()
-                        self.avaArray.removeAll(keepCapacity: false)
-                        self.dateArray.removeAll(keepCapacity: false)
-                        self.postsArray.removeAll(keepCapacity: false)
-                        self.uuidArray.removeAll(keepCapacity: false)
-                        self.firstNameArray.removeAll(keepCapacity: false)
-                        self.collectionOfPosts.removeAll(keepCapacity: false)
-                        
-
-                        // Find Related Objects
-                        var index = 0
-                        for object in objects! {
-
-//                            self.usernameArray.append(object.objectForKey("username") as! String)
-                            self.avaArray.append(object.objectForKey("user")?.objectForKey("ava") as! PFFile)
-                            self.dateArray.append(object.createdAt)
-                            self.collectionOfPosts.append(object)
-
-                            let user = object.objectForKey("user") as! PFUser
-                            if self.indexOfFirstPostByUsername[user.username!] == nil {
-                                self.usernameArray.append(user.username!)
-                                self.usersArray.append(user)
-                                self.indexOfFirstPostByUsername[user.username!] = index
-                                self.numberOfPostsByUsername[user.username!] = 1
+        let query = PFQuery(className: "posts")
+        query.limit = self.page
+        query.addDescendingOrder("createdAt")
+        query.includeKey("user")
+        query.whereKeyExists("user")
+        query.findObjectsInBackgroundWithBlock({ (posts: [PFObject]?, error: NSError?) -> Void in
+            if error == nil {
+                if let posts = posts {
+                    self.collectionOfPosts = posts
+//                    self.collectionOfPosts = self.collectionOfPosts.filter(restaurant : PFObject) -> Bool in
+//                    return contains(restaurant["Type"], "Sushi")
+//                        self.collectionOfPosts.filter({})
+//                    })
+                    
+                    self.collectionOfPosts = self.collectionOfPosts.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
+                        if acc.contains( {
+                            if $0["user"].objectId == current["user"].objectId {
+                                return true
                             } else {
-                                let count = self.numberOfPostsByUsername[user.username!] ?? 0
-                                self.numberOfPostsByUsername[user.username!] = count + 1
+                                return false
                             }
-                            index = index + 1
-                            
-                            
-
-
-                            //convert to local time via device's local time
-                            func toLocalTime(date: NSDate) -> NSDate {
-                              let tz = NSTimeZone.localTimeZone()
-                              let seconds = tz.secondsFromGMTForDate(date)
-                              return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
-                            }
-
-                            let currentDate = toLocalTime(NSDate())
-                            let parseDate = object.objectForKey("hoursexpired") as! NSDate
-
-
-                            //if time expired
-                            if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
-
-                              //delete the expired post
-                              let delete = PFObject(withoutDataWithClassName: "posts", objectId: object.objectId)
-                              delete.deleteInBackgroundWithBlock({ (success, err) in
-                                if success {
-                                  print("Successfully deleted expired post")
-                                  dispatch_async(dispatch_get_main_queue(), { 
-                                    self.refresh()
-                                  })
-                                } else {
-                                  print("Failed to delete expired post: \(err)")
-                                }
-                              })
+                        }) {
+                            return acc
+                        } else {
+                            let allPostsOfUser = self.collectionOfPosts.filter({$0["user"].objectId == current["user"].objectId
+                            })
+                            if let newest = allPostsOfUser.first {
+                                return acc + [newest]
                             } else {
-                              //otherwise add it to the tableview
-                              self.postsArray.append(object.objectForKey("postText") as? String)
+                                return acc
                             }
-
-                            self.uuidArray.append(object.objectForKey("uuid") as! String)
-                            self.firstNameArray.append(object.objectForKey("user")?.objectForKey("firstName") as! String)
                         }
-                        
-                        // Reload Collection View and End Spinning of Refresher
-                        self.collectionView?.reloadData()
-                        self.refresher.endRefreshing()
-                    } else {
-                        print(error?.localizedDescription)
-                    }
-                })
-
-//            } else {
-//                print(error?.localizedDescription)
-//            }
-//        }
+                    })
+                }
+            }
+            self.tableView.reloadData()
+            self.refresher.endRefreshing()
+            
+        })
     }
+    
+        
+        
+//                            //convert to local time via device's local time
+//                            func toLocalTime(date: NSDate) -> NSDate {
+//                              let tz = NSTimeZone.localTimeZone()
+//                              let seconds = tz.secondsFromGMTForDate(date)
+//                              return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
+//                            }
+//
+//                            let currentDate = toLocalTime(NSDate())
+//                            let parseDate = object.objectForKey("hoursexpired") as! NSDate
+//
+//
+//                            //if time expired
+//                            if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
+//
+//                              //delete the expired post
+//                              let delete = PFObject(withoutDataWithClassName: "posts", objectId: object.objectId)
+//                              delete.deleteInBackgroundWithBlock({ (success, err) in
+//                                if success {
+//                                  print("Successfully deleted expired post")
+//                                  dispatch_async(dispatch_get_main_queue(), { 
+//                                    self.refresh()
+//                                  })
+//                                } else {
+//                                  print("Failed to delete expired post: \(err)")
+//                                }
+//                              })
+//                            } else {
+//                              //otherwise add it to the tableview
+//                              self.postsArray.append(object.objectForKey("postText") as? String)
+//                            }
+//
+//                            self.uuidArray.append(object.objectForKey("uuid") as! String)
+//                            self.firstNameArray.append(object.objectForKey("user")?.objectForKey("firstName") as! String)
+//                        }
+        
 
     func loadMore() {
        /*
@@ -262,7 +224,6 @@ class FeedVC: UICollectionViewController {
         }
     }
 
-
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -270,82 +231,71 @@ class FeedVC: UICollectionViewController {
       if segue.identifier == "segueToReply" {
         let destVC = segue.destinationViewController as! ReplyViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
-        let username = usernameArray[i.row]
-        let indexPath = indexOfFirstPostByUsername[username]
-        destVC.recipient = self.usersArray[i.row]
-        destVC.usersPost = collectionOfPosts[indexPath!]
+        let post = self.collectionOfPosts[i.row]
+        destVC.recipient = post.objectForKey("user") as! PFUser
+        destVC.usersPost = post
       } else if segue.identifier == "segueToMorePosts" {
         let destVC = segue.destinationViewController as! UserMorePostsViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
-        destVC.currentUser = usernameArray[i.row]
+        let post = self.collectionOfPosts[i.row]
+        let user = post["user"] as! PFUser
+        destVC.currentUser = user.username
     }
     }
 
-    // MARK: UICollectionViewDataSource
-
-    	
-
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return usernameArray.count
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.collectionOfPosts.count
     }
+    
+    // Create table view rows
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+        -> UITableViewCell
+    {
+        let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell2
+        
+        let post = self.collectionOfPosts[indexPath.row]
+        let user = post["user"] as! PFUser
+        
+        
+        let username = user.username
+        cell.userNameBtn.setTitle(username, forState: .Normal)
+        cell.post = post
 
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! PostCell
-        self.collectionView?.layoutIfNeeded()
-        let username = self.usernameArray[indexPath.row]
-        let index = self.indexOfFirstPostByUsername[username]
-        print("Username: \(username) index: \(index!) username Array: \(self.usernameArray) number of posts by username: \(self.numberOfPostsByUsername)")
-        // Connect objects with our information from arrays
-        cell.userNameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
-        cell.userNameBtn.sizeToFit()
-        cell.uuidLbl.text = uuidArray[index!]
-
-        if self.numberOfPostsByUsername[username] > 1 {
-            cell.morePostsButton.hidden = false
-        } else {
-            cell.morePostsButton.hidden = true
-        }
-
-        if self.postsArray.count == 0 {
-          cell.postText.text = "Awaiting first post..."
-          cell.userNameBtn.setTitle("Admin", forState: .Normal)
-          cell.firstNameLbl.text = "Admin"
-          cell.imDownBtn.hidden = true
-          cell.replyBtn.hidden = true
-          cell.userNameBtn.hidden = true
-          cell.moreBtn.hidden = true
-        } else {
-          cell.postText.text = self.postsArray[index!]
-          cell.firstNameLbl.text = firstNameArray[index!]
-          cell.imDownBtn.hidden = false
-          cell.userNameBtn.hidden = false
-          cell.moreBtn.hidden = false
-            
-          if PFUser.currentUser()?.username == usernameArray[indexPath.row] {
+//        if self.numberOfPostsByUsername[username] > 1 {
+//            cell.morePostsButton.hidden = false
+//        } else {
+//            cell.morePostsButton.hidden = true
+//        }
+        
+        if self.collectionOfPosts.count == 0 {
+            cell.postText.text = "Awaiting first post..."
+            cell.userNameBtn.setTitle("Admin", forState: .Normal)
+            cell.firstNameLbl.text = "Admin"
+            cell.imDownBtn.hidden = true
             cell.replyBtn.hidden = true
-          } else {
-            cell.replyBtn.hidden = false
-          }
-          
+            cell.userNameBtn.hidden = true
+            cell.moreBtn.hidden = true
+        } else {
+            
+            cell.postText.text = post["postText"] as! String
+            cell.firstNameLbl.text = user["firstName"] as? String
+            cell.imDownBtn.hidden = false
+            cell.userNameBtn.hidden = false
+            cell.moreBtn.hidden = false
+            
+//            if PFUser.currentUser()?.username == user.username {
+//                cell.replyBtn.hidden = true
+//            } else {
+//                cell.replyBtn.hidden = false
+//            }
+            
         }
 
-
-        cell.postText.sizeToFit()
-
-        
-        
-        cell.layer.borderWidth = 1
-        cell.layer.borderColor = UIColor .blackColor().CGColor
-        cell.layer.cornerRadius = 8
-        cell.clipsToBounds = true
-        
-        
         // manipulate down button depending on did user like it or not
         let didDown = PFQuery(className: "downs")
         didDown.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-        didDown.whereKey("to", equalTo: cell.uuidLbl.text!)
+        didDown.whereKey("to", equalTo: user.username!)
         didDown.countObjectsInBackgroundWithBlock { (count:Int32, error:NSError?) -> Void in
             // if no any likes are found, else found likes
             if count == 0 {
@@ -354,161 +304,184 @@ class FeedVC: UICollectionViewController {
                 cell.imDownBtn.setTitle("Undown", forState: .Normal)
             }
         }
-
+        
         // Place Profile Picture
-        avaArray[index!].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+        user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             cell.avaImage.image = UIImage(data: data!)
         }
         
         
-        cell.moreBtn.layer.setValue(indexPath, forKey: "index")
-
-        cell.morePostsButton.layer.setValue(indexPath, forKey: "index")
-
-        cell.replyBtn.layer.setValue(indexPath, forKey: "index")
+        if let photoFile = post["photoFile"] {
+            cell.postPhoto.image = UIImage()
+            
+            photoFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                cell.postPhoto.image = UIImage(data: data!)
+            }
+        } else {
+            cell.postPhoto.image = nil
+        }
+        
+        
         
         // Calculate Post Date
-        let from = dateArray[index!]
-        let now = NSDate()
-        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
-        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
+//        let from = dateArray[index!]
+//        let now = NSDate()
+//        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
+//        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
+//        
+//        // Logic what to show: seconds, minutes, hours, days or weeks
+//        if difference.second <= 0 {
+//            cell.timeLbl.text = "now"
+//        }
+//        if difference.second > 0 && difference.minute == 0 {
+//            cell.timeLbl.text = "\(difference.second)s."
+//        }
+//        if difference.minute > 0 && difference.hour == 0 {
+//            cell.timeLbl.text = "\(difference.minute)m."
+//        }
+//        if difference.hour > 0 && difference.day == 0 {
+//            cell.timeLbl.text = "\(difference.hour)h."
+//        }
+//        if difference.day > 0 && difference.weekOfMonth == 0 {
+//            cell.timeLbl.text = "\(difference.day)d."
+//        }
+//        if difference.weekOfMonth > 0 {
+//            cell.timeLbl.text = "\(difference.weekOfMonth)w."
+//        }
+//        
+//         assign index
+//        cell.userNameBtn.layer.setValue(indexPath, forKey: "index")
         
-        // Logic what to show: seconds, minutes, hours, days or weeks
-        if difference.second <= 0 {
-            cell.timeLbl.text = "now"
-        }
-        if difference.second > 0 && difference.minute == 0 {
-            cell.timeLbl.text = "\(difference.second)s."
-        }
-        if difference.minute > 0 && difference.hour == 0 {
-            cell.timeLbl.text = "\(difference.minute)m."
-        }
-        if difference.hour > 0 && difference.day == 0 {
-            cell.timeLbl.text = "\(difference.hour)h."
-        }
-        if difference.day > 0 && difference.weekOfMonth == 0 {
-            cell.timeLbl.text = "\(difference.day)d."
-        }
-        if difference.weekOfMonth > 0 {
-            cell.timeLbl.text = "\(difference.weekOfMonth)w."
-        }
         
-        // assign index
-        cell.userNameBtn.layer.setValue(indexPath, forKey: "index")
+        cell.setNeedsUpdateConstraints()
+        cell.updateConstraintsIfNeeded()
         
-    
-    
         return cell
     }
+    
+    /*
+     MARK: UICollectionViewDataSource
 
-    @IBAction func usernameBtnTapped(sender: AnyObject) {
-        
-        // Call index of button
-        let i = sender.layer.valueForKey("index") as! NSIndexPath
-        
-        // Call cell to call further cell data
-        let cell = collectionView?.cellForItemAtIndexPath(i) as! PostCell
-        
-        // If user tapped on himself go home, else go to guest
-        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
-            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
-            self.navigationController?.pushViewController(home, animated: true)
-        } else {
-            guestName.append(cell.userNameBtn.titleLabel!.text!)
-            let guest = self.storyboard?.instantiateViewControllerWithIdentifier("GuestVC") as! GuestVC
-            self.navigationController?.pushViewController(guest, animated: true)
-        }
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+         #warning Incomplete implementation, return the number of items
+        return usernameArray.count
     }
+
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
+        self.collectionView?.layoutIfNeeded()
+     
+    }
+*/
+    
+//    @IBAction func usernameBtnTapped(sender: AnyObject) {
+//        
+//        // Call index of button
+//        let i = sender.layer.valueForKey("index") as! NSIndexPath
+//        
+//        // Call cell to call further cell data
+//        let cell = collectionView?.cellForItemAtIndexPath(i) as! PostCell
+//        
+//        // If user tapped on himself go home, else go to guest
+//        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
+//            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
+//            self.navigationController?.pushViewController(home, animated: true)
+//        } else {
+//            guestName.append(cell.userNameBtn.titleLabel!.text!)
+//            let guest = self.storyboard?.instantiateViewControllerWithIdentifier("GuestVC") as! GuestVC
+//            self.navigationController?.pushViewController(guest, animated: true)
+//        }
+//    }
     
 
     
     
-    // clicked more button
-    @IBAction func moreBtn_click(sender: AnyObject) {
-        
-        // call index of button
-        let i = sender.layer.valueForKey("index") as! NSIndexPath
-        
-        // call cell to call further cell date
-        let cell = collectionView?.cellForItemAtIndexPath(i)  as! PostCell
-        
-        
-        // DELET ACTION
-        let delete = UIAlertAction(title: "Delete", style: .Default) { (UIAlertAction) -> Void in
-            
-            // STEP 1. Delete row from tableView
-            self.usernameArray.removeAtIndex(i.row)
-            self.avaArray.removeAtIndex(i.row)
-            self.dateArray.removeAtIndex(i.row)
-            self.postsArray.removeAtIndex(i.row)
-            self.uuidArray.removeAtIndex(i.row)
-            
-            // STEP 2. Delete post from server
-            let postQuery = PFQuery(className: "posts")
-            postQuery.whereKey("uuid", equalTo: cell.uuidLbl.text!)
-            postQuery.findObjectsInBackgroundWithBlock({ (objects:[PFObject]?, error:NSError?) -> Void in
-                if error == nil {
-                    for object in objects! {
-                        object.deleteInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
-                            if success {
-                                
-                                // send notification to rootViewController to update shown posts
-                                NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
-                                
-                                // push back
-                                self.navigationController?.popViewControllerAnimated(true)
-                            } else {
-                                print(error!.localizedDescription)
-                            }
-                        })
-                    }
-                } else {
-                    print(error?.localizedDescription)
-                }
-            })
-            
-            
-        }
-        
-        
-        // COMPLAIN ACTION
-        let complain = UIAlertAction(title: "Complain", style: .Default) { (UIAlertAction) -> Void in
-            
-            // send complain to server
-            let complainObj = PFObject(className: "complain")
-            complainObj["by"] = PFUser.currentUser()?.username
-            complainObj["to"] = cell.uuidLbl.text
-            complainObj["owner"] = cell.userNameBtn.titleLabel?.text
-            complainObj.saveInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
-                if success {
-                    self.alert("Complain has been made successfully", message: "Thank You! We will consider your complain")
-                } else {
-                    self.alert("ERROR", message: error!.localizedDescription)
-                }
-            })
-        }
-        
-        // CANCEL ACTION
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        
-        
-        // create menu controller
-        let menu = UIAlertController(title: "Menu", message: nil, preferredStyle: .ActionSheet)
-        
-        
-        // if post belongs to user, he can delete post, else he can't
-        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
-            menu.addAction(delete)
-            menu.addAction(cancel)
-        } else {
-            menu.addAction(complain)
-            menu.addAction(cancel)
-        }
-        
-        // show menu
-        self.presentViewController(menu, animated: true, completion: nil)
-    }
-    
+//    // clicked more button
+//    @IBAction func moreBtn_click(sender: AnyObject) {
+//        
+//        // call index of button
+//        let i = sender.layer.valueForKey("index") as! NSIndexPath
+//        
+//        // call cell to call further cell date
+//        let cell = collectionView?.cellForItemAtIndexPath(i)  as! PostCell
+//        
+//        
+//        // DELET ACTION
+//        let delete = UIAlertAction(title: "Delete", style: .Default) { (UIAlertAction) -> Void in
+//            
+//            // STEP 1. Delete row from tableView
+//            self.usernameArray.removeAtIndex(i.row)
+//            self.avaArray.removeAtIndex(i.row)
+//            self.dateArray.removeAtIndex(i.row)
+//            self.postsArray.removeAtIndex(i.row)
+//            self.uuidArray.removeAtIndex(i.row)
+//            
+//            // STEP 2. Delete post from server
+//            let postQuery = PFQuery(className: "posts")
+//            postQuery.whereKey("uuid", equalTo: cell.uuidLbl.text!)
+//            postQuery.findObjectsInBackgroundWithBlock({ (objects:[PFObject]?, error:NSError?) -> Void in
+//                if error == nil {
+//                    for object in objects! {
+//                        object.deleteInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
+//                            if success {
+//                                
+//                                // send notification to rootViewController to update shown posts
+//                                NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
+//                                
+//                                // push back
+//                                self.navigationController?.popViewControllerAnimated(true)
+//                            } else {
+//                                print(error!.localizedDescription)
+//                            }
+//                        })
+//                    }
+//                } else {
+//                    print(error?.localizedDescription)
+//                }
+//            })
+//            
+//            
+//        }
+//        
+//        
+//        // COMPLAIN ACTION
+//        let complain = UIAlertAction(title: "Complain", style: .Default) { (UIAlertAction) -> Void in
+//            
+//            // send complain to server
+//            let complainObj = PFObject(className: "complain")
+//            complainObj["by"] = PFUser.currentUser()?.username
+//            complainObj["to"] = cell.uuidLbl.text
+//            complainObj["owner"] = cell.userNameBtn.titleLabel?.text
+//            complainObj.saveInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
+//                if success {
+//                    self.alert("Complain has been made successfully", message: "Thank You! We will consider your complain")
+//                } else {
+//                    self.alert("ERROR", message: error!.localizedDescription)
+//                }
+//            })
+//        }
+//        
+//        // CANCEL ACTION
+//        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+//        
+//        
+//        // create menu controller
+//        let menu = UIAlertController(title: "Menu", message: nil, preferredStyle: .ActionSheet)
+//        
+//        
+//        // if post belongs to user, he can delete post, else he can't
+//        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
+//            menu.addAction(delete)
+//            menu.addAction(cancel)
+//        } else {
+//            menu.addAction(complain)
+//            menu.addAction(cancel)
+//        }
+//        
+//        // show menu
+//        self.presentViewController(menu, animated: true, completion: nil)
+//    }
+//    
     
     // alert action
     func alert (title: String, message : String) {

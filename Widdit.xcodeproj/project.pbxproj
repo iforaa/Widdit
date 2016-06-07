@@ -50,6 +50,7 @@
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
 		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
+		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
 		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
 		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 		A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153111CFEB73E00787394 /* ReplyVC.swift */; };
@@ -104,6 +105,7 @@
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
+		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
 		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
 		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 		A6E153111CFEB73E00787394 /* ReplyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyVC.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			children = (
 				79B4D4851CC8102B0073B65D /* MessageModel.swift */,
 				31FF6CF31CAF84D4001D1654 /* FBInfo.swift */,
+				A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */,
 				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
 				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
+				A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
 				A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
