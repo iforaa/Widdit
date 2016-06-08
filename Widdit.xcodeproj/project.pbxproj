@@ -51,6 +51,7 @@
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
 		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
 		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
+		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
 		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
 		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 		A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153111CFEB73E00787394 /* ReplyVC.swift */; };
@@ -106,6 +107,7 @@
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
 		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
+		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
 		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
 		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 		A6E153111CFEB73E00787394 /* ReplyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyVC.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				A6E153071CFD96B000787394 /* WDTColor.swift */,
 				A6E1530B1CFE09B600787394 /* WDTFont.swift */,
 				A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */,
+				A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */,
 				31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */,
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
+				A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */,
 				31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */,
 				A6E153081CFD96B000787394 /* WDTColor.swift in Sources */,
 				31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */,

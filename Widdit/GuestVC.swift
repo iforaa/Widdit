@@ -9,42 +9,24 @@
 import UIKit
 import Parse
 
-
-var guestName = [String]()
-var usernameArray = [String]()
-var avaArray = [PFFile]()
-var dateArray = [NSDate?]()
-var picArray = [PFFile]()
-var titleArray = [String]()
-var uuidArray = [String]()
-var postuuid = [String]()
-
-class GuestVC: UICollectionViewController {
+class GuestVC: UITableViewController {
+    
     
     // UI Objects
     var refresher : UIRefreshControl!
     var page : Int = 12
 
-    // Arrays to hold data from server
-    var uuidArray = [String]()
-    var postTxtArray = [String]()
+    var user: PFUser!
+    var collectionOfPosts = [PFObject]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Allow Vertical Scroll
-        self.collectionView?.alwaysBounceVertical = true
+        self.tableView.alwaysBounceVertical = true
         
         // Background Color
-        self.collectionView?.backgroundColor = UIColor .whiteColor()
-        
-        // Top Title
-        self.navigationItem.title = guestName.last?.uppercaseString
-        
-//        // New Back Button
-//        self.navigationItem.hidesBackButton = true
-//        let backBtn = UIBarButtonItem(image: UIImage(named: "backbutton"), style: .Plain, target: self, action: "back:")
-//        self.navigationItem.leftBarButtonItem = backBtn
+        self.tableView.backgroundColor = UIColor.whiteColor()
         
         // Swipe to go back
         let backSwipe = UISwipeGestureRecognizer(target: self, action: "back:")
@@ -54,9 +36,20 @@ class GuestVC: UICollectionViewController {
         // Pull to Refresh
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-        collectionView?.addSubview(refresher)
+        self.tableView.addSubview(refresher)
         
+        
+        self.tableView.registerClass(PostCell2.self, forCellReuseIdentifier: "PostCell")
+        self.tableView.backgroundColor = UIColor.whiteColor()
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+        self.tableView.estimatedRowHeight = 150.0;
+        self.tableView.separatorStyle = .None
 
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        self.navigationItem.title = self.user.username?.uppercaseString
     }
 
     func back(sender: UIBarButtonItem) {
@@ -65,9 +58,9 @@ class GuestVC: UICollectionViewController {
         self.navigationController?.popViewControllerAnimated(true)
         
         // Clean Guest Username or deduct the last guest username from guestName = Array
-        if !guestName.isEmpty {
-            guestName.removeLast()
-        }
+//        if !guestName.isEmpty {
+//            guestName.removeLast()
+//        }
     }
     
     func refresh() {
@@ -84,7 +77,7 @@ class GuestVC: UICollectionViewController {
     
     // Paging
     func loadMore() {
-        
+        /*
         // if there is more objects
         if page <= postTxtArray.count {
             
@@ -116,6 +109,7 @@ class GuestVC: UICollectionViewController {
             })
             
         }
+ */
     }
 
     /*
@@ -127,71 +121,46 @@ class GuestVC: UICollectionViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
-    // MARK: UICollectionViewDataSource
-
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.collectionOfPosts.count
     }
-
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return usernameArray.count
-    }
-
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    
+    // Create table view rows
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+        -> UITableViewCell
+    {
+        let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell2
         
-        // define cell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! PostCell
-        
-        
+        let post = self.collectionOfPosts[indexPath.row]
         
         // Connect objects with our information from arrays
-        cell.userNameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
-        cell.userNameBtn.sizeToFit()
-        cell.uuidLbl.text = uuidArray[indexPath.row]
-        cell.postText.text = postTxtArray[indexPath.row]
-        cell.postText.sizeToFit()
-        
+        cell.userNameBtn.setTitle(self.user.username, forState: .Normal)
+        cell.postText.text = post["postText"] as! String
         
         // Place Profile Picture
-        avaArray[indexPath.row].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+        self.user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             cell.avaImage.image = UIImage(data: data!)
+        }
+        
+        if let photoFile = post["photoFile"] {
+            cell.postPhoto.image = UIImage()
             
+            photoFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                cell.postPhoto.image = UIImage(data: data!)
+            }
+        } else {
+            cell.postPhoto.image = nil
         }
         
-        // Calculate Post Time
-        let from = dateArray[indexPath.row]
-        let now = NSDate()
-        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
-        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
-        
-        // logic what to show: seconds, minuts, hours, days or weeks
-        if difference.second <= 0 {
-            cell.timeLbl.text = "now"
-        }
-        if difference.second > 0 && difference.minute == 0 {
-            cell.timeLbl.text = "\(difference.second)s."
-        }
-        if difference.minute > 0 && difference.hour == 0 {
-            cell.timeLbl.text = "\(difference.minute)m."
-        }
-        if difference.hour > 0 && difference.day == 0 {
-            cell.timeLbl.text = "\(difference.hour)h."
-        }
-        if difference.day > 0 && difference.weekOfMonth == 0 {
-            cell.timeLbl.text = "\(difference.day)d."
-        }
-        if difference.weekOfMonth > 0 {
-            cell.timeLbl.text = "\(difference.weekOfMonth)w."
-        }
+        cell.timeLbl.text = NSDateFormatter.wdtDateFormatter().stringFromDate(post["hoursexpired"] as! NSDate)
         
         return cell
     }
     
     // header config
+    
+    /*
     override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
         
         // define header
@@ -233,6 +202,6 @@ class GuestVC: UICollectionViewController {
 
         return header
         
-    }
+    }*/
 
 }

@@ -40,8 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UITabBar.appearance().barTintColor = UIColor.blueColor()
 
         //app wide status bar changes
-        UIApplication.sharedApplication().statusBarStyle = .Default
-        UINavigationBar.appearance().barStyle = .Black
+        UINavigationBar.appearance().barStyle = .Default
 
         // [Optional] Power your app with Local Datastore. For more info, go to
         // https://parse.com/docs/ios_guide#localdatastore/iOS

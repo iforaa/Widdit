@@ -9,6 +9,21 @@
 import UIKit
 import Parse
 
+class WDTCardView: UIView {
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        
+        let shadowPath = UIBezierPath(rect: bounds)
+        layer.masksToBounds = false
+        layer.shadowColor = UIColor.blackColor().CGColor
+        layer.shadowOffset = CGSizeMake(0.0, 2.0)
+        layer.shadowOpacity = 0.5
+        layer.shadowPath = shadowPath.CGPath
+    }
+}
+
 class PostCell2: UITableViewCell {
     
     var avaImage: UIImageView = UIImageView()
@@ -20,10 +35,13 @@ class PostCell2: UITableViewCell {
     var firstNameLbl: UILabel = UILabel()
     var userNameBtn: UIButton = UIButton(type: .Custom)
     var uuidLbl: UILabel = UILabel()
-    var cardView: UIView = UIView()
+    var cardView: WDTCardView = WDTCardView()
     var moreBtn: UIButton = UIButton(type: .Custom)
     var replyBtn: UIButton = UIButton(type: .Custom)
     var morePostsButton: UIButton = UIButton(type: .Custom)
+    var horlLineView = UIView()
+    var vertLineView = UIView()
+    
     
     var post: PFObject!
     
@@ -40,9 +58,6 @@ class PostCell2: UITableViewCell {
     func configureSubviews() {
         
         self.contentView.addSubview(self.cardView)
-        
-        self.firstNameLbl.textColor = UIColor.grayColor()
-        self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
 
         self.cardView.addSubview(self.avaImage)
         self.cardView.addSubview(self.postPhoto)
@@ -52,15 +67,24 @@ class PostCell2: UITableViewCell {
         self.cardView.addSubview(self.userNameBtn)
         self.cardView.addSubview(self.imDownBtn)
         self.cardView.addSubview(self.replyBtn)
+        self.cardView.addSubview(self.horlLineView)
+        self.cardView.addSubview(self.vertLineView)
+        
+        self.horlLineView.backgroundColor = UIColor.grayColor()
+        self.horlLineView.alpha = 0.5
+        self.vertLineView.backgroundColor = UIColor.grayColor()
+        self.vertLineView.alpha = 0.5
         
         self.replyBtn.backgroundColor = UIColor.WDTGrayBlueColor()
         self.replyBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         self.replyBtn.setTitle("Reply", forState: .Normal)
-        self.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+        self.replyBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
+        
         
         self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
         self.imDownBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         self.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
+        self.imDownBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
         
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
@@ -70,6 +94,17 @@ class PostCell2: UITableViewCell {
         // Rounded Square Image
         self.avaImage.layer.cornerRadius = 8.0
         self.avaImage.clipsToBounds = true
+        
+        self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        self.userNameBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
+        self.userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
+        
+        self.firstNameLbl.textColor = UIColor.grayColor()
+        self.firstNameLbl.font = UIFont.systemFontOfSize(12)
+        
+        self.timeLbl.textColor = UIColor.grayColor()
+        self.timeLbl.font = UIFont.systemFontOfSize(12)
+        
         
         self.backgroundColor = UIColor.whiteColor()
         
@@ -87,32 +122,31 @@ class PostCell2: UITableViewCell {
        // if isHeightCalculated == false {
 
             self.avaImage.snp_remakeConstraints(closure: { (make) in
-                make.top.equalTo(self.contentView).offset(10)
-                make.left.equalTo(self.contentView).offset(10)
+                make.top.equalTo(self.cardView).offset(10)
+                make.left.equalTo(self.cardView).offset(10)
                 make.width.equalTo(50)
                 make.height.equalTo(50)
             })
             
-            self.firstNameLbl.snp_remakeConstraints(closure: { (make) in
-                make.left.equalTo(self.avaImage.snp_right).offset(10)
-                make.top.equalTo(self.contentView).offset(10)
-            })
-            
             self.userNameBtn.snp_remakeConstraints(closure: { (make) in
                 make.left.equalTo(self.avaImage.snp_right).offset(10)
-                make.top.equalTo(self.firstNameLbl.snp_bottom).offset(5)
-                
+                make.top.equalTo(self.cardView).offset(5)
+            })
+        
+            self.firstNameLbl.snp_remakeConstraints(closure: { (make) in
+                make.left.equalTo(self.avaImage.snp_right).offset(10)
+                make.top.equalTo(self.userNameBtn.snp_bottom)
             })
 
             self.timeLbl.snp_remakeConstraints(closure: { (make) in
-                make.right.equalTo(self.contentView).offset(-10)
-                make.top.equalTo(self.contentView).offset(10)
+                make.right.equalTo(self.cardView).offset(-10)
+                make.top.equalTo(self.cardView).offset(10)
             })
             
             self.postPhoto.snp_remakeConstraints(closure: { (make) in
                 make.top.equalTo(self.avaImage.snp_bottom).offset(10)
-                make.left.equalTo(self.contentView).offset(10)
-                make.right.equalTo(self.contentView).offset(-10)
+                make.left.equalTo(self.cardView).offset(10)
+                make.right.equalTo(self.cardView).offset(-10)
                 make.height.equalTo(self.postPhoto.snp_width).multipliedBy(0.625)
             })
             
@@ -122,25 +156,34 @@ class PostCell2: UITableViewCell {
                 } else {
                     make.top.equalTo(self.avaImage.snp_bottom).offset(10)
                 }
-                make.left.equalTo(self.contentView).offset(10)
-                make.right.equalTo(self.contentView).offset(-10)
-                make.height.equalTo(50)
+                make.left.equalTo(self.cardView).offset(10)
+                make.right.equalTo(self.cardView).offset(-10)
+                make.height.equalTo(40)
                 
             })
+        
+            self.horlLineView.snp_makeConstraints { (make) in
+                make.top.equalTo(self.replyBtn).offset(-2)
+                make.width.equalTo(self.cardView).multipliedBy(0.9)
+                make.centerX.equalTo(self.cardView)
+                make.height.equalTo(0.5)
+            }
+        
             
+        
             self.replyBtn.snp_remakeConstraints { (make) in
                 make.top.equalTo(self.postText.snp_bottom).offset(10)
-                make.left.equalTo(self.contentView).offset(10)
-                make.bottom.equalTo(self.contentView).priority(750)
-                make.right.equalTo(self.contentView.snp_centerX)
+                make.left.equalTo(self.cardView).offset(10)
+                make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+                make.right.equalTo(self.cardView.snp_centerX)
                 
             }
 
             self.imDownBtn.snp_remakeConstraints { (make) in
                 make.top.equalTo(self.postText.snp_bottom).offset(10)
-                make.left.equalTo(self.contentView.snp_centerX)
-                make.bottom.equalTo(self.contentView).priority(750)
-                make.right.equalTo(self.contentView).offset(-10)
+                make.left.equalTo(self.cardView.snp_centerX)
+                make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+                make.right.equalTo(self.cardView).offset(-10)
                 
             }
 
@@ -155,30 +198,19 @@ class PostCell2: UITableViewCell {
     
     func cardSetup() {
         self.cardView.snp_makeConstraints { (make) in
-            make.top.equalTo(self.contentView).offset(5)
-            make.left.equalTo(self.contentView).offset(5)
-            make.right.equalTo(self.contentView).offset(-5)
-            make.bottom.equalTo(self.contentView).offset(-5)
+            make.top.equalTo(self.contentView).offset(10)
+            make.left.equalTo(self.contentView).offset(10)
+            make.right.equalTo(self.contentView).offset(-10)
+            make.bottom.equalTo(self.contentView).offset(-10)
         }
         
-        self.cardView.alpha = 1
-        self.cardView.layer.masksToBounds = false
-        self.cardView.layer.cornerRadius = 4
-        self.cardView.layer.shadowOffset = CGSizeMake(0, 1)
-        self.cardView.layer.shadowRadius = 5
-        let path = UIBezierPath()
-        self.cardView.layer.shadowOpacity = 0.5
-        self.cardView.layer.shadowPath = path.CGPath
         self.cardView.backgroundColor = UIColor.WDTGrayBlueColor()
-        
     }
+    
+    
     
     @IBAction func morePostsButtonPressed(sender: UIButton) {
 
-    }
-    
-    func replyBtnTapped(sender: AnyObject) {
-        NSNotificationCenter.defaultCenter().postNotificationName("replyButtonTapped", object: nil)
     }
     
     @IBAction func downBtnTapped(sender: AnyObject) {
@@ -187,7 +219,7 @@ class PostCell2: UITableViewCell {
         let title = sender.titleForState(.Normal)
        
         if title == "I'm Down" {
-            
+            sender.setTitle("Undown", forState: .Normal)
             let object = PFObject(className: "downs")
             object["by"] = PFUser.currentUser()?.username
             object["to"] = userNameBtn.titleLabel?.text
@@ -195,10 +227,6 @@ class PostCell2: UITableViewCell {
             object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
                     print("Downed")
-                    
-                    // send notification if we downed to refresh collectionView
-                    NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
-                    
                     
                     // send notification as down
                     if self.userNameBtn.titleLabel?.text != PFUser.currentUser()?.username {
@@ -212,15 +240,12 @@ class PostCell2: UITableViewCell {
                         activityObj["postText"] = self.postText.text
                         activityObj.saveEventually()
                     }
-                    
-                    
                 }
             })
             
             // to unDown
         } else {
-            
-
+            sender.setTitle("I'm Down", forState: .Normal)
             // request existing downs of current user to show post
             let query = PFQuery(className: "downs")
             query.whereKey("by", equalTo: PFUser.currentUser()!.username!)
@@ -234,10 +259,6 @@ class PostCell2: UITableViewCell {
                     object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                         if success {
                             print("Undowned")
-                            
-                            
-                            // send notification if we downed to refreash CollectionView
-                            NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
                             
                             // delete down notification
                             let activityQuery = PFQuery(className: "Activity")

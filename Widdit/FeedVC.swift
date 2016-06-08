@@ -17,6 +17,7 @@ class FeedVC: UITableViewController {
     var refresher = UIRefreshControl()
     
     var collectionOfPosts = [PFObject]()
+    var collectionOfAllPosts = [PFObject]()
 
     // Page Size
     var page : Int = 10
@@ -34,9 +35,6 @@ class FeedVC: UITableViewController {
         
         // Receive Notification from PostCell if Post is Downed, to update CollectionView
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: "downed", object: nil)
-        
-        // Receive Notification from PostCell if reply button tapped
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "replyButtonTapped:", name: "replyButtonTapped", object: nil)
 
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploaded:", name: "uploaded", object: nil)
@@ -64,8 +62,6 @@ class FeedVC: UITableViewController {
         loadPosts()
     }
     
-    
-    
     func loadPosts() {
         let query = PFQuery(className: "posts")
         query.limit = self.page
@@ -75,13 +71,30 @@ class FeedVC: UITableViewController {
         query.findObjectsInBackgroundWithBlock({ (posts: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let posts = posts {
-                    self.collectionOfPosts = posts
-//                    self.collectionOfPosts = self.collectionOfPosts.filter(restaurant : PFObject) -> Bool in
-//                    return contains(restaurant["Type"], "Sushi")
-//                        self.collectionOfPosts.filter({})
-//                    })
+                    self.collectionOfAllPosts = posts
                     
-                    self.collectionOfPosts = self.collectionOfPosts.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
+                    self.collectionOfAllPosts = self.collectionOfAllPosts.filter({
+                        let currentDate = NSDate().toLocalTime()
+                        let parseDate = $0.objectForKey("hoursexpired") as! NSDate
+                        if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
+                            let delete = PFObject(withoutDataWithClassName: "posts", objectId: $0.objectId)
+                            delete.deleteInBackgroundWithBlock({ (success, err) in
+                                if success {
+                                    print("Successfully deleted expired post")
+                                    dispatch_async(dispatch_get_main_queue(), {
+                                        
+                                    })
+                                } else {
+                                    print("Failed to delete expired post: \(err)")
+                                }
+                            })
+                            return false
+                        } else {
+                            return true
+                        }
+                    })
+                    
+                    self.collectionOfPosts = self.collectionOfAllPosts.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
                         if acc.contains( {
                             if $0["user"].objectId == current["user"].objectId {
                                 return true
@@ -91,7 +104,7 @@ class FeedVC: UITableViewController {
                         }) {
                             return acc
                         } else {
-                            let allPostsOfUser = self.collectionOfPosts.filter({$0["user"].objectId == current["user"].objectId
+                            let allPostsOfUser = self.collectionOfAllPosts.filter({$0["user"].objectId == current["user"].objectId
                             })
                             if let newest = allPostsOfUser.first {
                                 return acc + [newest]
@@ -107,44 +120,6 @@ class FeedVC: UITableViewController {
             
         })
     }
-    
-        
-        
-//                            //convert to local time via device's local time
-//                            func toLocalTime(date: NSDate) -> NSDate {
-//                              let tz = NSTimeZone.localTimeZone()
-//                              let seconds = tz.secondsFromGMTForDate(date)
-//                              return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
-//                            }
-//
-//                            let currentDate = toLocalTime(NSDate())
-//                            let parseDate = object.objectForKey("hoursexpired") as! NSDate
-//
-//
-//                            //if time expired
-//                            if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
-//
-//                              //delete the expired post
-//                              let delete = PFObject(withoutDataWithClassName: "posts", objectId: object.objectId)
-//                              delete.deleteInBackgroundWithBlock({ (success, err) in
-//                                if success {
-//                                  print("Successfully deleted expired post")
-//                                  dispatch_async(dispatch_get_main_queue(), { 
-//                                    self.refresh()
-//                                  })
-//                                } else {
-//                                  print("Failed to delete expired post: \(err)")
-//                                }
-//                              })
-//                            } else {
-//                              //otherwise add it to the tableview
-//                              self.postsArray.append(object.objectForKey("postText") as? String)
-//                            }
-//
-//                            self.uuidArray.append(object.objectForKey("uuid") as! String)
-//                            self.firstNameArray.append(object.objectForKey("user")?.objectForKey("firstName") as! String)
-//                        }
-        
 
     func loadMore() {
        /*
@@ -228,13 +203,7 @@ class FeedVC: UITableViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-      if segue.identifier == "segueToReply" {
-        let destVC = segue.destinationViewController as! ReplyViewController
-        let i = sender?.layer.valueForKey("index") as! NSIndexPath
-        let post = self.collectionOfPosts[i.row]
-        destVC.recipient = post.objectForKey("user") as! PFUser
-        destVC.usersPost = post
-      } else if segue.identifier == "segueToMorePosts" {
+      if segue.identifier == "segueToMorePosts" {
         let destVC = segue.destinationViewController as! UserMorePostsViewController
         let i = sender?.layer.valueForKey("index") as! NSIndexPath
         let post = self.collectionOfPosts[i.row]
@@ -277,6 +246,10 @@ class FeedVC: UITableViewController {
             cell.userNameBtn.hidden = true
             cell.moreBtn.hidden = true
         } else {
+            cell.replyBtn.tag = indexPath.row
+            cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+            cell.userNameBtn.tag = indexPath.row
+            cell.userNameBtn.addTarget(self, action: #selector(usernameBtnTapped), forControlEvents: .TouchUpInside)
             
             cell.postText.text = post["postText"] as! String
             cell.firstNameLbl.text = user["firstName"] as? String
@@ -284,11 +257,13 @@ class FeedVC: UITableViewController {
             cell.userNameBtn.hidden = false
             cell.moreBtn.hidden = false
             
-//            if PFUser.currentUser()?.username == user.username {
-//                cell.replyBtn.hidden = true
-//            } else {
-//                cell.replyBtn.hidden = false
-//            }
+            if PFUser.currentUser()?.username == user.username {
+                cell.replyBtn.hidden = true
+                cell.imDownBtn.hidden = true
+            } else {
+                cell.replyBtn.hidden = false
+                cell.imDownBtn.hidden = false
+            }
             
         }
 
@@ -296,6 +271,7 @@ class FeedVC: UITableViewController {
         let didDown = PFQuery(className: "downs")
         didDown.whereKey("by", equalTo: PFUser.currentUser()!.username!)
         didDown.whereKey("to", equalTo: user.username!)
+        didDown.whereKey("post", equalTo: post)
         didDown.countObjectsInBackgroundWithBlock { (count:Int32, error:NSError?) -> Void in
             // if no any likes are found, else found likes
             if count == 0 {
@@ -321,37 +297,7 @@ class FeedVC: UITableViewController {
             cell.postPhoto.image = nil
         }
         
-        
-        
-        // Calculate Post Date
-//        let from = dateArray[index!]
-//        let now = NSDate()
-//        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
-//        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
-//        
-//        // Logic what to show: seconds, minutes, hours, days or weeks
-//        if difference.second <= 0 {
-//            cell.timeLbl.text = "now"
-//        }
-//        if difference.second > 0 && difference.minute == 0 {
-//            cell.timeLbl.text = "\(difference.second)s."
-//        }
-//        if difference.minute > 0 && difference.hour == 0 {
-//            cell.timeLbl.text = "\(difference.minute)m."
-//        }
-//        if difference.hour > 0 && difference.day == 0 {
-//            cell.timeLbl.text = "\(difference.hour)h."
-//        }
-//        if difference.day > 0 && difference.weekOfMonth == 0 {
-//            cell.timeLbl.text = "\(difference.day)d."
-//        }
-//        if difference.weekOfMonth > 0 {
-//            cell.timeLbl.text = "\(difference.weekOfMonth)w."
-//        }
-//        
-//         assign index
-//        cell.userNameBtn.layer.setValue(indexPath, forKey: "index")
-        
+        cell.timeLbl.text = NSDateFormatter.wdtDateFormatter().stringFromDate(post["hoursexpired"] as! NSDate)
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
@@ -359,39 +305,36 @@ class FeedVC: UITableViewController {
         return cell
     }
     
-    /*
-     MARK: UICollectionViewDataSource
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         #warning Incomplete implementation, return the number of items
-        return usernameArray.count
-    }
-
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
-        self.collectionView?.layoutIfNeeded()
-     
-    }
-*/
     
-//    @IBAction func usernameBtnTapped(sender: AnyObject) {
-//        
-//        // Call index of button
-//        let i = sender.layer.valueForKey("index") as! NSIndexPath
-//        
-//        // Call cell to call further cell data
-//        let cell = collectionView?.cellForItemAtIndexPath(i) as! PostCell
-//        
-//        // If user tapped on himself go home, else go to guest
-//        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
-//            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
-//            self.navigationController?.pushViewController(home, animated: true)
-//        } else {
-//            guestName.append(cell.userNameBtn.titleLabel!.text!)
-//            let guest = self.storyboard?.instantiateViewControllerWithIdentifier("GuestVC") as! GuestVC
-//            self.navigationController?.pushViewController(guest, animated: true)
-//        }
-//    }
+    func replyBtnTapped(sender: AnyObject) {
+        let destVC = ReplyViewController()
+        let post = self.collectionOfPosts[sender.tag]
+        destVC.recipient = post.objectForKey("user") as! PFUser
+        destVC.usersPost = post
+        self.navigationController?.pushViewController(destVC, animated: true)
+    }
+    
+    func usernameBtnTapped(sender: AnyObject) {
+        // If user tapped on himself go home, else go to guest
+        let post = self.collectionOfPosts[sender.tag]
+        let user = post["user"] as! PFUser
+        if user.username == PFUser.currentUser()?.username {
+            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
+            self.navigationController?.pushViewController(home, animated: true)
+        } else {
+            let guest = GuestVC()
+            guest.user = user
+            guest.collectionOfPosts = self.collectionOfAllPosts.filter({
+                let u = $0["user"] as! PFUser
+                if u.username == user.username {
+                    return true
+                } else {
+                    return false
+                }
+            })
+            self.navigationController?.pushViewController(guest, animated: true)
+        }
+    }
     
 
     
@@ -495,37 +438,7 @@ class FeedVC: UITableViewController {
 
     }
 
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
-    
-    }
-    */
-
+   
 }
 
 extension Array where Element: Equatable {
