@@ -74,9 +74,8 @@ class FeedVC: UITableViewController {
                     self.collectionOfAllPosts = posts
                     
                     self.collectionOfAllPosts = self.collectionOfAllPosts.filter({
-                        let currentDate = NSDate().toLocalTime()
                         let parseDate = $0.objectForKey("hoursexpired") as! NSDate
-                        if currentDate.timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
+                        if NSDate().timeIntervalSince1970 >= parseDate.timeIntervalSince1970 {
                             let delete = PFObject(withoutDataWithClassName: "posts", objectId: $0.objectId)
                             delete.deleteInBackgroundWithBlock({ (success, err) in
                                 if success {
@@ -249,7 +248,7 @@ class FeedVC: UITableViewController {
             cell.replyBtn.tag = indexPath.row
             cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
             cell.userNameBtn.tag = indexPath.row
-            cell.userNameBtn.addTarget(self, action: #selector(usernameBtnTapped), forControlEvents: .TouchUpInside)
+            cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
             
             cell.postText.text = post["postText"] as! String
             cell.firstNameLbl.text = user["firstName"] as? String
@@ -260,9 +259,11 @@ class FeedVC: UITableViewController {
             if PFUser.currentUser()?.username == user.username {
                 cell.replyBtn.hidden = true
                 cell.imDownBtn.hidden = true
+                cell.myPost = true
             } else {
                 cell.replyBtn.hidden = false
                 cell.imDownBtn.hidden = false
+                cell.myPost = false
             }
             
         }
@@ -297,7 +298,10 @@ class FeedVC: UITableViewController {
             cell.postPhoto.image = nil
         }
         
-        cell.timeLbl.text = NSDateFormatter.wdtDateFormatter().stringFromDate(post["hoursexpired"] as! NSDate)
+        let hoursexpired = post["hoursexpired"] as! NSDate
+        let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970
+        
+        cell.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
@@ -314,14 +318,14 @@ class FeedVC: UITableViewController {
         self.navigationController?.pushViewController(destVC, animated: true)
     }
     
-    func usernameBtnTapped(sender: AnyObject) {
+    func moreBtnTapped(sender: AnyObject) {
         // If user tapped on himself go home, else go to guest
         let post = self.collectionOfPosts[sender.tag]
         let user = post["user"] as! PFUser
-        if user.username == PFUser.currentUser()?.username {
-            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
-            self.navigationController?.pushViewController(home, animated: true)
-        } else {
+//        if user.username == PFUser.currentUser()?.username {
+//            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
+//            self.navigationController?.pushViewController(home, animated: true)
+//        } else {
             let guest = GuestVC()
             guest.user = user
             guest.collectionOfPosts = self.collectionOfAllPosts.filter({
@@ -333,7 +337,7 @@ class FeedVC: UITableViewController {
                 }
             })
             self.navigationController?.pushViewController(guest, animated: true)
-        }
+//        }
     }
     
 

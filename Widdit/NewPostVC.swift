@@ -179,15 +179,15 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         object["postText"] = postTxt.text
         object["user"] = PFUser.currentUser()!
 
-        func toLocalTime(date: NSDate) -> NSDate {
-            let tz = NSTimeZone.localTimeZone()
-            let seconds = tz.secondsFromGMTForDate(date)
-            return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
-        }
+//        func toLocalTime(date: NSDate) -> NSDate {
+//            let tz = NSTimeZone.localTimeZone()
+//            let seconds = tz.secondsFromGMTForDate(date)
+//            return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
+//        }
 
         if let sliderValue = self.sliderValue {
             let today = NSDate()
-            let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: toLocalTime(today), options: NSCalendarOptions(rawValue: 0))
+            let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))
             print(tomorrow!)
             object["hoursexpired"] = tomorrow
         }

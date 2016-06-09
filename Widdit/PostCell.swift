@@ -44,6 +44,7 @@ class PostCell2: UITableViewCell {
     
     
     var post: PFObject!
+    var myPost: Bool = false
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,6 +68,7 @@ class PostCell2: UITableViewCell {
         self.cardView.addSubview(self.userNameBtn)
         self.cardView.addSubview(self.imDownBtn)
         self.cardView.addSubview(self.replyBtn)
+        self.cardView.addSubview(self.moreBtn)
         self.cardView.addSubview(self.horlLineView)
         self.cardView.addSubview(self.vertLineView)
         
@@ -98,6 +100,13 @@ class PostCell2: UITableViewCell {
         self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         self.userNameBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
         self.userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
+        self.userNameBtn.titleLabel?.textAlignment = .Left
+        
+        self.moreBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        self.moreBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
+        self.moreBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
+        self.moreBtn.setTitle("More posts...", forState: .Normal)
+        
         
         self.firstNameLbl.textColor = UIColor.grayColor()
         self.firstNameLbl.font = UIFont.systemFontOfSize(12)
@@ -129,13 +138,13 @@ class PostCell2: UITableViewCell {
             })
             
             self.userNameBtn.snp_remakeConstraints(closure: { (make) in
-                make.left.equalTo(self.avaImage.snp_right).offset(10)
+                make.left.equalTo(self.avaImage.snp_right).offset(7)
                 make.top.equalTo(self.cardView).offset(5)
             })
         
             self.firstNameLbl.snp_remakeConstraints(closure: { (make) in
                 make.left.equalTo(self.avaImage.snp_right).offset(10)
-                make.top.equalTo(self.userNameBtn.snp_bottom)
+                make.top.equalTo(self.userNameBtn.snp_bottom).offset(-4)
             })
 
             self.timeLbl.snp_remakeConstraints(closure: { (make) in
@@ -161,31 +170,48 @@ class PostCell2: UITableViewCell {
                 make.height.equalTo(40)
                 
             })
-        
-            self.horlLineView.snp_makeConstraints { (make) in
-                make.top.equalTo(self.replyBtn).offset(-2)
-                make.width.equalTo(self.cardView).multipliedBy(0.9)
-                make.centerX.equalTo(self.cardView)
-                make.height.equalTo(0.5)
-            }
-        
-            
-        
-            self.replyBtn.snp_remakeConstraints { (make) in
-                make.top.equalTo(self.postText.snp_bottom).offset(10)
-                make.left.equalTo(self.cardView).offset(10)
-                make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-                make.right.equalTo(self.cardView.snp_centerX)
-                
-            }
 
-            self.imDownBtn.snp_remakeConstraints { (make) in
-                make.top.equalTo(self.postText.snp_bottom).offset(10)
-                make.left.equalTo(self.cardView.snp_centerX)
-                make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-                make.right.equalTo(self.cardView).offset(-10)
+        
+        
+        
+            if self.myPost == false {
                 
+                self.moreBtn.snp_makeConstraints { (make) in
+                    make.top.equalTo(self.postText.snp_bottom).offset(2)
+                    make.right.equalTo(self.cardView).offset(-10)
+                }
+                
+                
+                self.horlLineView.snp_makeConstraints { (make) in
+                    make.top.equalTo(self.moreBtn).offset(2)
+                    make.width.equalTo(self.cardView).multipliedBy(0.9)
+                    make.centerX.equalTo(self.cardView)
+                    make.height.equalTo(1)
+                }
+                
+                self.replyBtn.snp_remakeConstraints { (make) in
+                    make.top.equalTo(self.postText.snp_bottom).offset(10)
+                    make.left.equalTo(self.cardView).offset(10)
+                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+                    make.right.equalTo(self.cardView.snp_centerX)
+                    
+                }
+                
+                self.imDownBtn.snp_remakeConstraints { (make) in
+                    make.top.equalTo(self.postText.snp_bottom).offset(10)
+                    make.left.equalTo(self.cardView.snp_centerX)
+                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+                    make.right.equalTo(self.cardView).offset(-10)
+                }
+            } else {
+                self.moreBtn.snp_makeConstraints { (make) in
+                    make.top.equalTo(self.postText.snp_bottom).offset(2)
+                    make.right.equalTo(self.cardView).offset(-10)
+                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+                }
             }
+        
+        
 
             isHeightCalculated = true
         //}

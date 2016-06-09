@@ -138,6 +138,16 @@ class GuestVC: UITableViewController {
         cell.userNameBtn.setTitle(self.user.username, forState: .Normal)
         cell.postText.text = post["postText"] as! String
         
+        if PFUser.currentUser()?.username == user.username {
+            cell.replyBtn.hidden = true
+            cell.imDownBtn.hidden = true
+            cell.myPost = true
+        } else {
+            cell.replyBtn.hidden = false
+            cell.imDownBtn.hidden = false
+            cell.myPost = false
+        }
+        
         // Place Profile Picture
         self.user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             cell.avaImage.image = UIImage(data: data!)
@@ -153,7 +163,10 @@ class GuestVC: UITableViewController {
             cell.postPhoto.image = nil
         }
         
-        cell.timeLbl.text = NSDateFormatter.wdtDateFormatter().stringFromDate(post["hoursexpired"] as! NSDate)
+        let hoursexpired = post["hoursexpired"] as! NSDate
+        let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970
+        
+        cell.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
         
         return cell
     }
