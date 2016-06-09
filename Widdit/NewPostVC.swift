@@ -26,7 +26,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     private var progressLabel: UILabel!
     var sliderValue: Int?
     var photoImage: UIImage?
-
+    var geoPoint: PFGeoPoint?
+    
     private var circleProgress: CircleSlider! {
       didSet {
         self.circleProgress.tag = 1
@@ -71,6 +72,14 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
         self.postTxt.delegate = self
         self.buildCircleSlider()
+        
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            if error == nil {
+                self.geoPoint = geoPoint
+            }
+        }
+
     }
 
     private func buildCircleSlider() {
@@ -179,12 +188,11 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         object["postText"] = postTxt.text
         object["user"] = PFUser.currentUser()!
 
-//        func toLocalTime(date: NSDate) -> NSDate {
-//            let tz = NSTimeZone.localTimeZone()
-//            let seconds = tz.secondsFromGMTForDate(date)
-//            return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
-//        }
-
+        if let geoPoint = self.geoPoint {
+            object["geoPoint"] = geoPoint
+        }
+        
+        
         if let sliderValue = self.sliderValue {
             let today = NSDate()
             let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))

@@ -21,7 +21,8 @@ class FeedVC: UITableViewController {
 
     // Page Size
     var page : Int = 10
-
+    
+    var geoPoint: PFGeoPoint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +51,13 @@ class FeedVC: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        loadPosts()
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            self.loadPosts()
+            if error == nil {
+                self.geoPoint = geoPoint
+            }
+        }
     }
     
     func refresh() {
@@ -60,6 +67,7 @@ class FeedVC: UITableViewController {
     // reloading func with posts after received notification
     func uploaded(notification: NSNotification) {
         loadPosts()
+        
     }
     
     func loadPosts() {
@@ -303,6 +311,15 @@ class FeedVC: UITableViewController {
         
         cell.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
         
+        if let postGeoPoint = post["geoPoint"] {
+            print(self.geoPoint)
+            
+            cell.distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(self.geoPoint))
+        } else {
+            cell.distanceLbl.text = ""
+        }
+        
+        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         
@@ -328,6 +345,7 @@ class FeedVC: UITableViewController {
 //        } else {
             let guest = GuestVC()
             guest.user = user
+            guest.geoPoint = self.geoPoint
             guest.collectionOfPosts = self.collectionOfAllPosts.filter({
                 let u = $0["user"] as! PFUser
                 if u.username == user.username {

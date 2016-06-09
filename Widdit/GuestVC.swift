@@ -18,7 +18,8 @@ class GuestVC: UITableViewController {
 
     var user: PFUser!
     var collectionOfPosts = [PFObject]()
-
+    var geoPoint: PFGeoPoint?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -168,6 +169,18 @@ class GuestVC: UITableViewController {
         
         cell.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
         
+        if let postGeoPoint = post["geoPoint"] {
+            print(self.geoPoint)
+            
+            cell.distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(self.geoPoint))
+        } else {
+            cell.distanceLbl.text = ""
+        }
+        
+        cell.moreBtn.hidden = true
+        
+        cell.setNeedsUpdateConstraints()
+        cell.updateConstraintsIfNeeded()
         return cell
     }
     

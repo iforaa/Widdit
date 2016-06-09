@@ -34,11 +34,11 @@ class PostCell2: UITableViewCell {
     var timeLbl: UILabel = UILabel()
     var firstNameLbl: UILabel = UILabel()
     var userNameBtn: UIButton = UIButton(type: .Custom)
-    var uuidLbl: UILabel = UILabel()
     var cardView: WDTCardView = WDTCardView()
     var moreBtn: UIButton = UIButton(type: .Custom)
     var replyBtn: UIButton = UIButton(type: .Custom)
     var morePostsButton: UIButton = UIButton(type: .Custom)
+    var distanceLbl: UILabel = UILabel()
     var horlLineView = UIView()
     var vertLineView = UIView()
     
@@ -71,6 +71,7 @@ class PostCell2: UITableViewCell {
         self.cardView.addSubview(self.moreBtn)
         self.cardView.addSubview(self.horlLineView)
         self.cardView.addSubview(self.vertLineView)
+        self.cardView.addSubview(self.distanceLbl)
         
         self.horlLineView.backgroundColor = UIColor.grayColor()
         self.horlLineView.alpha = 0.5
@@ -91,7 +92,7 @@ class PostCell2: UITableViewCell {
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
         
-        self.uuidLbl.hidden = true
+        
         
         // Rounded Square Image
         self.avaImage.layer.cornerRadius = 8.0
@@ -113,6 +114,9 @@ class PostCell2: UITableViewCell {
         
         self.timeLbl.textColor = UIColor.grayColor()
         self.timeLbl.font = UIFont.systemFontOfSize(12)
+        
+        self.distanceLbl.textColor = UIColor.grayColor()
+        self.distanceLbl.font = UIFont.systemFontOfSize(12)
         
         
         self.backgroundColor = UIColor.whiteColor()
@@ -151,7 +155,12 @@ class PostCell2: UITableViewCell {
                 make.right.equalTo(self.cardView).offset(-10)
                 make.top.equalTo(self.cardView).offset(10)
             })
-            
+        
+            self.distanceLbl.snp_remakeConstraints(closure: { (make) in
+                make.right.equalTo(self.cardView).offset(-10)
+                make.top.equalTo(self.timeLbl.snp_bottom).offset(5)
+            })
+        
             self.postPhoto.snp_remakeConstraints(closure: { (make) in
                 make.top.equalTo(self.avaImage.snp_bottom).offset(10)
                 make.left.equalTo(self.cardView).offset(10)
@@ -171,9 +180,6 @@ class PostCell2: UITableViewCell {
                 
             })
 
-        
-        
-        
             if self.myPost == false {
                 
                 self.moreBtn.snp_makeConstraints { (make) in
@@ -261,7 +267,6 @@ class PostCell2: UITableViewCell {
                         activityObj["ava"] = PFUser.currentUser()?.objectForKey("ava") as! PFFile
                         activityObj["to"] = self.userNameBtn.titleLabel?.text
                         activityObj["owner"] = self.userNameBtn.titleLabel?.text
-                        activityObj["uuid"] = self.uuidLbl.text
                         activityObj["type"] = "down"
                         activityObj["postText"] = self.postText.text
                         activityObj.saveEventually()
