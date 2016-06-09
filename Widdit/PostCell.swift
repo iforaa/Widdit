@@ -21,6 +21,7 @@ class WDTCardView: UIView {
         layer.shadowOffset = CGSizeMake(0.0, 2.0)
         layer.shadowOpacity = 0.5
         layer.shadowPath = shadowPath.CGPath
+        layer.cornerRadius = 4.0
     }
 }
 
@@ -91,8 +92,7 @@ class PostCell2: UITableViewCell {
         
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
-        
-        
+        self.postText.editable = false
         
         // Rounded Square Image
         self.avaImage.layer.cornerRadius = 8.0
@@ -189,14 +189,14 @@ class PostCell2: UITableViewCell {
                 
                 
                 self.horlLineView.snp_makeConstraints { (make) in
-                    make.top.equalTo(self.moreBtn).offset(2)
+                    make.top.equalTo(self.moreBtn.snp_bottom).offset(2)
                     make.width.equalTo(self.cardView).multipliedBy(0.9)
                     make.centerX.equalTo(self.cardView)
                     make.height.equalTo(1)
                 }
                 
                 self.replyBtn.snp_remakeConstraints { (make) in
-                    make.top.equalTo(self.postText.snp_bottom).offset(10)
+                    make.top.equalTo(self.horlLineView.snp_bottom).offset(10)
                     make.left.equalTo(self.cardView).offset(10)
                     make.bottom.equalTo(self.cardView).offset(-10).priority(750)
                     make.right.equalTo(self.cardView.snp_centerX)
@@ -204,7 +204,7 @@ class PostCell2: UITableViewCell {
                 }
                 
                 self.imDownBtn.snp_remakeConstraints { (make) in
-                    make.top.equalTo(self.postText.snp_bottom).offset(10)
+                    make.top.equalTo(self.horlLineView.snp_bottom).offset(10)
                     make.left.equalTo(self.cardView.snp_centerX)
                     make.bottom.equalTo(self.cardView).offset(-10).priority(750)
                     make.right.equalTo(self.cardView).offset(-10)
