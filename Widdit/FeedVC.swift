@@ -8,6 +8,20 @@
 
 import UIKit
 import Parse
+import ImageViewer
+
+class WDTImageProvider: ImageProvider {
+    
+    var image: UIImage = UIImage()
+    
+    func provideImage(completion: UIImage? -> Void) {
+        completion(image)
+    }
+    
+    func provideImage(atIndex index: Int, completion: UIImage? -> Void) {
+        completion(image)
+    }
+}
 
 class FeedVC: UITableViewController {
     
@@ -200,6 +214,9 @@ class FeedVC: UITableViewController {
  */
     }
     
+    
+    
+    
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         if scrollView.contentOffset.y >= scrollView.contentSize.height - self.view.frame.size.height * 2 {
             loadMore()
@@ -233,6 +250,7 @@ class FeedVC: UITableViewController {
         let post = self.collectionOfPosts[indexPath.row]
         let user = post["user"] as! PFUser
         
+        cell.selectionStyle = .None
         
         let username = user.username
         cell.userNameBtn.setTitle(username, forState: .Normal)
@@ -252,6 +270,10 @@ class FeedVC: UITableViewController {
             cell.replyBtn.tag = indexPath.row
             cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
             cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
+//            let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(FeedVC.imageTapped(_:)))
+//            cell.postPhoto.userInteractionEnabled = true
+//            cell.postPhoto.addGestureRecognizer(tapGestureRecognizer)
+            
             
             cell.postText.text = post["postText"] as! String
             cell.firstNameLbl.text = user["firstName"] as? String
@@ -321,6 +343,20 @@ class FeedVC: UITableViewController {
         return cell
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let indexPath = tableView.indexPathForSelectedRow
+        let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as! PostCell2
+        
+        if let img = currentCell.postPhoto.image {
+            let imageProvider = WDTImageProvider()
+            imageProvider.image = img
+            let buttonAssets = CloseButtonAssets(normal: UIImage(named:"DeletePhotoButton")!, highlighted: UIImage(named: "DeletePhotoButton"))
+            let configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
+            
+            let imageViewer = ImageViewer(imageProvider: imageProvider, configuration: configuration, displacedView: currentCell.postPhoto)
+            self.presentImageViewer(imageViewer)
+        }
+    }
     
     func replyBtnTapped(sender: AnyObject) {
         let destVC = ReplyViewController()
