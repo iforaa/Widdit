@@ -138,6 +138,9 @@ class GuestVC: UITableViewController {
         // Connect objects with our information from arrays
         cell.userNameBtn.setTitle(self.user.username, forState: .Normal)
         cell.postText.text = post["postText"] as! String
+        cell.firstNameLbl.text = user["firstName"] as? String
+        cell.user = user
+        cell.post = post
         
         if PFUser.currentUser()?.username == user.username {
             cell.replyBtn.hidden = true
@@ -148,6 +151,12 @@ class GuestVC: UITableViewController {
             cell.imDownBtn.hidden = false
             cell.myPost = false
         }
+        
+        
+        cell.userNameBtn.tag = indexPath.row
+        cell.replyBtn.tag = indexPath.row
+        cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+        
         
         // Place Profile Picture
         self.user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
@@ -177,11 +186,33 @@ class GuestVC: UITableViewController {
             cell.distanceLbl.text = ""
         }
         
+        // manipulate down button depending on did user like it or not
+        let didDown = PFQuery(className: "downs")
+        didDown.whereKey("by", equalTo: PFUser.currentUser()!.username!)
+        didDown.whereKey("to", equalTo: user.username!)
+        didDown.whereKey("post", equalTo: post)
+        didDown.countObjectsInBackgroundWithBlock { (count:Int32, error:NSError?) -> Void in
+            // if no any likes are found, else found likes
+            if count == 0 {
+                cell.imDownBtn.setTitle("I'm Down", forState: .Normal)
+            } else {
+                cell.imDownBtn.setTitle("Undown", forState: .Normal)
+            }
+        }
+        
         cell.moreBtn.hidden = true
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         return cell
+    }
+    
+    func replyBtnTapped(sender: AnyObject) {
+        let destVC = ReplyViewController()
+        let post = self.collectionOfPosts[sender.tag]
+        destVC.recipient = post.objectForKey("user") as! PFUser
+        destVC.usersPost = post
+        self.navigationController?.pushViewController(destVC, animated: true)
     }
     
     // header config

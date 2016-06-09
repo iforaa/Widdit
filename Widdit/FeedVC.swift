@@ -237,12 +237,7 @@ class FeedVC: UITableViewController {
         let username = user.username
         cell.userNameBtn.setTitle(username, forState: .Normal)
         cell.post = post
-
-//        if self.numberOfPostsByUsername[username] > 1 {
-//            cell.morePostsButton.hidden = false
-//        } else {
-//            cell.morePostsButton.hidden = true
-//        }
+        cell.user = user
         
         if self.collectionOfPosts.count == 0 {
             cell.postText.text = "Awaiting first post..."
@@ -253,9 +248,9 @@ class FeedVC: UITableViewController {
             cell.userNameBtn.hidden = true
             cell.moreBtn.hidden = true
         } else {
+            cell.userNameBtn.tag = indexPath.row
             cell.replyBtn.tag = indexPath.row
             cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
-            cell.userNameBtn.tag = indexPath.row
             cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
             
             cell.postText.text = post["postText"] as! String

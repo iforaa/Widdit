@@ -43,7 +43,7 @@ class PostCell2: UITableViewCell {
     var horlLineView = UIView()
     var vertLineView = UIView()
     
-    
+    var user: PFUser!
     var post: PFObject!
     var myPost: Bool = false
     
@@ -187,7 +187,6 @@ class PostCell2: UITableViewCell {
                     make.right.equalTo(self.cardView).offset(-10)
                 }
                 
-                
                 self.horlLineView.snp_makeConstraints { (make) in
                     make.top.equalTo(self.moreBtn.snp_bottom).offset(2)
                     make.width.equalTo(self.cardView).multipliedBy(0.9)
@@ -200,7 +199,6 @@ class PostCell2: UITableViewCell {
                     make.left.equalTo(self.cardView).offset(10)
                     make.bottom.equalTo(self.cardView).offset(-10).priority(750)
                     make.right.equalTo(self.cardView.snp_centerX)
-                    
                 }
                 
                 self.imDownBtn.snp_remakeConstraints { (make) in
@@ -254,19 +252,19 @@ class PostCell2: UITableViewCell {
             sender.setTitle("Undown", forState: .Normal)
             let object = PFObject(className: "downs")
             object["by"] = PFUser.currentUser()?.username
-            object["to"] = userNameBtn.titleLabel?.text
+            object["to"] = self.user.username
             object["post"] = self.post
             object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
                     print("Downed")
                     
                     // send notification as down
-                    if self.userNameBtn.titleLabel?.text != PFUser.currentUser()?.username {
+                    if self.user.username != PFUser.currentUser()?.username {
                         let activityObj = PFObject(className: "Activity")
                         activityObj["by"] = PFUser.currentUser()?.username
                         activityObj["ava"] = PFUser.currentUser()?.objectForKey("ava") as! PFFile
-                        activityObj["to"] = self.userNameBtn.titleLabel?.text
-                        activityObj["owner"] = self.userNameBtn.titleLabel?.text
+                        activityObj["to"] = self.user.username
+                        activityObj["owner"] = self.user.username
                         activityObj["type"] = "down"
                         activityObj["postText"] = self.postText.text
                         activityObj.saveEventually()
@@ -280,7 +278,7 @@ class PostCell2: UITableViewCell {
             // request existing downs of current user to show post
             let query = PFQuery(className: "downs")
             query.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-            query.whereKey("to", equalTo: (userNameBtn.titleLabel?.text)!)
+            query.whereKey("to", equalTo: (user.username)!)
             query.whereKey("post", equalTo: self.post)
             query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
                 
@@ -294,8 +292,8 @@ class PostCell2: UITableViewCell {
                             // delete down notification
                             let activityQuery = PFQuery(className: "Activity")
                             activityQuery.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-                            activityQuery.whereKey("to", equalTo: self.userNameBtn.titleLabel!.text!)
-                            activityQuery.whereKey("uuid", equalTo: (self.userNameBtn.titleLabel?.text)!)
+                            activityQuery.whereKey("to", equalTo: self.user.username!)
+                            activityQuery.whereKey("uuid", equalTo: self.user.username!)
                             activityQuery.whereKey("type", equalTo: "down")
                             activityQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
                                 if error == nil {
