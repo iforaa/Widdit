@@ -256,6 +256,20 @@ class PostCell2: UITableViewCell {
             object["post"] = self.post
             object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
+                    
+                    let userQuery = PFUser.query()
+                    userQuery?.whereKey("username", equalTo: self.user.username!)
+                    
+                    let pushQuery = PFInstallation.query()
+                    pushQuery?.whereKey("user", matchesQuery: userQuery!)
+                    
+                    let push = PFPush()
+                    let data = ["alert": "\(PFUser.currentUser()!.username!) is down for your post", "badge": "Increment", "sound": "notification.mp3"]
+                    push.setData(data)
+                    
+                    push.setQuery(pushQuery)
+                    push.sendPushInBackground()
+                    
                     print("Downed")
                     
                     // send notification as down
@@ -288,6 +302,8 @@ class PostCell2: UITableViewCell {
                     object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                         if success {
                             print("Undowned")
+                            
+                            
                             
                             // delete down notification
                             let activityQuery = PFQuery(className: "Activity")

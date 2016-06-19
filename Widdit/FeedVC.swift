@@ -49,10 +49,10 @@ class FeedVC: UITableViewController {
         self.tableView.addSubview(refresher)
         
         // Receive Notification from PostCell if Post is Downed, to update CollectionView
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: "downed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedVC.refresh), name: "downed", object: nil)
 
         // Receive Notification from NewPostVC
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploaded:", name: "uploaded", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedVC.uploaded(_:)), name: "uploaded", object: nil)
     
         self.tableView.registerClass(PostCell2.self, forCellReuseIdentifier: "PostCell")
         self.tableView.backgroundColor = UIColor.whiteColor()
@@ -60,18 +60,16 @@ class FeedVC: UITableViewController {
         self.tableView.estimatedRowHeight = 150.0;
         self.tableView.separatorStyle = .None
 
+        
+        self.loadPosts()
     }
     
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        PFGeoPoint.geoPointForCurrentLocationInBackground {
-            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
-            self.loadPosts()
-            if error == nil {
-                self.geoPoint = geoPoint
-            }
-        }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+        
     }
     
     func refresh() {
@@ -85,6 +83,14 @@ class FeedVC: UITableViewController {
     }
     
     func loadPosts() {
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            
+            if error == nil {
+                self.geoPoint = geoPoint
+            }
+        }
+        
         let query = PFQuery(className: "posts")
         query.limit = self.page
         query.addDescendingOrder("createdAt")
@@ -136,90 +142,19 @@ class FeedVC: UITableViewController {
                     })
                 }
             }
+            
+            
+            
+            
             self.tableView.reloadData()
             self.refresher.endRefreshing()
             
         })
     }
-
-    func loadMore() {
-       /*
-        // if posts on the server are more than shown
-        if page <= usernameArray.count {
-            
-            // start animating indicator
-            indicator.startAnimating()
-            
-            // increase page size to load +10 posts
-            page = page + 10
-            
-            // Step 1 : Find Posts Related to the entire user base
-            let userQuery = PFQuery(className: "User")
-            userQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
-                if error == nil {
-                    
-                    // Clean Up
-                    self.usersArray.removeAll(keepCapacity: false)
-                    
-                    // find related objects
-                    for object in objects! {
-                        self.usersArray.append(object.objectForKey("User") as! String)
-                        
-                    }
-                    
-                    // Append current user to see own posts in feed
-                    self.usersArray.append(PFUser.currentUser()!.username!)
-                    
-                    // Step 2 : Find Posts made by the entire user base
-                    let query = PFQuery(className: "posts")
-                    query.limit = self.page
-                    query.addDescendingOrder("createdAt")
-                    query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                        if error == nil {
-                            
-                            
-                            // Clean Up
-                            self.usernameArray.removeAll(keepCapacity: false)
-                            self.avaArray.removeAll(keepCapacity: false)
-                            self.dateArray.removeAll(keepCapacity: false)
-                            self.postsArray.removeAll(keepCapacity: false)
-                            self.uuidArray.removeAll(keepCapacity: false)
-                            self.firstNameArray.removeAll(keepCapacity: false)
-                            
-                            // Find Related Objects
-                            for object in objects! {
-                                
-                                self.usernameArray.append(object.objectForKey("username") as! String)
-                                self.avaArray.append(object.objectForKey("ava") as! PFFile)
-                                self.dateArray.append(object.createdAt)
-                                self.postsArray.append(object.objectForKey("postText") as! String)
-                                self.uuidArray.append(object.objectForKey("uuid") as! String)
-                                self.firstNameArray.append(object.objectForKey("firstName") as! String)
-                            }
-                            
-                            // Reload Collection View and End Spinning of Refresher
-                            self.collectionView?.reloadData()
-                            self.refresher.endRefreshing()
-                            self.indicator.stopAnimating()
-                        } else {
-                            print(error?.localizedDescription)
-                        }
-                    })
-                    
-                } else {
-                    print(error?.localizedDescription)
-                }
-            }
-        }
- */
-    }
-    
-    
-    
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         if scrollView.contentOffset.y >= scrollView.contentSize.height - self.view.frame.size.height * 2 {
-            loadMore()
+//            loadMore()
         }
     }
 
@@ -388,96 +323,6 @@ class FeedVC: UITableViewController {
             self.navigationController?.pushViewController(guest, animated: true)
 //        }
     }
-    
-
-    
-    
-//    // clicked more button
-//    @IBAction func moreBtn_click(sender: AnyObject) {
-//        
-//        // call index of button
-//        let i = sender.layer.valueForKey("index") as! NSIndexPath
-//        
-//        // call cell to call further cell date
-//        let cell = collectionView?.cellForItemAtIndexPath(i)  as! PostCell
-//        
-//        
-//        // DELET ACTION
-//        let delete = UIAlertAction(title: "Delete", style: .Default) { (UIAlertAction) -> Void in
-//            
-//            // STEP 1. Delete row from tableView
-//            self.usernameArray.removeAtIndex(i.row)
-//            self.avaArray.removeAtIndex(i.row)
-//            self.dateArray.removeAtIndex(i.row)
-//            self.postsArray.removeAtIndex(i.row)
-//            self.uuidArray.removeAtIndex(i.row)
-//            
-//            // STEP 2. Delete post from server
-//            let postQuery = PFQuery(className: "posts")
-//            postQuery.whereKey("uuid", equalTo: cell.uuidLbl.text!)
-//            postQuery.findObjectsInBackgroundWithBlock({ (objects:[PFObject]?, error:NSError?) -> Void in
-//                if error == nil {
-//                    for object in objects! {
-//                        object.deleteInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
-//                            if success {
-//                                
-//                                // send notification to rootViewController to update shown posts
-//                                NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
-//                                
-//                                // push back
-//                                self.navigationController?.popViewControllerAnimated(true)
-//                            } else {
-//                                print(error!.localizedDescription)
-//                            }
-//                        })
-//                    }
-//                } else {
-//                    print(error?.localizedDescription)
-//                }
-//            })
-//            
-//            
-//        }
-//        
-//        
-//        // COMPLAIN ACTION
-//        let complain = UIAlertAction(title: "Complain", style: .Default) { (UIAlertAction) -> Void in
-//            
-//            // send complain to server
-//            let complainObj = PFObject(className: "complain")
-//            complainObj["by"] = PFUser.currentUser()?.username
-//            complainObj["to"] = cell.uuidLbl.text
-//            complainObj["owner"] = cell.userNameBtn.titleLabel?.text
-//            complainObj.saveInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
-//                if success {
-//                    self.alert("Complain has been made successfully", message: "Thank You! We will consider your complain")
-//                } else {
-//                    self.alert("ERROR", message: error!.localizedDescription)
-//                }
-//            })
-//        }
-//        
-//        // CANCEL ACTION
-//        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-//        
-//        
-//        // create menu controller
-//        let menu = UIAlertController(title: "Menu", message: nil, preferredStyle: .ActionSheet)
-//        
-//        
-//        // if post belongs to user, he can delete post, else he can't
-//        if cell.userNameBtn.titleLabel?.text == PFUser.currentUser()?.username {
-//            menu.addAction(delete)
-//            menu.addAction(cancel)
-//        } else {
-//            menu.addAction(complain)
-//            menu.addAction(cancel)
-//        }
-//        
-//        // show menu
-//        self.presentViewController(menu, animated: true, completion: nil)
-//    }
-//    
     
     // alert action
     func alert (title: String, message : String) {

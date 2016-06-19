@@ -510,9 +510,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ksA-NY-uhu">
-                                <rect key="frame" x="85" y="308" width="150" height="150"/>
-                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="140" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FvQ-4B-7FL">
                                 <rect key="frame" x="20" y="197" width="280" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -556,13 +553,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="FvQ-4B-7FL" firstAttribute="leading" secondItem="OzY-R6-IRO" secondAttribute="leadingMargin" constant="4" id="4X4-el-vgR"/>
-                            <constraint firstItem="8f8-eF-eRR" firstAttribute="centerX" secondItem="ksA-NY-uhu" secondAttribute="centerX" id="5P4-kw-lRI"/>
-                            <constraint firstItem="6yz-tv-DfX" firstAttribute="top" secondItem="ksA-NY-uhu" secondAttribute="bottom" constant="110" id="98j-Xw-UkE"/>
                             <constraint firstItem="8f8-eF-eRR" firstAttribute="top" secondItem="FvQ-4B-7FL" secondAttribute="bottom" constant="17" id="E16-Dp-3LM"/>
                             <constraint firstItem="rrb-TP-TZH" firstAttribute="leading" secondItem="OzY-R6-IRO" secondAttribute="leading" id="IJ4-oj-KNu"/>
-                            <constraint firstItem="ksA-NY-uhu" firstAttribute="top" secondItem="8f8-eF-eRR" secondAttribute="bottom" constant="32" id="IlO-b6-Ejn"/>
                             <constraint firstItem="FvQ-4B-7FL" firstAttribute="leading" secondItem="8f8-eF-eRR" secondAttribute="leading" id="KK9-Ir-uQr"/>
-                            <constraint firstItem="ksA-NY-uhu" firstAttribute="leading" secondItem="OzY-R6-IRO" secondAttribute="leadingMargin" constant="69" id="NBd-Df-gGm"/>
                             <constraint firstAttribute="trailing" secondItem="rrb-TP-TZH" secondAttribute="trailing" id="Udz-nc-s0c"/>
                             <constraint firstItem="FvQ-4B-7FL" firstAttribute="trailing" secondItem="8f8-eF-eRR" secondAttribute="trailing" id="VYE-6R-Aj9"/>
                             <constraint firstItem="rrb-TP-TZH" firstAttribute="centerX" secondItem="FvQ-4B-7FL" secondAttribute="centerX" id="efa-hN-9fZ"/>
@@ -595,7 +588,6 @@
                         <outlet property="postDurationLabel" destination="8f8-eF-eRR" id="d2X-bu-yal"/>
                         <outlet property="postTxt" destination="rrb-TP-TZH" id="wb2-Yj-z4W"/>
                         <outlet property="remainingLabel" destination="FvQ-4B-7FL" id="BH4-jM-oGI"/>
-                        <outlet property="sliderView" destination="ksA-NY-uhu" id="17o-d3-kfK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lww-l4-IE4" userLabel="First Responder" sceneMemberID="firstResponder"/>

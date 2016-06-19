@@ -22,7 +22,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
     @IBOutlet weak var remainingLabel: UILabel!
     @IBOutlet var postDurationLabel: UILabel!
-    @IBOutlet var sliderView: UIView!
+    var sliderView: UIView = UIView()
     private var progressLabel: UILabel!
     var sliderValue: Int?
     var photoImage: UIImage?
@@ -84,13 +84,24 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
 
     private func buildCircleSlider() {
         
-      self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
-      self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
-      self.sliderView.addSubview(self.circleSlider!)
+        self.view.addSubview(self.sliderView)
+        self.sliderView.snp_makeConstraints { (make) in
+            make.top.equalTo(self.postDurationLabel.snp_bottom).offset(5)
+            make.centerX.equalTo(self.view)
+            make.width.equalTo(self.view).multipliedBy(0.7)
+            make.height.equalTo(self.view.snp_width).multipliedBy(0.7)
+        }
+        
+        self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
+        self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
+        self.sliderView.addSubview(self.circleSlider!)
       
-      self.circleSlider.snp_makeConstraints { (make) in
-        make.edges.equalTo(self.sliderView)
-      }
+        
+        
+        
+        self.circleSlider.snp_makeConstraints { (make) in
+            make.edges.equalTo(self.sliderView)
+        }
       
     }
 

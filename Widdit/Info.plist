@@ -46,6 +46,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We want to send your location data to the NSA, please allow access to location services.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pacifico.ttf</string>
@@ -70,7 +72,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We want to send your location data to the NSA, please allow access to location services.</string>
 </dict>
 </plist>
