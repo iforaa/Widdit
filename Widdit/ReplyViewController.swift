@@ -159,47 +159,9 @@ extension ReplyViewController {
 
     parseMessage["sender"] = PFUser.currentUser()
     parseMessage["recipient"] = self.recipient
-//    let recipientQuery = PFQuery(className: "_User")
-//
-//    recipientQuery.whereKey("username", equalTo: toUser)
-//
-//    recipientQuery.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, err) in
-//        if err == nil {
-//            if objects?.count > 0 {
-//                dispatch_async(dispatch_get_main_queue(), {
-//                    let pointer = objects?.first
-//                    parseMessage["recipient"] = pointer
-//                    parseMessage.saveInBackground()
-//                })
-//            } else {
-//                print("No objects")
-//            }
-//        } else {
-//            print(err)
-//        }
-//    }
-    
-//    let acl = PFACL()
-//    acl.setReadAccess(true, forUser: PFUser.currentUser()!)
-//    acl.setReadAccess(true, forUser: self.recipient)
-//    acl.setWriteAccess(true, forUser: PFUser.currentUser()!)
-//    acl.setWriteAccess(true, forUser: self.recipient)
-//    parseMessage.ACL = acl
-    
     parseMessage["body"] = self.textView.text
-
-    let userQuery = PFUser.query()
-    userQuery?.whereKey("username", equalTo: self.recipient.username!)
-
-    let pushQuery = PFInstallation.query()
-    pushQuery?.whereKey("user", matchesQuery: userQuery!)
-
-    let push = PFPush()
-    let data = ["alert": "New message from \(PFUser.currentUser()!.username!): \(self.textView.text)", "badge": "Increment", "sound": "notification.mp3"]
-    push.setData(data)
-    push.setQuery(pushQuery)
-    push.sendPushInBackground()
     
+    WDTPush.sendPushAfterReply(self.recipient.username!, msg: self.textView.text)
 
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 

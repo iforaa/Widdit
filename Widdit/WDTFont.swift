@@ -9,7 +9,11 @@
 import UIKit
 
 extension UIFont {
-    class func WDTPacifico(size: CGFloat) -> UIFont {
-        return UIFont(name: "Pacifico", size: size)!
+    class func WDTAgoraRegular(size: CGFloat) -> UIFont {
+        return UIFont(name: "PFAgoraSansPro-Regular", size: size)!
+    }
+    
+    class func WDTAgoraMedium(size: CGFloat) -> UIFont {
+        return UIFont(name: "PFAgoraSansPro-Medium", size: size)!
     }
 }

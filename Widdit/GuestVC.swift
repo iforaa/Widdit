@@ -30,17 +30,17 @@ class GuestVC: UITableViewController {
         self.tableView.backgroundColor = UIColor.whiteColor()
         
         // Swipe to go back
-        let backSwipe = UISwipeGestureRecognizer(target: self, action: "back:")
+        let backSwipe = UISwipeGestureRecognizer(target: self, action: #selector(GuestVC.back(_:)))
         backSwipe.direction = UISwipeGestureRecognizerDirection.Right
         self.view.addGestureRecognizer(backSwipe)
         
         // Pull to Refresh
         refresher = UIRefreshControl()
-        refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        refresher.addTarget(self, action: #selector(GuestVC.refresh), forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.addSubview(refresher)
         
         
-        self.tableView.registerClass(PostCell2.self, forCellReuseIdentifier: "PostCell")
+        self.tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
         self.tableView.backgroundColor = UIColor.whiteColor()
         self.tableView.rowHeight = UITableViewAutomaticDimension;
         self.tableView.estimatedRowHeight = 150.0;
@@ -57,11 +57,6 @@ class GuestVC: UITableViewController {
         
         // Push Back
         self.navigationController?.popViewControllerAnimated(true)
-        
-        // Clean Guest Username or deduct the last guest username from guestName = Array
-//        if !guestName.isEmpty {
-//            guestName.removeLast()
-//        }
     }
     
     func refresh() {
@@ -85,77 +80,14 @@ class GuestVC: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
         -> UITableViewCell
     {
-        let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell2
-        
+        let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = self.collectionOfPosts[indexPath.row]
-        
-        // Connect objects with our information from arrays
-        cell.userNameBtn.setTitle(self.user.username, forState: .Normal)
-        cell.postText.text = post["postText"] as! String
-        cell.firstNameLbl.text = user["firstName"] as? String
-        cell.user = user
-        cell.post = post
-        cell.selectionStyle = .None
-        
-        if PFUser.currentUser()?.username == user.username {
-            cell.replyBtn.hidden = true
-            cell.imDownBtn.hidden = true
-            cell.myPost = true
-        } else {
-            cell.replyBtn.hidden = false
-            cell.imDownBtn.hidden = false
-            cell.myPost = false
-        }
-        
-        
+       
         cell.userNameBtn.tag = indexPath.row
         cell.replyBtn.tag = indexPath.row
         cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
-        
-        
-        // Place Profile Picture
-        self.user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-            cell.avaImage.image = UIImage(data: data!)
-        }
-        
-        if let photoFile = post["photoFile"] {
-            cell.postPhoto.image = UIImage()
-            
-            photoFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-                cell.postPhoto.image = UIImage(data: data!)
-            }
-        } else {
-            cell.postPhoto.image = nil
-        }
-        
-        let hoursexpired = post["hoursexpired"] as! NSDate
-        let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970
-        
-        cell.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
-        
-        if let postGeoPoint = post["geoPoint"] {
-            print(self.geoPoint)
-            
-            cell.distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(self.geoPoint))
-        } else {
-            cell.distanceLbl.text = ""
-        }
-        
-        // manipulate down button depending on did user like it or not
-        let didDown = PFQuery(className: "downs")
-        didDown.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-        didDown.whereKey("to", equalTo: user.username!)
-        didDown.whereKey("post", equalTo: post)
-        didDown.countObjectsInBackgroundWithBlock { (count:Int32, error:NSError?) -> Void in
-            // if no any likes are found, else found likes
-            if count == 0 {
-                cell.imDownBtn.setTitle("I'm Down", forState: .Normal)
-            } else {
-                cell.imDownBtn.setTitle("Undown", forState: .Normal)
-            }
-        }
-        
-        cell.moreBtn.hidden = true
+        cell.geoPoint = self.geoPoint
+        cell.fillCell(post)
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()

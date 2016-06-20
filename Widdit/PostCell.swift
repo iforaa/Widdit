@@ -25,7 +25,7 @@ class WDTCardView: UIView {
     }
 }
 
-class PostCell2: UITableViewCell {
+class PostCell: UITableViewCell {
     
     var avaImage: UIImageView = UIImageView()
     var postPhoto: UIImageView = UIImageView()
@@ -42,6 +42,7 @@ class PostCell2: UITableViewCell {
     var distanceLbl: UILabel = UILabel()
     var horlLineView = UIView()
     var vertLineView = UIView()
+    var geoPoint: PFGeoPoint?
     
     var user: PFUser!
     var post: PFObject!
@@ -50,6 +51,7 @@ class PostCell2: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureSubviews()
+        self.selectionStyle = .None
     }
     
     // We won’t use this but it’s required for the class to compile
@@ -82,13 +84,13 @@ class PostCell2: UITableViewCell {
         self.replyBtn.backgroundColor = UIColor.WDTGrayBlueColor()
         self.replyBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         self.replyBtn.setTitle("Reply", forState: .Normal)
-        self.replyBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
+        self.replyBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
         
         
         self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
         self.imDownBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         self.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-        self.imDownBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
+        self.imDownBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
         
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
@@ -99,24 +101,24 @@ class PostCell2: UITableViewCell {
         self.avaImage.clipsToBounds = true
         
         self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.userNameBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
+        self.userNameBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
         self.userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
         self.userNameBtn.titleLabel?.textAlignment = .Left
         
         self.moreBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.moreBtn.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
+        self.moreBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
         self.moreBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
         self.moreBtn.setTitle("More posts...", forState: .Normal)
         
         
         self.firstNameLbl.textColor = UIColor.grayColor()
-        self.firstNameLbl.font = UIFont.systemFontOfSize(12)
+        self.firstNameLbl.font = UIFont.WDTAgoraRegular(12)
         
         self.timeLbl.textColor = UIColor.grayColor()
-        self.timeLbl.font = UIFont.systemFontOfSize(12)
+        self.timeLbl.font = UIFont.WDTAgoraRegular(12)
         
         self.distanceLbl.textColor = UIColor.grayColor()
-        self.distanceLbl.font = UIFont.systemFontOfSize(12)
+        self.distanceLbl.font = UIFont.WDTAgoraRegular(12)
         
         
         self.backgroundColor = UIColor.whiteColor()
@@ -224,7 +226,67 @@ class PostCell2: UITableViewCell {
 
     
     
-
+    func fillCell(post: PFObject) {
+        let user = post["user"] as! PFUser
+        
+        let username = user.username
+        self.userNameBtn.setTitle(username, forState: .Normal)
+        self.post = post
+        self.user = user
+    
+        
+        self.postText.text = post["postText"] as! String
+        self.firstNameLbl.text = user["firstName"] as? String
+        self.imDownBtn.hidden = false
+        self.userNameBtn.hidden = false
+        self.moreBtn.hidden = false
+        
+        if PFUser.currentUser()?.username == user.username {
+            self.replyBtn.hidden = true
+            self.imDownBtn.hidden = true
+            self.myPost = true
+        } else {
+            self.replyBtn.hidden = false
+            self.imDownBtn.hidden = false
+            self.myPost = false
+        }
+        
+        WDTActivity.isDown(user, post: post) { (down) in
+            if down == true {
+                self.imDownBtn.setTitle("I'm Down", forState: .Normal)
+            } else {
+                self.imDownBtn.setTitle("Undown", forState: .Normal)
+            }
+        }
+        
+        
+        // Place Profile Picture
+        user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+            self.avaImage.image = UIImage(data: data!)
+        }
+        
+        
+        if let photoFile = post["photoFile"] {
+            self.postPhoto.image = UIImage()
+            
+            photoFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                self.postPhoto.image = UIImage(data: data!)
+            }
+        } else {
+            self.postPhoto.image = nil
+        }
+        
+        let hoursexpired = post["hoursexpired"] as! NSDate
+        let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970
+        
+        self.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
+        
+        if let postGeoPoint = post["geoPoint"] {
+            self.distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(self.geoPoint))
+        } else {
+            self.distanceLbl.text = ""
+        }
+    }
     
     func cardSetup() {
         self.cardView.snp_makeConstraints { (make) in
@@ -249,276 +311,14 @@ class PostCell2: UITableViewCell {
         let title = sender.titleForState(.Normal)
        
         if title == "I'm Down" {
+            print("Downed")
             sender.setTitle("Undown", forState: .Normal)
-            let object = PFObject(className: "downs")
-            object["by"] = PFUser.currentUser()?.username
-            object["to"] = self.user.username
-            object["post"] = self.post
-            object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
-                if success {
-                    
-                    let userQuery = PFUser.query()
-                    userQuery?.whereKey("username", equalTo: self.user.username!)
-                    
-                    let pushQuery = PFInstallation.query()
-                    pushQuery?.whereKey("user", matchesQuery: userQuery!)
-                    
-                    let push = PFPush()
-                    let data = ["alert": "\(PFUser.currentUser()!.username!) is down for your post", "badge": "Increment", "sound": "notification.mp3"]
-                    push.setData(data)
-                    
-                    push.setQuery(pushQuery)
-                    push.sendPushInBackground()
-                    
-                    print("Downed")
-                    
-                    // send notification as down
-                    if self.user.username != PFUser.currentUser()?.username {
-                        let activityObj = PFObject(className: "Activity")
-                        activityObj["by"] = PFUser.currentUser()?.username
-                        activityObj["ava"] = PFUser.currentUser()?.objectForKey("ava") as! PFFile
-                        activityObj["to"] = self.user.username
-                        activityObj["owner"] = self.user.username
-                        activityObj["type"] = "down"
-                        activityObj["postText"] = self.postText.text
-                        activityObj.saveEventually()
-                    }
-                }
-            })
+            WDTActivity.addActivity(self.user, post: self.post, type: .Down)
             
-            // to unDown
         } else {
+            print("UnDown")
             sender.setTitle("I'm Down", forState: .Normal)
-            // request existing downs of current user to show post
-            let query = PFQuery(className: "downs")
-            query.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-            query.whereKey("to", equalTo: (user.username)!)
-            query.whereKey("post", equalTo: self.post)
-            query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                
-                // find objects - downs
-                for object in objects! {
-                    // delete found downs
-                    object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
-                        if success {
-                            print("Undowned")
-                            
-                            
-                            
-                            // delete down notification
-                            let activityQuery = PFQuery(className: "Activity")
-                            activityQuery.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-                            activityQuery.whereKey("to", equalTo: self.user.username!)
-                            activityQuery.whereKey("uuid", equalTo: self.user.username!)
-                            activityQuery.whereKey("type", equalTo: "down")
-                            activityQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                                if error == nil {
-                                    
-                                    for object in objects! {
-                                        object.deleteEventually()
-                                    }
-                                }
-                            })
-                        }
-                    })
-                }
-            })
+            WDTActivity.deleteActivity(self.user, type: .Down)
         }
     }
 }
-
-class PostCell: UICollectionViewCell {
-    
-    var avaImage: UIImageView = UIImageView()
-    var postText: UITextView = UITextView()
-    var imDownBtn: UIButton = UIButton(type: .Custom)
-    var timeLbl: UILabel = UILabel()
-    var firstNameLbl: UILabel = UILabel()
-    var userNameBtn: UIButton = UIButton(type: .Custom)
-    var uuidLbl: UILabel = UILabel()
-    var cardView: UIView = UIView()
-    var moreBtn: UIButton = UIButton(type: .Custom)
-    var replyBtn: UIButton = UIButton(type: .Custom)
-    var morePostsButton: UIButton = UIButton(type: .Custom)
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    
-        self.contentView.addSubview(self.cardView)
-        
-        
-        
-        self.cardView.addSubview(self.avaImage)
-        
-        self.avaImage.snp_makeConstraints { (make) in
-            make.left.equalTo(self.contentView).offset(10)
-            make.top.equalTo(self.contentView).offset(10)
-            make.width.equalTo(50)
-            make.height.equalTo(60)
-        }
-        
-        self.cardView.addSubview(self.postText)
-        
-        self.postText.scrollEnabled = false
-        self.postText.snp_makeConstraints { (make) in
-            make.left.equalTo(self.contentView).offset(5)
-            make.right.equalTo(self.contentView).offset(-5)
-            make.top.equalTo(self.avaImage.snp_bottom).offset(5)
-            make.height.equalTo(50)
-        }
-        
-        
-        self.cardView.addSubview(self.imDownBtn)
-        
-        self.imDownBtn.snp_makeConstraints { (make) in
-            make.height.equalTo(25)
-            make.left.equalTo(self.contentView).offset(-5)
-            make.right.equalTo(self.contentView.snp_centerX)
-            make.bottom.equalTo(self.contentView)
-        }
-        
-        self.cardView.addSubview(self.replyBtn)
-        
-        self.replyBtn.snp_makeConstraints { (make) in
-            make.height.equalTo(25)
-            make.left.equalTo(self.contentView.snp_centerX).offset(5)
-            make.right.equalTo(self.contentView)
-            make.bottom.equalTo(self.contentView)
-        }
-        
-        
-        
-        self.cardView.snp_makeConstraints { (make) in
-            make.height.equalTo(self.avaImage.snp_height)
-            
-        }
-        
-        self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.uuidLbl.hidden = true
-        
-        // Rounded Square Image
-        self.avaImage.layer.cornerRadius = 8.0
-        self.avaImage.clipsToBounds = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        
-    }
-    
-    override var bounds: CGRect {
-        didSet {
-            contentView.frame = bounds
-        }
-    }
-    
-    var isHeightCalculated: Bool = false
-    
-    
-    
-    //    func cardSetup() {
-    //        self.cardView.alpha = 1
-    //        self.cardView.layer.masksToBounds = false
-    //        self.cardView.layer.cornerRadius = 2
-    //        self.cardView.layer.shadowOffset = CGSizeMake(0, 1)
-    //        self.cardView.layer.shadowRadius = 5
-    //        let path = UIBezierPath()
-    ////        self.cardView.layer.shadowOpacity = 0.5
-    ////        self.cardView.layer.shadowPath = path.CGPath
-    //        self.cardView.backgroundColor = UIColor.WDTGrayBlueColor()
-    //        self.backgroundColor = UIColor.WDTGrayBlueColor()
-    //    }
-    
-    //    override func layoutSubviews() {
-    //        self.cardSetup()
-    //    }
-    
-    @IBAction func morePostsButtonPressed(sender: UIButton) {
-        
-    }
-    
-    @IBAction func downBtnTapped(sender: AnyObject) {
-        
-        // declare title of button
-        let title = sender.titleForState(.Normal)
-        
-        if title == "I'm Down" {
-            
-            let object = PFObject(className: "downs")
-            object["by"] = PFUser.currentUser()?.username
-            object["to"] = uuidLbl.text
-            object.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
-                if success {
-                    print("Downed")
-                    
-                    // send notification if we downed to refresh collectionView
-                    NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
-                    
-                    // send notification as down
-                    if self.userNameBtn.titleLabel?.text != PFUser.currentUser()?.username {
-                        let activityObj = PFObject(className: "Activity")
-                        activityObj["by"] = PFUser.currentUser()?.username
-                        activityObj["ava"] = PFUser.currentUser()?.objectForKey("ava") as! PFFile
-                        activityObj["to"] = self.userNameBtn.titleLabel?.text
-                        activityObj["owner"] = self.userNameBtn.titleLabel?.text
-                        activityObj["uuid"] = self.uuidLbl.text
-                        activityObj["type"] = "down"
-                        activityObj["postText"] = self.postText.text
-                        activityObj.saveEventually()
-                    }
-                    
-                    
-                }
-            })
-            
-            // to unDown
-        } else {
-            
-            // request existing downs of current user to show post
-            let query = PFQuery(className: "downs")
-            query.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-            query.whereKey("to", equalTo: uuidLbl.text!)
-            query.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                
-                // find objects - downs
-                for object in objects! {
-                    // delete found downs
-                    object.deleteInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
-                        if success {
-                            print("Undowned")
-                            
-                            
-                            // send notification if we downed to refreash CollectionView
-                            NSNotificationCenter.defaultCenter().postNotificationName("downed", object: nil)
-                            
-                            // delete down notification
-                            let activityQuery = PFQuery(className: "Activity")
-                            activityQuery.whereKey("by", equalTo: PFUser.currentUser()!.username!)
-                            activityQuery.whereKey("to", equalTo: self.userNameBtn.titleLabel!.text!)
-                            activityQuery.whereKey("uuid", equalTo: self.uuidLbl.text!)
-                            activityQuery.whereKey("type", equalTo: "down")
-                            activityQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-                                if error == nil {
-                                    
-                                    for object in objects! {
-                                        object.deleteEventually()
-                                    }
-                                }
-                            })
-                        }
-                    })
-                }
-            })
-            
-        }
-    }
-    
-}
-
-

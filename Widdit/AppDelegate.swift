@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
 
+        
+        
 
         //configure push notifications
         let userNotificationTypes: UIUserNotificationType = [.Alert, .Badge, .Sound]
@@ -29,14 +31,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
 
         //app wide navigation bar changes
-//        UINavigationBar.appearance().backgroundColor = UIColor.whiteColor()
         UINavigationBar.appearance().barTintColor = UIColor.WDTGrayBlueColor()
         UINavigationBar.appearance().tintColor = UIColor.WDTBlueColor()
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.WDTBlueColor()]
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.WDTBlueColor(), NSFontAttributeName: UIFont.WDTAgoraRegular(16)]
+        UINavigationBar.appearance().translucent = false
+//        UINavigationBar.appearance().setBackgroundImage(UIImage(), forBarMetrics: .Default)
+//        UINavigationBar.appearance().shadowImage = UIImage()
+//        
+//        
+//        let shadowPath = UIBezierPath(rect: UINavigationBar.appearance().bounds)
+//        UINavigationBar.appearance().layer.masksToBounds = false
+//        UINavigationBar.appearance().layer.shadowColor = UIColor.blackColor().CGColor
+//        UINavigationBar.appearance().layer.shadowOffset = CGSizeMake(0.0, 2.0)
+//        UINavigationBar.appearance().layer.shadowOpacity = 0.5
+//        UINavigationBar.appearance().layer.shadowPath = shadowPath.CGPath
+//        UINavigationBar.appearance().layer.cornerRadius = 4.0
+        
 
         //app wide bar button item changes
-        UITabBar.appearance().backgroundColor = UIColor.blackColor()
+        
         UITabBar.appearance().tintColor = UIColor.WDTBlueColor()
+        
+        
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.WDTBlueColor(), NSFontAttributeName: UIFont.WDTAgoraRegular(16)], forState: .Normal)
+        
 //        UITabBar.appearance().barTintColor = UIColor.blueColor()
 
         //app wide status bar changes
@@ -93,6 +111,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         PFPush.handlePush(userInfo)
+        
+        print(userInfo)
+        
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {

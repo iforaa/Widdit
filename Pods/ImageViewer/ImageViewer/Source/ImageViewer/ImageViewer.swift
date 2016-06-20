@@ -454,6 +454,7 @@ public final class ImageViewer: UIViewController, UIScrollViewDelegate, UIViewCo
             }
             else {
                 swipeToDismissTransition.setParameters(latestTouchPoint.y, targetOffset: targetOffsetToReachBottom, verticalVelocity: verticalVelocity)
+                presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
             }
             
         default:
