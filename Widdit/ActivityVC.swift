@@ -10,17 +10,9 @@ import UIKit
 import Parse
 
 
-class ActivityVC: UICollectionViewController {
+class ActivityVC: UITableViewController {
     
-    // arrays to hold data from server
-//    var usernameArray = [String]()
-//    var avaArray = [PFFile]()
-//    var typeArray = [String]()
-//    var dateArray = [NSDate?]()
-//    var uuidArray = [String]()
-//    var ownerArray = [String]()
-//    var postTextArray = [String]()
-    var chats = [PFObject]()
+    let activity = WDTActivity()
     
     override func viewWillAppear(animated: Bool) {
         
@@ -30,230 +22,61 @@ class ActivityVC: UICollectionViewController {
         super.viewDidLoad()
         
         // dynamic collectionView height - dynamic cell
-        collectionView?.backgroundColor = UIColor .whiteColor()
+        self.tableView.backgroundColor = UIColor .whiteColor()
+        self.tableView.registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
         
         // title at the top
-        self.navigationItem.title = "Chats"
+        self.navigationItem.title = "Activity"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Messages", style: .Done, target: self, action: #selector(messagesButtonTapped))
         
-        // request notifications
-//        let query = PFQuery(className: "Activity")
-//        query.whereKey("to", equalTo: PFUser.currentUser()!.username!)
-//        query.limit = 30
-//        query.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) -> Void in
-//            if error == nil {
-//                
-//                // clean up
-//                self.usernameArray.removeAll(keepCapacity: false)
-//                self.avaArray.removeAll(keepCapacity: false)
-//                self.typeArray.removeAll(keepCapacity: false)
-//                self.dateArray.removeAll(keepCapacity: false)
-//                self.uuidArray.removeAll(keepCapacity: false)
-//                self.ownerArray.removeAll(keepCapacity: false)
-//                self.postTextArray.removeAll(keepCapacity: false)
-//                
-//                // found related objects
-//                for object in objects! {
-//                    
-//                    self.usernameArray.append(object.objectForKey("by") as! String)
-//                    self.avaArray.append(object.objectForKey("ava") as! PFFile)
-//                    self.typeArray.append(object.objectForKey("type") as! String)
-//                    self.dateArray.append(object.createdAt)
-//                    self.uuidArray.append(object.objectForKey("uuid") as! String)
-//                    self.ownerArray.append(object.objectForKey("owner") as! String)
-//                    self.postTextArray.append(object.objectForKey("postText") as! String)
-//                    
-//                    
-//                    // save notifcations as checked
-//                    object["checked"] = "yes"
-//                    object.saveEventually()
-//                    
-//                }
-//                
-//                // reload CollectionView to show received data
-//                self.collectionView?.reloadData()
-//                
-//            }
-//        }
-
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+        self.tableView.estimatedRowHeight = 50;
+        self.tableView.separatorStyle = .None
+        
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        guard let currentUser = PFUser.currentUser() else {return}
-        
-        let repliesToMeQuery = PFQuery(className: "replies")
-        repliesToMeQuery.whereKey("recipient", equalTo: currentUser)
-        
-        let repliesFromMeQuery = PFQuery(className: "replies")
-        repliesFromMeQuery.whereKey("sender", equalTo: currentUser)
-        
-        let replyQuery = PFQuery.orQueryWithSubqueries([repliesToMeQuery, repliesFromMeQuery])
-        replyQuery.includeKey("sender")
-        replyQuery.includeKey("recipient")
-        replyQuery.includeKey("post")
-        replyQuery.addDescendingOrder("createdAt")
-        
-        replyQuery.findObjectsInBackgroundWithBlock { (replies: [PFObject]?, error: NSError?) -> Void in
-            guard let replies = replies else {return}
-            print("replies = ", replies)
-            // filter replies to get chats
-            self.chats = replies.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
-                if acc.contains( {
-                    if $0["sender"].objectId == current["sender"].objectId{
-                        return true
-                    } else {
-                        return false
-                    }
-                }) {
-                    return acc
-                } else {
-                    return acc + [current]
-                }
-            }).filter({ // if post exists
-                if let _ = $0["post"] {
-                    if  $0["sender"].username != PFUser.currentUser()?.username {
-                        return true
-                    } else {
-                        return false
-                    }
-                    
-                } else {
-                    return false
-                }
-            })
-            
-            self.collectionView?.reloadData()
+        self.activity.requestDowns { (success) in
+            self.tableView.reloadData()
         }
     }
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "segueToReply" {
-            let destVC = segue.destinationViewController as! ReplyViewController
-            let row = sender?.tag
-            let sender = self.chats[row!]["sender"] as! PFUser
-            print(sender)
-            destVC.recipient = sender
-            destVC.usersPost = self.chats[row!]["post"] as! PFObject
-        }
+    
+    func messagesButtonTapped() {
+        let destVC = MessagesVC()
+        self.navigationController?.pushViewController(destVC, animated: true)
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.activity.downs.count
     }
-    */
-
-    // MARK: UICollectionViewDataSource
-
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-//        return usernameArray.count
-        return self.chats.count
-    }
-
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell", forIndexPath: indexPath) as! ActivityChatCell
-        
-//        let recipient = self.chats[indexPath.row]["recipient"] as! PFUser
-        let sender = self.chats[indexPath.row]["sender"] as! PFUser
-        let post = self.chats[indexPath.row]["post"] as! PFObject
-        let firstName = sender["firstName"] as! String
-        cell.usernameLbl.text = "Chat:  Me <->" + firstName
-        cell.postText.text = post["postText"] as! String
-        
-//        cell.usernameBtn.setTitle(usernameArray[indexPath.row], forState: .Normal)
-//        cell.usernameBtn.titleLabel?.text = usernameArray[indexPath.row]
-//        cell.infoLbl.text = "is down for your post"
-//        avaArray[indexPath.row].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-//            if error == nil {
-//                cell.avaImg.image = UIImage(data: data!)
-//            } else {
-//                print(error?.localizedDescription)
-//            }
-//        }
-//        cell.postText.text = postTextArray[indexPath.row]
-//        self.chats[indexPath.row][""]
-        // calculate post date
-//        let from = dateArray[indexPath.row]
-//        let now = NSDate()
-//        let components : NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .WeekOfMonth]
-//        let difference = NSCalendar.currentCalendar().components(components, fromDate: from!, toDate: now, options: [])
-//        
-//        // logic what to show: seconds, minuts, hours, days or weeks
-//        if difference.second <= 0 {
-//            cell.dateLbl.text = "now"
-//        }
-//        if difference.second > 0 && difference.minute == 0 {
-//            cell.dateLbl.text = "\(difference.second)s."
-//        }
-//        if difference.minute > 0 && difference.hour == 0 {
-//            cell.dateLbl.text = "\(difference.minute)m."
-//        }
-//        if difference.hour > 0 && difference.day == 0 {
-//            cell.dateLbl.text = "\(difference.hour)h."
-//        }
-//        if difference.day > 0 && difference.weekOfMonth == 0 {
-//            cell.dateLbl.text = "\(difference.day)d."
-//        }
-//        if difference.weekOfMonth > 0 {
-//            cell.dateLbl.text = "\(difference.weekOfMonth)w."
-//        }
- 
-        
-        // define info text
-//        if typeArray[indexPath.row] == "down" {
-//            cell.infoLbl.text = "is down for your post"
-//        }
-        
-        // Asign index of button
-//        cell.cell.layer.setValue(indexPath, forKey: "index")
-        cell.tag = indexPath.row
+    
+    // Create table view rows
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+        -> UITableViewCell
+    {
+        let cell = self.tableView!.dequeueReusableCellWithIdentifier("ActivityCell", forIndexPath: indexPath) as! ActivityCell
+        let sender = self.activity.downs[indexPath.row]["by"] as! PFUser
+        let post = self.activity.downs[indexPath.row]["post"] as! PFObject
+        cell.fillCell(sender, post: post)
+        cell.setNeedsUpdateConstraints()
+        cell.updateConstraintsIfNeeded()
         
         return cell
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let destVC = ReplyViewController()
+        let sender = self.activity.downs[indexPath.row]["by"] as! PFUser
+        let post = self.activity.downs[indexPath.row]["post"] as! PFObject
+        
+        destVC.recipient = sender
+        destVC.usersPost = post
+        
+        self.navigationController?.pushViewController(destVC, animated: true)
+
+    }
     
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
-    
-    }
-    */
 
 }

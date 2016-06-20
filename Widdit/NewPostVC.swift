@@ -9,18 +9,25 @@
 import UIKit
 import Parse
 import CircleSlider
+import ImagePicker
+import MBProgressHUD
 
-class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate {
+class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
     
+    
+    @IBOutlet weak var deletePhotoButton: UIButton!
+    @IBOutlet weak var addPhotoButton: UIButton!
     @IBOutlet weak var postTxt: UITextView!
     @IBOutlet weak var postBtn: UIButton!
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
     @IBOutlet weak var remainingLabel: UILabel!
     @IBOutlet var postDurationLabel: UILabel!
-    @IBOutlet var sliderView: UIView!
+    var sliderView: UIView = UIView()
     private var progressLabel: UILabel!
     var sliderValue: Int?
-
+    var photoImage: UIImage?
+    var geoPoint: PFGeoPoint?
+    
     private var circleProgress: CircleSlider! {
       didSet {
         self.circleProgress.tag = 1
@@ -65,17 +72,36 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
         self.postTxt.delegate = self
         self.buildCircleSlider()
+        
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            if error == nil {
+                self.geoPoint = geoPoint
+            }
+        }
+
     }
 
     private func buildCircleSlider() {
         
-      self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
-      self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
-      self.sliderView.addSubview(self.circleSlider!)
+        self.view.addSubview(self.sliderView)
+        self.sliderView.snp_makeConstraints { (make) in
+            make.top.equalTo(self.postDurationLabel.snp_bottom).offset(5)
+            make.centerX.equalTo(self.view)
+            make.width.equalTo(self.view).multipliedBy(0.7)
+            make.height.equalTo(self.view.snp_width).multipliedBy(0.7)
+        }
+        
+        self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
+        self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
+        self.sliderView.addSubview(self.circleSlider!)
       
-      self.circleSlider.snp_makeConstraints { (make) in
-        make.edges.equalTo(self.sliderView)
-      }
+        
+        
+        
+        self.circleSlider.snp_makeConstraints { (make) in
+            make.edges.equalTo(self.sliderView)
+        }
       
     }
 
@@ -83,7 +109,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         self.sliderValue = Int(sender.value)
         self.postDurationLabel.text = "Post will be visible for \(Int(sender.value)) hours"
     }
-
+    
 
     // User Taps TextView
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
@@ -93,7 +119,41 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         return true
     }
     
+    @IBAction func addPhotoButtonTapped(sender: AnyObject) {
+        let imagePickerController = ImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.imageLimit = 1
+        presentViewController(imagePickerController, animated: true, completion: nil)
+    }
+    
+    @IBAction func deletePhotoButtonTapped(sender: AnyObject) {
+        self.deletePhotoButton.alpha = 0.0
+        self.addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
+    }
+    
+    // MARK: UIImagePickerControllerDelegate
+    
+    func wrapperDidPress(images: [UIImage]) {
+        
+    }
+    
+    func doneButtonDidPress(images: [UIImage]) {
+        for img in images {
+            let resizedImage = UIImage.resizeImage(img, newWidth: 1080)
+            self.addPhotoButton.setImage(resizedImage, forState: .Normal)
+            self.photoImage = resizedImage
+        }
+        self.deletePhotoButton.alpha = 1.0
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func cancelButtonDidPress() {
+        
+    }
+    
+    
     // Text Changing in TextView
+    
     func textView(textView: UITextView,
         shouldChangeTextInRange range: NSRange,
         replacementText text: String) -> Bool{
@@ -136,44 +196,40 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
         // send data to server to "posts" class in Parse
         let object = PFObject(className: "posts")
-        object["username"] = PFUser.currentUser()?.username
-        object["ava"] = PFUser.currentUser()?.valueForKey("ava") as! PFFile
         object["postText"] = postTxt.text
-        object["firstName"] = PFUser.currentUser()?.valueForKey("firstName") as! String
         object["user"] = PFUser.currentUser()!
 
-        func toLocalTime(date: NSDate) -> NSDate {
-          let tz = NSTimeZone.localTimeZone()
-          let seconds = tz.secondsFromGMTForDate(date)
-          return NSDate(timeInterval: NSTimeInterval(seconds), sinceDate: date)
+        if let geoPoint = self.geoPoint {
+            object["geoPoint"] = geoPoint
         }
-
-
+        
+        
         if let sliderValue = self.sliderValue {
-          let today = NSDate()
-          let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: toLocalTime(today), options: NSCalendarOptions(rawValue: 0))
-          print(tomorrow!)
-          object["hoursexpired"] = tomorrow
+            let today = NSDate()
+            let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))
+            print(tomorrow!)
+            object["hoursexpired"] = tomorrow
         }
 
         let uuid = NSUUID().UUIDString
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"
 
-//        let user = PFUser.currentUser()
-//
-//        user!["posts"] = object
-
+        if let image = self.photoImage {
+            let photoData = UIImagePNGRepresentation(image)
+            let photoFile = PFFile(name:"postPhoto.png", data:photoData!)
+            
+            object["photoFile"] = photoFile
+        }
+        
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         // Save Information
         object.saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
+            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
             if error == nil {
-                
                 // send notification with name "uploaded"
                 NSNotificationCenter.defaultCenter().postNotificationName("uploaded", object: nil)
-
                 // dismiss editVC
                 self.dismissViewControllerAnimated(true, completion: nil)
-                
-                
                 // Reset Everything
                 self.viewDidLoad()
 

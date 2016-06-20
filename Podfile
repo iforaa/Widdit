@@ -12,5 +12,9 @@ pod 'Bolts'
 pod 'ParseFacebookUtilsV4'
 pod 'SinchVerification-Swift'
 pod 'JSQMessagesViewController'
+pod 'MBProgressHUD', '~> 0.9.2'
+pod 'ImagePicker'
+pod 'ImageViewer'
+
 end
 
