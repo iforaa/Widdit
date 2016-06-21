@@ -26,7 +26,6 @@ class WDTImageProvider: ImageProvider {
 class FeedVC: UITableViewController {
     
     // UI Objects
-    @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     var refresher = UIRefreshControl()
     
@@ -43,6 +42,9 @@ class FeedVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.setBottomBorderColor()
+
         
         let shadowPath = UIBezierPath(rect: self.tabBarController!.tabBar.bounds)
         self.tabBarController!.tabBar.layer.masksToBounds = false
@@ -69,6 +71,7 @@ class FeedVC: UITableViewController {
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedVC.uploaded(_:)), name: "uploaded", object: nil)
     
+        self.tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
         self.tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
         self.tableView.backgroundColor = UIColor.whiteColor()
         self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -115,6 +118,10 @@ class FeedVC: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.wdtPost.collectionOfPosts.count
     }
     
@@ -123,11 +130,10 @@ class FeedVC: UITableViewController {
         -> UITableViewCell
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
-        let post = self.wdtPost.collectionOfPosts[indexPath.row]
+        let post = self.wdtPost.collectionOfPosts[indexPath.section]
         
-        cell.userNameBtn.tag = indexPath.row
-        cell.replyBtn.tag = indexPath.row
-        cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+        cell.userNameBtn.tag = indexPath.section
+        cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
@@ -137,6 +143,7 @@ class FeedVC: UITableViewController {
         
         return cell
     }
+    
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let indexPath = tableView.indexPathForSelectedRow
@@ -148,6 +155,69 @@ class FeedVC: UITableViewController {
             let imageViewer = ImageViewer(imageProvider: self.imageProvider, configuration: self.configuration, displacedView: currentCell.postPhoto)
             
             self.presentImageViewer(imageViewer)
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let post = self.wdtPost.collectionOfPosts[section]
+        let user = post["user"] as! PFUser
+        
+        if PFUser.currentUser()?.username == user.username {
+            
+            return 0
+            
+        } else {
+            return 55
+        }
+    }
+    
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        
+        let footer = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("FeedFooter")
+        let footerView = footer as! FeedFooter
+        let post = self.wdtPost.collectionOfPosts[section]
+        let user = post["user"] as! PFUser
+        
+        if PFUser.currentUser()?.username == user.username {
+            return UIView()
+        } else {
+            
+            footerView.hideSubvies(false)
+            
+            footerView.imDownBtn.tag = section
+            footerView.replyBtn.tag = section
+            footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+            footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
+            footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
+            WDTActivity.isDown(user, post: post) { (down) in
+                if down == true {
+                    footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
+                } else {
+                    footerView.imDownBtn.setTitle("Undown", forState: .Normal)
+                }
+            }
+        }
+        
+        return footerView
+
+    }
+    
+    func downBtnTapped(sender: AnyObject) {
+
+        let title = sender.titleForState(.Normal)
+        
+        let post = self.wdtPost.collectionOfPosts[sender.tag]
+        let user = post["user"] as! PFUser
+        
+        if title == "I'm Down" {
+            print("Downed")
+            sender.setTitle("Undown", forState: .Normal)
+            WDTActivity.addActivity(user, post: post, type: .Down)
+            
+        } else {
+            print("UnDown")
+            sender.setTitle("I'm Down", forState: .Normal)
+            WDTActivity.deleteActivity(user, type: .Down)
         }
     }
     
@@ -196,5 +266,7 @@ class FeedVC: UITableViewController {
 
    
 }
+
+
 
 

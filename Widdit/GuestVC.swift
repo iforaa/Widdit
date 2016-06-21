@@ -84,8 +84,8 @@ class GuestVC: UITableViewController {
         let post = self.collectionOfPosts[indexPath.row]
        
         cell.userNameBtn.tag = indexPath.row
-        cell.replyBtn.tag = indexPath.row
-        cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
+//        cell.replyBtn.tag = indexPath.row
+//        cell.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
         

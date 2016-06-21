@@ -9,21 +9,37 @@
 import UIKit
 import Parse
 
-class WDTCardView: UIView {
+class WDTCellCardView: UIView {
+    
+    var shadowLayer:CAShapeLayer? = nil
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
         
-        let shadowPath = UIBezierPath(rect: bounds)
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.blackColor().CGColor
-        layer.shadowOffset = CGSizeMake(0.0, 2.0)
-        layer.shadowOpacity = 0.5
-        layer.shadowPath = shadowPath.CGPath
-        layer.cornerRadius = 4.0
+        if self.shadowLayer == nil {
+            let maskPath = UIBezierPath(roundedRect: bounds,
+                                        byRoundingCorners: [.TopLeft, .TopRight],
+                                        cornerRadii: CGSize(width: 4.0, height: 4.0))
+            
+            self.shadowLayer = CAShapeLayer()
+            self.shadowLayer!.path = maskPath.CGPath
+            self.shadowLayer!.fillColor = UIColor.WDTGrayBlueColor().CGColor
+            
+            self.shadowLayer!.shadowColor = UIColor.darkGrayColor().CGColor
+            self.shadowLayer!.shadowPath = self.shadowLayer!.path
+            self.shadowLayer!.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            self.shadowLayer!.shadowOpacity = 0.5
+            self.shadowLayer!.shadowRadius = 2
+            
+            layer.insertSublayer(self.shadowLayer!, atIndex: 0)
+        }
+        
     }
 }
+
+import Kingfisher
+import AFImageHelper
 
 class PostCell: UITableViewCell {
     
@@ -31,16 +47,15 @@ class PostCell: UITableViewCell {
     var postPhoto: UIImageView = UIImageView()
     
     var postText: UITextView = UITextView()
-    var imDownBtn: UIButton = UIButton(type: .Custom)
+    var moreBtn: UIButton = UIButton(type: .Custom)
     var timeLbl: UILabel = UILabel()
     var firstNameLbl: UILabel = UILabel()
     var userNameBtn: UIButton = UIButton(type: .Custom)
-    var cardView: WDTCardView = WDTCardView()
-    var moreBtn: UIButton = UIButton(type: .Custom)
-    var replyBtn: UIButton = UIButton(type: .Custom)
+    var cardView: WDTCellCardView = WDTCellCardView()
+    
     var morePostsButton: UIButton = UIButton(type: .Custom)
     var distanceLbl: UILabel = UILabel()
-    var horlLineView = UIView()
+    
     var vertLineView = UIView()
     var geoPoint: PFGeoPoint?
     
@@ -69,28 +84,14 @@ class PostCell: UITableViewCell {
         self.cardView.addSubview(self.timeLbl)
         self.cardView.addSubview(self.firstNameLbl)
         self.cardView.addSubview(self.userNameBtn)
-        self.cardView.addSubview(self.imDownBtn)
-        self.cardView.addSubview(self.replyBtn)
         self.cardView.addSubview(self.moreBtn)
-        self.cardView.addSubview(self.horlLineView)
+
         self.cardView.addSubview(self.vertLineView)
         self.cardView.addSubview(self.distanceLbl)
         
-        self.horlLineView.backgroundColor = UIColor.grayColor()
-        self.horlLineView.alpha = 0.5
         self.vertLineView.backgroundColor = UIColor.grayColor()
         self.vertLineView.alpha = 0.5
         
-        self.replyBtn.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.replyBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.replyBtn.setTitle("Reply", forState: .Normal)
-        self.replyBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
-        
-        
-        self.imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.imDownBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-        self.imDownBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
         
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
@@ -134,7 +135,7 @@ class PostCell: UITableViewCell {
     
     override func updateConstraints() {
 
-       // if isHeightCalculated == false {
+        if isHeightCalculated == false {
 
             self.avaImage.snp_remakeConstraints(closure: { (make) in
                 make.top.equalTo(self.cardView).offset(10)
@@ -182,45 +183,16 @@ class PostCell: UITableViewCell {
                 
             })
 
-            if self.myPost == false {
-                
-                self.moreBtn.snp_makeConstraints { (make) in
-                    make.top.equalTo(self.postText.snp_bottom).offset(2)
-                    make.right.equalTo(self.cardView).offset(-10)
-                }
-                
-                self.horlLineView.snp_makeConstraints { (make) in
-                    make.top.equalTo(self.moreBtn.snp_bottom).offset(2)
-                    make.width.equalTo(self.cardView).multipliedBy(0.9)
-                    make.centerX.equalTo(self.cardView)
-                    make.height.equalTo(1)
-                }
-                
-                self.replyBtn.snp_remakeConstraints { (make) in
-                    make.top.equalTo(self.horlLineView.snp_bottom).offset(10)
-                    make.left.equalTo(self.cardView).offset(10)
-                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-                    make.right.equalTo(self.cardView.snp_centerX)
-                }
-                
-                self.imDownBtn.snp_remakeConstraints { (make) in
-                    make.top.equalTo(self.horlLineView.snp_bottom).offset(10)
-                    make.left.equalTo(self.cardView.snp_centerX)
-                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-                    make.right.equalTo(self.cardView).offset(-10)
-                }
-            } else {
                 self.moreBtn.snp_makeConstraints { (make) in
                     make.top.equalTo(self.postText.snp_bottom).offset(2)
                     make.right.equalTo(self.cardView).offset(-10)
                     make.bottom.equalTo(self.cardView).offset(-10).priority(750)
                 }
-            }
-        
-        
 
+        
+        }
             isHeightCalculated = true
-        //}
+
         super.updateConstraints()
     }
 
@@ -237,41 +209,34 @@ class PostCell: UITableViewCell {
         
         self.postText.text = post["postText"] as! String
         self.firstNameLbl.text = user["firstName"] as? String
-        self.imDownBtn.hidden = false
+//        self.imDownBtn.hidden = false
         self.userNameBtn.hidden = false
         self.moreBtn.hidden = false
         
         if PFUser.currentUser()?.username == user.username {
-            self.replyBtn.hidden = true
-            self.imDownBtn.hidden = true
+//            self.replyBtn.hidden = true
+//            self.imDownBtn.hidden = true
             self.myPost = true
         } else {
-            self.replyBtn.hidden = false
-            self.imDownBtn.hidden = false
+//            self.replyBtn.hidden = false
+//            self.imDownBtn.hidden = false
             self.myPost = false
         }
         
-        WDTActivity.isDown(user, post: post) { (down) in
-            if down == true {
-                self.imDownBtn.setTitle("I'm Down", forState: .Normal)
-            } else {
-                self.imDownBtn.setTitle("Undown", forState: .Normal)
-            }
-        }
+
         
         
         // Place Profile Picture
-        user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-            self.avaImage.image = UIImage(data: data!)
-        }
+        let avaFile: PFFile = user["ava"] as! PFFile
+        self.avaImage.kf_setImageWithURL(NSURL(string: avaFile.url!)!)
         
-        
-        if let photoFile = post["photoFile"] {
-            self.postPhoto.image = UIImage()
+        if let photoFile = post["photoFile"]  {
             
-            photoFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-                self.postPhoto.image = UIImage(data: data!)
-            }
+            
+            let pfFile: PFFile = photoFile as! PFFile
+            let url = pfFile.url!
+            self.postPhoto.kf_setImageWithURL(NSURL(string: url)!, placeholderImage: UIImage(color: UIColor.WDTBlueColor(), size: CGSizeMake(self.bounds.size.width, 200)), optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+
         } else {
             self.postPhoto.image = nil
         }
@@ -293,10 +258,10 @@ class PostCell: UITableViewCell {
             make.top.equalTo(self.contentView).offset(10)
             make.left.equalTo(self.contentView).offset(10)
             make.right.equalTo(self.contentView).offset(-10)
-            make.bottom.equalTo(self.contentView).offset(-10)
+            make.bottom.equalTo(self.contentView)
         }
         
-        self.cardView.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.cardView.backgroundColor = UIColor.clearColor()
     }
     
     
@@ -305,20 +270,5 @@ class PostCell: UITableViewCell {
 
     }
     
-    @IBAction func downBtnTapped(sender: AnyObject) {
-        
-        // declare title of button
-        let title = sender.titleForState(.Normal)
-       
-        if title == "I'm Down" {
-            print("Downed")
-            sender.setTitle("Undown", forState: .Normal)
-            WDTActivity.addActivity(self.user, post: self.post, type: .Down)
-            
-        } else {
-            print("UnDown")
-            sender.setTitle("I'm Down", forState: .Normal)
-            WDTActivity.deleteActivity(self.user, type: .Down)
-        }
-    }
+
 }

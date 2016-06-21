@@ -12,6 +12,12 @@ import CircleSlider
 import ImagePicker
 import MBProgressHUD
 
+
+class WDTCircleSlider: CircleSlider {
+    
+}
+
+
 class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
     
     
@@ -52,6 +58,20 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         .MaxValue(24),
         .MinValue(0)
       ]
+    }
+    
+    private var sliderOptionsSecondCircle: [CircleSliderOption] {
+        return [
+            //default bar color: UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)
+            .BarColor(UIColor.purpleColor()),
+            .ThumbColor(UIColor.WDTGrayBlueColor()),
+            .ThumbWidth(CGFloat(30)),
+            .TrackingColor(UIColor.WDTBlueColor()),
+            .BarWidth(5),
+            .StartAngle(270),
+            .MaxValue(12),
+            .MinValue(0)
+        ]
     }
 
 
@@ -94,9 +114,10 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
         self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
         self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
+        
+        
         self.sliderView.addSubview(self.circleSlider!)
       
-        
         
         
         self.circleSlider.snp_makeConstraints { (make) in
@@ -106,6 +127,9 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
 
     func valueChange(sender: CircleSlider) {
+        if self.sliderValue == 24 {
+            self.circleSlider.changeOptions(sliderOptionsSecondCircle)
+        }
         self.sliderValue = Int(sender.value)
         self.postDurationLabel.text = "Post will be visible for \(Int(sender.value)) hours"
     }

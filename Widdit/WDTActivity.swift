@@ -36,13 +36,14 @@ class WDTActivity {
     }
     
     class func addActivity(user: PFUser, post: PFObject, type: WDTActivityType) {
-        WDTPush.sendPushAfterDownTapped(user.username!)
+        WDTPush.sendPushAfterDownTapped(user.username!, postId: post.objectId!)
         
         let activityObj = PFObject(className: "Activity")
         
         activityObj["by"] = PFUser.currentUser()
         activityObj["to"] = user
         activityObj["post"] = post
+        activityObj["postText"] = post["postText"]
         activityObj["type"] = type.rawValue
         
         activityObj.saveEventually()

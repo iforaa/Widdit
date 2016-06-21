@@ -58,6 +58,8 @@
 		A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241091D1818AC0060FAC0 /* MessagesVC.swift */; };
 		A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241121D1851F90060FAC0 /* WDTPost.swift */; };
 		A67241151D1853740060FAC0 /* WDTArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241141D1853740060FAC0 /* WDTArray.swift */; };
+		A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */; };
+		A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241181D19326F0060FAC0 /* FeedFooter.swift */; };
 		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
 		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
 		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
@@ -123,6 +125,8 @@
 		A67241091D1818AC0060FAC0 /* MessagesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
 		A67241121D1851F90060FAC0 /* WDTPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPost.swift; sourceTree = "<group>"; };
 		A67241141D1853740060FAC0 /* WDTArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTArray.swift; sourceTree = "<group>"; };
+		A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTNavigationBar.swift; sourceTree = "<group>"; };
+		A67241181D19326F0060FAC0 /* FeedFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFooter.swift; sourceTree = "<group>"; };
 		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
 		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
 		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
@@ -179,7 +183,7 @@
 			children = (
 				31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */,
 				311147651CAB42AE00150ECD /* Main.storyboard */,
-				A67240F91D1808220060FAC0 /* WDTLibraries */,
+				A67240F91D1808220060FAC0 /* WDTUtils */,
 				A6E1530F1CFEB61D00787394 /* Model */,
 				A6E1530D1CFEB59400787394 /* UI */,
 				A6E153101CFEB65A00787394 /* Supporting files */,
@@ -217,13 +221,13 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A67240F91D1808220060FAC0 /* WDTLibraries */ = {
+		A67240F91D1808220060FAC0 /* WDTUtils */ = {
 			isa = PBXGroup;
 			children = (
 				A67241101D1847530060FAC0 /* Parse */,
 				A6E153061CFD967F00787394 /* Extension */,
 			);
-			name = WDTLibraries;
+			name = WDTUtils;
 			sourceTree = "<group>";
 		};
 		A67241061D1815E20060FAC0 /* AgoraFont */ = {
@@ -294,6 +298,7 @@
 				A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */,
 				A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */,
 				A67241141D1853740060FAC0 /* WDTArray.swift */,
+				A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -318,6 +323,7 @@
 				31F12ED71C9E65E300E63A2E /* PostCell.swift */,
 				31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */,
 				79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */,
+				A67241181D19326F0060FAC0 /* FeedFooter.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -508,6 +514,7 @@
 				31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */,
 				79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */,
 				31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */,
+				A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */,
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
 				A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */,
 				A67241151D1853740060FAC0 /* WDTArray.swift in Sources */,
@@ -528,6 +535,7 @@
 				79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */,
 				31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */,
 				31F12ED01C9E191000E63A2E /* NewPostVC.swift in Sources */,
+				A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */,
 				311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */,
 				A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */,
 				79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */,
@@ -686,7 +694,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "af3ed6ab-d66b-4b6f-a07b-cbe0e1806735";
+				PROVISIONING_PROFILE = "45870820-edc3-4956-9227-63255d7182d8";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";
 			};
 			name = Release;

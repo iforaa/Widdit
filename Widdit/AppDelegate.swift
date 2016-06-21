@@ -34,25 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor.WDTGrayBlueColor()
         UINavigationBar.appearance().tintColor = UIColor.WDTBlueColor()
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.WDTBlueColor(), NSFontAttributeName: UIFont.WDTAgoraRegular(16)]
-        UINavigationBar.appearance().translucent = false
-//        UINavigationBar.appearance().setBackgroundImage(UIImage(), forBarMetrics: .Default)
-//        UINavigationBar.appearance().shadowImage = UIImage()
-//        
-//        
-//        let shadowPath = UIBezierPath(rect: UINavigationBar.appearance().bounds)
-//        UINavigationBar.appearance().layer.masksToBounds = false
-//        UINavigationBar.appearance().layer.shadowColor = UIColor.blackColor().CGColor
-//        UINavigationBar.appearance().layer.shadowOffset = CGSizeMake(0.0, 2.0)
-//        UINavigationBar.appearance().layer.shadowOpacity = 0.5
-//        UINavigationBar.appearance().layer.shadowPath = shadowPath.CGPath
-//        UINavigationBar.appearance().layer.cornerRadius = 4.0
+        UINavigationBar.appearance().translucent = true
         
 
+        
         //app wide bar button item changes
-        
         UITabBar.appearance().tintColor = UIColor.WDTBlueColor()
-        
-        
         UIBarButtonItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.WDTBlueColor(), NSFontAttributeName: UIFont.WDTAgoraRegular(16)], forState: .Normal)
         
 //        UITabBar.appearance().barTintColor = UIColor.blueColor()
@@ -83,8 +70,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
+        
+        guard let launchOptions = launchOptions else {return true}
+        if let userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject: AnyObject] {
+            
+            if let postObjectId = userInfo["post"], userObjectId = userInfo["who"] {
+                let post = PFObject(withoutDataWithClassName: "posts", objectId: postObjectId as? String)
+                let query = PFUser.query()
+                query?.whereKey("objectId", equalTo: userObjectId)
+                query?.getObjectInBackgroundWithId(userObjectId as! String, block: { (user: PFObject?, error: NSError?) in
+                    if let topController = UIApplication.topViewController() {
+                        let destVC = ReplyViewController()
+                        destVC.usersPost = post
+                        destVC.recipient = user as! PFUser
+                        topController.navigationController?.pushViewController(destVC, animated: true)
+                    }
+                })
+            }
+        }
+        
         return true
     }
+    
+    
+    func delayedAction() {
+        let alert2 = UIAlertController(title: "Ok2", message: "Ok", preferredStyle: .Alert)
+        if let topController = UIApplication.topViewController() {
+            topController.presentViewController(alert2, animated: true, completion: nil)
+        }
+
+    }
+    
     
     func login() {
         
@@ -97,10 +113,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
             window?.rootViewController = myTabBar
- 
+            
         }
         
     }
+
 
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let installation = PFInstallation.currentInstallation()
@@ -110,11 +127,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        PFPush.handlePush(userInfo)
-        
-        print(userInfo)
-        
-        
+        if let topController = UIApplication.topViewController() {
+            
+            let userObjectId = userInfo["who"] as! String
+            let postObjectId = userInfo["post"] as! String
+            
+            let post = PFObject(withoutDataWithClassName: "posts", objectId: postObjectId)
+            
+            let query = PFUser.query()
+            query?.whereKey("objectId", equalTo: userObjectId)
+            
+            query?.getObjectInBackgroundWithId(userObjectId, block: { (user: PFObject?, error: NSError?) in
+                let destVC = ReplyViewController()
+                destVC.recipient = user as! PFUser
+                destVC.usersPost = post
+                
+                if topController.isKindOfClass(ReplyViewController) {
+                    let replyVC = topController as! ReplyViewController
+                    replyVC.requestMessages()
+                } else {
+                    topController.navigationController?.pushViewController(destVC, animated: true)
+                }
+            })
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -218,3 +253,61 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension NSObject {
+    var theClassName: String {
+        return NSStringFromClass(self.dynamicType)
+    }
+}
+
+extension UIApplication {
+    class func topViewController(base: UIViewController? = UIApplication.sharedApplication().keyWindow?.rootViewController) -> UIViewController? {
+        if let nav = base as? UINavigationController {
+            return topViewController(nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController {
+            if let selected = tab.selectedViewController {
+                return topViewController(selected)
+            }
+        }
+        if let presented = base?.presentedViewController {
+            return topViewController(presented)
+        }
+        return base
+    }
+}
+
+extension NSTimer {
+    /**
+     Creates and schedules a one-time `NSTimer` instance.
+     
+     - Parameters:
+     - delay: The delay before execution.
+     - handler: A closure to execute after `delay`.
+     
+     - Returns: The newly-created `NSTimer` instance.
+     */
+    class func schedule(delay delay: NSTimeInterval, handler: NSTimer! -> Void) -> NSTimer {
+        let fireDate = delay + CFAbsoluteTimeGetCurrent()
+        let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, 0, 0, 0, handler)
+        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes)
+        return timer
+    }
+    
+    /**
+     Creates and schedules a repeating `NSTimer` instance.
+     
+     - Parameters:
+     - repeatInterval: The interval (in seconds) between each execution of
+     `handler`. Note that individual calls may be delayed; subsequent calls
+     to `handler` will be based on the time the timer was created.
+     - handler: A closure to execute at each `repeatInterval`.
+     
+     - Returns: The newly-created `NSTimer` instance.
+     */
+    class func schedule(repeatInterval interval: NSTimeInterval, handler: NSTimer! -> Void) -> NSTimer {
+        let fireDate = interval + CFAbsoluteTimeGetCurrent()
+        let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, interval, 0, 0, handler)
+        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes)
+        return timer
+    }
+}

@@ -24,7 +24,7 @@ class ActivityVC: UITableViewController {
         // dynamic collectionView height - dynamic cell
         self.tableView.backgroundColor = UIColor .whiteColor()
         self.tableView.registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
-        
+        self.tableView.separatorStyle = .None
         // title at the top
         self.navigationItem.title = "Activity"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Messages", style: .Done, target: self, action: #selector(messagesButtonTapped))
@@ -57,9 +57,10 @@ class ActivityVC: UITableViewController {
         -> UITableViewCell
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("ActivityCell", forIndexPath: indexPath) as! ActivityCell
-        let sender = self.activity.downs[indexPath.row]["by"] as! PFUser
-        let post = self.activity.downs[indexPath.row]["post"] as! PFObject
-        cell.fillCell(sender, post: post)
+        if let postText = self.activity.downs[indexPath.row]["postText"], let sender = self.activity.downs[indexPath.row]["by"] {
+            cell.fillCell(sender as! PFUser, postText: postText as! String)
+        }
+        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         

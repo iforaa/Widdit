@@ -47,63 +47,6 @@ class ReplyViewController: SLKTextViewController {
     installation["user"] = PFUser.currentUser()
     installation.saveInBackground()
 
-//    let userQuery = PFQuery(className: "_User")
-//    
-//    userQuery.whereKey("username", equalTo: self.recipientUsername)
-//
-//    userQuery.findObjectsInBackgroundWithBlock { (users: [PFObject]?, err) in
-//        if err == nil {
-            let replyQuery = PFQuery(className: "replies")
-//            self.recipient = users?.first as! PFUser
-    
-            replyQuery.whereKey("post", equalTo: self.usersPost)
-            replyQuery.whereKey("sender", containedIn: [PFUser.currentUser()!, self.recipient])
-            replyQuery.whereKey("recipient", containedIn: [PFUser.currentUser()!, self.recipient])
-            
-            replyQuery.includeKey("sender")
-            replyQuery.addDescendingOrder("createdAt")
-          
-            
-            replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
-                if err == nil {
-                    if replies?.count > 0 {
-                        self.messages = replies!.map({ (reply) -> MessageModel in
-                            
-                            var message = MessageModel(name: "", body: "", createdAt: NSDate())
-                            
-                            let sender = reply["sender"] as! PFUser
-
-                            if let firstName = sender["firstName"]  {
-                                message.name = firstName as! String
-                            } else {
-                                message.name = "No name"
-                            }
-                            
-                            if let body = reply["body"] {
-                                message.body = body as! String
-                            }
-                            
-                            if let createdAt = reply.createdAt {
-                                message.createdAt = createdAt
-                            }
-                            
-                            return message
-                        })
-                        print(replies)
-                        self.tableView?.reloadData()
-                    } else {
-                        print("No objects")
-                    }
-                } else {
-                    print(err)
-                }
-            })
-//        } else {
-//            print(err)
-//        }
-//    }
-
-
     self.tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
     self.inverted = false
     self.tableView!.rowHeight = UITableViewAutomaticDimension
@@ -119,8 +62,60 @@ class ReplyViewController: SLKTextViewController {
     self.textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
     self.textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
     self.textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
+    
+    
+    self.requestMessages()
   }
 
+    
+    func requestMessages() {
+        let replyQuery = PFQuery(className: "replies")
+        //            self.recipient = users?.first as! PFUser
+        
+        replyQuery.whereKey("post", equalTo: self.usersPost)
+        replyQuery.whereKey("sender", containedIn: [PFUser.currentUser()!, self.recipient])
+        replyQuery.whereKey("recipient", containedIn: [PFUser.currentUser()!, self.recipient])
+        
+        replyQuery.includeKey("sender")
+        replyQuery.addDescendingOrder("createdAt")
+        
+        
+        replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
+            if err == nil {
+                if replies?.count > 0 {
+                    self.messages = replies!.map({ (reply) -> MessageModel in
+                        
+                        var message = MessageModel(name: "", body: "", createdAt: NSDate())
+                        
+                        let sender = reply["sender"] as! PFUser
+                        
+                        if let firstName = sender["firstName"]  {
+                            message.name = firstName as! String
+                        } else {
+                            message.name = "No name"
+                        }
+                        
+                        if let body = reply["body"] {
+                            message.body = body as! String
+                        }
+                        
+                        if let createdAt = reply.createdAt {
+                            message.createdAt = createdAt
+                        }
+                        
+                        return message
+                    })
+                    print(replies)
+                    self.tableView?.reloadData()
+                } else {
+                    print("No objects")
+                }
+            } else {
+                print(err)
+            }
+        })
+    }
+    
   // MARK: UITableView Delegate
   // Return number of rows in the table
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -160,8 +155,10 @@ extension ReplyViewController {
     parseMessage["sender"] = PFUser.currentUser()
     parseMessage["recipient"] = self.recipient
     parseMessage["body"] = self.textView.text
+
+    parseMessage["postText"] = self.usersPost["postText"]
     
-    WDTPush.sendPushAfterReply(self.recipient.username!, msg: self.textView.text)
+    WDTPush.sendPushAfterReply(self.recipient.username!, msg: self.textView.text, postId: self.usersPost.objectId!)
 
     let indexPath = NSIndexPath(forRow: 0, inSection: 0)
 

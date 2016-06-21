@@ -15,6 +15,9 @@ pod 'JSQMessagesViewController'
 pod 'MBProgressHUD', '~> 0.9.2'
 pod 'ImagePicker'
 pod 'ImageViewer'
+pod 'AsyncSwift'
+pod 'Kingfisher', '~> 2.4'
+pod 'AFImageHelper'
 
 end
 

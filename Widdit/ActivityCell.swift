@@ -48,12 +48,12 @@ class ActivityCell: UITableViewCell {
 
     }
     
-    func fillCell(user: PFUser, post: PFObject) {
+    func fillCell(user: PFUser, postText: String) {
         user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             self.avaImg.image = UIImage(data: data!)
         }
         
-        self.postText.text = post["postText"] as? String
+        self.postText.text = postText
         
         let firstName = user["firstName"] as! String
         self.username.text = firstName
@@ -125,11 +125,11 @@ class ActivityChatCell: UITableViewCell {
         self.postText.textColor = UIColor.grayColor()
     }
     
-    func fillCell(user: PFUser, post: PFObject) {
+    func fillCell(user: PFUser, postText: String) {
         user["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
             self.avaImg.image = UIImage(data: data!)
         }
-        self.postText.text = post["postText"] as? String
+        self.postText.text = postText
         let firstName = user["firstName"] as! String
         self.firstName.text = firstName
         

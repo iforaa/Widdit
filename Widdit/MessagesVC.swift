@@ -22,6 +22,7 @@ class MessagesVC: UITableViewController {
         // dynamic collectionView height - dynamic cell
         self.tableView.backgroundColor = UIColor .whiteColor()
         self.tableView.registerClass(ActivityChatCell.self, forCellReuseIdentifier: "ActivityChatCell")
+        
         // title at the top
         self.navigationItem.title = "Messages"
 
@@ -54,10 +55,12 @@ class MessagesVC: UITableViewController {
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("ActivityChatCell", forIndexPath: indexPath) as! ActivityChatCell
         
-        let sender = self.activity.chats[indexPath.row]["sender"] as! PFUser
-        let post = self.activity.chats[indexPath.row]["post"] as! PFObject
+        if let sender = self.activity.chats[indexPath.row]["sender"], let postText = self.activity.chats[indexPath.row]["postText"] {
+            
+            cell.fillCell(sender as! PFUser, postText: postText as! String)
+        }
         
-        cell.fillCell(sender, post: post)
+        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
     

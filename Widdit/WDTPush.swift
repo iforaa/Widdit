@@ -26,23 +26,32 @@ class WDTPush {
         push.sendPushInBackground()
     }
     
-    class func sendPushAfterDownTapped(toUsername: String) {
+    class func sendPushAfterDownTapped(toUsername: String, postId: String) {
         
         guard let username = PFUser.currentUser()?.username else {
             print("username is not set")
             return
         }
-        let data = ["alert": "\(PFUser.currentUser()!.username!) is down for your post", "badge": "Increment", "sound": "notification.mp3", "fromWhom": username]
+        
+        guard let userObjectId = PFUser.currentUser()?.objectId! else {
+            return
+        }
+        
+        let data = ["alert": "\(username) is down for your post", "badge": "Increment", "sound": "notification.mp3", "who": userObjectId, "post": postId]
         WDTPush.sendPush(toUsername, data: data)
     }
     
-    class func sendPushAfterReply(toUsername: String, msg: String) {
+    class func sendPushAfterReply(toUsername: String, msg: String, postId: String) {
         guard let username = PFUser.currentUser()?.username else {
             print("username is not set")
             return
         }
         
-        let data = ["alert": "New message from \(PFUser.currentUser()!.username!): \(msg)", "badge": "Increment", "sound": "notification.mp3", "fromWhom": username]
+        guard let userObjectId = PFUser.currentUser()?.objectId! else {
+            return
+        }
+        
+        let data = ["alert": "New message from \(username): \(msg)", "badge": "Increment", "sound": "notification.mp3", "who": userObjectId, "post": postId]
         WDTPush.sendPush(toUsername, data: data)
     }
 }
