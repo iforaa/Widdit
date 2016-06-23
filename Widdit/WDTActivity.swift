@@ -76,7 +76,13 @@ class WDTActivity {
         
         downsQuery.findObjectsInBackgroundWithBlock { (downs: [PFObject]?, error: NSError?) in
             if let downs = downs {
-                self.downs = downs
+                self.downs = downs.filter({
+                    if let _ = $0["post"] {
+                        return true
+                    } else {
+                        return false
+                    }
+                })
                 completion(success: true)
             } else {
                 completion(success: false)
@@ -100,8 +106,16 @@ class WDTActivity {
         
         replyQuery.findObjectsInBackgroundWithBlock { (replies: [PFObject]?, error: NSError?) -> Void in
             guard let replies = replies else {return}
-            print("replies = ", replies)
+            
             // filter replies to get chats
+            self.chats = replies.filter({
+                if let _ = $0["post"] {
+                    return true
+                } else {
+                    return false
+                }
+            })
+            
             self.chats = replies.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
                 if acc.contains( {
                     if $0["sender"].objectId == current["sender"].objectId{

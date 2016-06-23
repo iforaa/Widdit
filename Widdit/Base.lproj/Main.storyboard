@@ -403,59 +403,7 @@
                     <view key="view" contentMode="scaleToFill" id="OzY-R6-IRO">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="140" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FvQ-4B-7FL">
-                                <rect key="frame" x="20" y="197" width="280" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Yoooo" translatesAutoresizingMaskIntoConstraints="NO" id="rrb-TP-TZH">
-                                <rect key="frame" x="0.0" y="64" width="320" height="110"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="110" id="VdF-F6-b5R"/>
-                                </constraints>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
-                            </textView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8f8-eF-eRR">
-                                <rect key="frame" x="20" y="235" width="280" height="41"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="41" id="RRh-AS-ILO"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bFm-Hy-9bt">
-                                <rect key="frame" x="15" y="171" width="73" height="72"/>
-                                <state key="normal" title="Add Image" image="AddPhotoButton"/>
-                                <connections>
-                                    <action selector="addPhotoButtonTapped:" destination="dzY-LU-qkm" eventType="touchUpInside" id="maZ-hq-bC6"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vFA-F1-hMc">
-                                <rect key="frame" x="73" y="156" width="25" height="39"/>
-                                <state key="normal" title="Button" image="DeletePhotoButton"/>
-                                <connections>
-                                    <action selector="deletePhotoButtonTapped:" destination="dzY-LU-qkm" eventType="touchUpInside" id="iZP-lj-kcF"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="FvQ-4B-7FL" firstAttribute="leading" secondItem="OzY-R6-IRO" secondAttribute="leadingMargin" constant="4" id="4X4-el-vgR"/>
-                            <constraint firstItem="8f8-eF-eRR" firstAttribute="top" secondItem="FvQ-4B-7FL" secondAttribute="bottom" constant="17" id="E16-Dp-3LM"/>
-                            <constraint firstItem="rrb-TP-TZH" firstAttribute="leading" secondItem="OzY-R6-IRO" secondAttribute="leading" id="IJ4-oj-KNu"/>
-                            <constraint firstItem="FvQ-4B-7FL" firstAttribute="leading" secondItem="8f8-eF-eRR" secondAttribute="leading" id="KK9-Ir-uQr"/>
-                            <constraint firstAttribute="trailing" secondItem="rrb-TP-TZH" secondAttribute="trailing" id="Udz-nc-s0c"/>
-                            <constraint firstItem="FvQ-4B-7FL" firstAttribute="trailing" secondItem="8f8-eF-eRR" secondAttribute="trailing" id="VYE-6R-Aj9"/>
-                            <constraint firstItem="rrb-TP-TZH" firstAttribute="centerX" secondItem="FvQ-4B-7FL" secondAttribute="centerX" id="efa-hN-9fZ"/>
-                            <constraint firstItem="FvQ-4B-7FL" firstAttribute="top" secondItem="rrb-TP-TZH" secondAttribute="bottom" constant="23" id="luk-1X-hlG"/>
-                            <constraint firstItem="rrb-TP-TZH" firstAttribute="top" secondItem="oKZ-fa-kUJ" secondAttribute="bottom" id="ujP-2x-OL7"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="New" id="9Ys-rO-vBg">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="zMp-4R-zXf">
@@ -475,13 +423,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="addPhotoButton" destination="bFm-Hy-9bt" id="1MK-2r-m77"/>
                         <outlet property="cancelBtn" destination="zMp-4R-zXf" id="3cY-8G-QFZ"/>
-                        <outlet property="deletePhotoButton" destination="vFA-F1-hMc" id="1wa-re-Cir"/>
                         <outlet property="postBtn" destination="pGI-Yp-iJg" id="oqB-qC-SnO"/>
-                        <outlet property="postDurationLabel" destination="8f8-eF-eRR" id="d2X-bu-yal"/>
-                        <outlet property="postTxt" destination="rrb-TP-TZH" id="wb2-Yj-z4W"/>
-                        <outlet property="remainingLabel" destination="FvQ-4B-7FL" id="BH4-jM-oGI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lww-l4-IE4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -493,7 +436,7 @@
             <objects>
                 <collectionViewController storyboardIdentifier="YourDownsVC" id="ho3-Hf-Atl" customClass="YourDownsVC" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Fah-9e-aYh">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="oxS-WV-uVl">
                             <size key="itemSize" width="307" height="169"/>
@@ -503,7 +446,7 @@
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="Cell" id="Swm-FG-x60" customClass="PostCell" customModule="Widdit" customModuleProvider="target">
-                                <rect key="frame" x="7" y="64" width="307" height="169"/>
+                                <rect key="frame" x="7" y="0.0" width="307" height="169"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="307" height="169"/>
@@ -594,16 +537,6 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="Ue1-sk-OUd">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="ehb-Lh-nlO">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jTj-5e-4eK">
-                                <rect key="frame" x="16" y="7" width="82" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Your Downs"/>
-                                <connections>
-                                    <segue destination="ho3-Hf-Atl" kind="push" id="w9o-gE-y5d"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="stop" id="dv0-62-TfV">
                             <connections>
                                 <action selector="logout:" destination="UeY-CF-v1h" id="fEm-Lj-ee4"/>
@@ -1348,8 +1281,6 @@
     </scenes>
     <resources>
         <image name="ActivityTab" width="25" height="25"/>
-        <image name="AddPhotoButton" width="72" height="72"/>
-        <image name="DeletePhotoButton" width="19" height="19"/>
         <image name="FeedTab" width="25" height="25"/>
         <image name="ProfileTab" width="25" height="25"/>
         <image name="empty-profile" width="150" height="150"/>

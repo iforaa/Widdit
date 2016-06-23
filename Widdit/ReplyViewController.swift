@@ -77,7 +77,7 @@ class ReplyViewController: SLKTextViewController {
         replyQuery.whereKey("recipient", containedIn: [PFUser.currentUser()!, self.recipient])
         
         replyQuery.includeKey("sender")
-        replyQuery.addDescendingOrder("createdAt")
+        replyQuery.addAscendingOrder("createdAt")
         
         
         replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
@@ -160,19 +160,19 @@ extension ReplyViewController {
     
     WDTPush.sendPushAfterReply(self.recipient.username!, msg: self.textView.text, postId: self.usersPost.objectId!)
 
-    let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+    let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
 
     parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
-    print(parseMessage)
+    
     //sends message
     parseMessage.saveInBackgroundWithBlock { (bool, error) in
       if bool {
         print("Sent message")
         print(parseMessage)
-        let rowAnimation: UITableViewRowAnimation = self.inverted ? .Bottom : .Top
-        let scrollPosition: UITableViewScrollPosition = self.inverted ? .Bottom : .Top
+        let rowAnimation: UITableViewRowAnimation = .Bottom
+        let scrollPosition: UITableViewScrollPosition = .Bottom
         self.tableView!.beginUpdates()
-        self.messages.insert(message, atIndex: 0)
+        self.messages.append(message)
         self.tableView!.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
         self.tableView!.endUpdates()
         self.tableView!.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)

@@ -96,6 +96,7 @@ class PostCell: UITableViewCell {
         self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
         self.postText.textColor = UIColor.grayColor()
         self.postText.editable = false
+        self.postText.scrollEnabled = false
         
         // Rounded Square Image
         self.avaImage.layer.cornerRadius = 8.0
@@ -135,7 +136,7 @@ class PostCell: UITableViewCell {
     
     override func updateConstraints() {
 
-        if isHeightCalculated == false {
+//        if isHeightCalculated == false {
 
             self.avaImage.snp_remakeConstraints(closure: { (make) in
                 make.top.equalTo(self.cardView).offset(10)
@@ -179,19 +180,19 @@ class PostCell: UITableViewCell {
                 }
                 make.left.equalTo(self.cardView).offset(10)
                 make.right.equalTo(self.cardView).offset(-10)
-                make.height.equalTo(40)
+                make.bottom.equalTo(self.cardView).offset(-25).priority(750)
                 
             })
 
                 self.moreBtn.snp_makeConstraints { (make) in
                     make.top.equalTo(self.postText.snp_bottom).offset(2)
                     make.right.equalTo(self.cardView).offset(-10)
-                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+//                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
                 }
 
         
-        }
-            isHeightCalculated = true
+//        }
+//            isHeightCalculated = true
 
         super.updateConstraints()
     }

@@ -69,6 +69,9 @@ class ActivityVC: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let destVC = ReplyViewController()
+        
+        print(self.activity.downs[indexPath.row])
+        
         let sender = self.activity.downs[indexPath.row]["by"] as! PFUser
         let post = self.activity.downs[indexPath.row]["post"] as! PFObject
         

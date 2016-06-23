@@ -163,9 +163,7 @@ class FeedVC: UITableViewController {
         let user = post["user"] as! PFUser
         
         if PFUser.currentUser()?.username == user.username {
-            
             return 0
-            
         } else {
             return 55
         }

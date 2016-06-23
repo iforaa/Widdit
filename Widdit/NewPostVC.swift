@@ -15,64 +15,98 @@ import MBProgressHUD
 
 class WDTCircleSlider: CircleSlider {
     
+    enum WDTCircle {
+        case Hours
+        case Days
+    }
+    var circle: WDTCircle = .Hours
+    
+    class var sliderOptionsHours: [CircleSliderOption] {
+        return [
+            .BarColor(UIColor.grayColor()),
+            .ThumbColor(UIColor.WDTGrayBlueColor()),
+            .ThumbWidth(CGFloat(40)),
+            .TrackingColor(UIColor.WDTBlueColor()),
+            .BarWidth(2.5),
+            .StartAngle(270),
+            .MaxValue(23),
+            .MinValue(1)
+        ]
+    }
+    
+    class var sliderOptionsDays: [CircleSliderOption] {
+        return [
+            .BarColor(UIColor.WDTBlueColor()),
+            .ThumbColor(UIColor.WDTGrayBlueColor()),
+            .ThumbWidth(CGFloat(40)),
+            .TrackingColor(UIColor.purpleColor()),
+            .BarWidth(2.5),
+            .StartAngle(270),
+            .MaxValue(30),
+            .MinValue(1)
+        ]
+    }
+    
+    init() {
+        super.init(frame: CGRectZero, options: WDTCircleSlider.sliderOptionsHours)
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func changeOptionsFromHoursToDays() {
+        if circle == .Hours {
+            circle = .Days
+            self.changeOptions(WDTCircleSlider.sliderOptionsDays)
+        }
+    }
+    
+    func changeOptionsFromDaysToHours() {
+        if circle == .Days {
+            circle = .Hours
+            self.changeOptions(WDTCircleSlider.sliderOptionsHours)
+        }
+    }
+    
+    
+    var lastValue: Int = 0
+    
+    func roundControll() {
+        let value = Int(self.value)
+        
+        if lastValue == 23 && circle == .Hours {
+            if value == 24 || value == 1 || value == 2 || value == 3 {
+                self.changeOptionsFromHoursToDays()
+            }
+        } else if lastValue == 1 && circle == .Days {
+            if value == 31 || value == 30 || value == 29 {
+                self.changeOptionsFromDaysToHours()
+            }
+        }
+        
+        lastValue = value
+    }
 }
 
 
 class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
     
-    
-    @IBOutlet weak var deletePhotoButton: UIButton!
-    @IBOutlet weak var addPhotoButton: UIButton!
-    @IBOutlet weak var postTxt: UITextView!
     @IBOutlet weak var postBtn: UIButton!
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
-    @IBOutlet weak var remainingLabel: UILabel!
-    @IBOutlet var postDurationLabel: UILabel!
+    
+    var deletePhotoButton: UIButton = UIButton()
+    var addPhotoButton: UIButton = UIButton()
+    var postTxt: WDTPlaceholderTextView = WDTPlaceholderTextView()
+    var remainingLabel: UILabel = UILabel()
+    var postDurationLabel: UILabel = UILabel()
     var sliderView: UIView = UIView()
-    private var progressLabel: UILabel!
-    var sliderValue: Int?
+    var wdtSlider = WDTCircleSlider()
+    
     var photoImage: UIImage?
     var geoPoint: PFGeoPoint?
-    
-    private var circleProgress: CircleSlider! {
-      didSet {
-        self.circleProgress.tag = 1
-      }
-    }
-
-    private var circleSlider: CircleSlider! {
-      didSet {
-        self.circleSlider.tag = 0
-      }
-    }
-
-    private var sliderOptions: [CircleSliderOption] {
-      return [
-        //default bar color: UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)
-        .BarColor(UIColor.grayColor()),
-        .ThumbColor(UIColor.WDTGrayBlueColor()),
-        .ThumbWidth(CGFloat(30)),
-        .TrackingColor(UIColor.WDTBlueColor()),
-        .BarWidth(5),
-        .StartAngle(270),
-        .MaxValue(24),
-        .MinValue(0)
-      ]
-    }
-    
-    private var sliderOptionsSecondCircle: [CircleSliderOption] {
-        return [
-            //default bar color: UIColor(red: 198/255, green: 244/255, blue: 23/255, alpha: 0.2)
-            .BarColor(UIColor.purpleColor()),
-            .ThumbColor(UIColor.WDTGrayBlueColor()),
-            .ThumbWidth(CGFloat(30)),
-            .TrackingColor(UIColor.WDTBlueColor()),
-            .BarWidth(5),
-            .StartAngle(270),
-            .MaxValue(12),
-            .MinValue(0)
-        ]
-    }
 
 
     override func viewDidLoad() {
@@ -81,11 +115,77 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         // disable post button
         postBtn.enabled = false
 
+        self.view.backgroundColor = UIColor.WDTGrayBlueColor()
+        
+        self.view.addSubview(self.postDurationLabel)
+        self.view.addSubview(self.postTxt)
+        self.view.addSubview(self.addPhotoButton)
+        self.view.addSubview(self.remainingLabel)
+        self.view.addSubview(self.postDurationLabel)
+        self.view.addSubview(self.sliderView)
+        self.view.addSubview(self.deletePhotoButton)
+        
+        self.postTxt.font = UIFont.WDTAgoraRegular(18)
+        self.postTxt.placeholder = "What do you feel like doing"
+        self.postTxt.backgroundColor = UIColor.WDTGrayBlueColor()
+        self.postTxt.snp_makeConstraints { (make) in
+            make.top.equalTo(self.view).offset(5)
+            make.left.equalTo(self.view).offset(5)
+            make.right.equalTo(self.view).offset(-5)
+            make.height.equalTo(150)
+        }
+        self.addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
+        self.addPhotoButton.addTarget(self, action: #selector(addPhotoButtonTapped), forControlEvents: .TouchUpInside)
+        self.addPhotoButton.snp_makeConstraints { (make) in
+            make.right.equalTo(self.view).offset(-20)
+            make.top.equalTo(self.postTxt.snp_bottom).offset(20)
+            make.width.equalTo(50)
+            make.height.equalTo(50)
+        }
+        
+        self.deletePhotoButton.hidden = true
+        self.deletePhotoButton.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
+        self.deletePhotoButton.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
+        self.deletePhotoButton.snp_makeConstraints { (make) in
+            make.right.equalTo(self.view).offset(-11)
+            make.top.equalTo(self.postTxt.snp_bottom).offset(11)
+            make.width.equalTo(18)
+            make.height.equalTo(18)
+        }
+        
+        let line = UIView()
+        line.alpha = 0.6
+        self.view.addSubview(line)
+        line.backgroundColor = UIColor.grayColor()
+        line.snp_makeConstraints { (make) in
+            make.top.equalTo(self.addPhotoButton.snp_bottom).offset(20)
+            make.centerX.equalTo(self.view)
+            make.width.equalTo(self.view).multipliedBy(0.9)
+            make.height.equalTo(1)
+        }
 
+        
+        self.sliderView.snp_makeConstraints { (make) in
+            make.bottom.equalTo(self.view).offset(-50)
+            make.centerX.equalTo(self.view)
+            make.width.equalTo(200)
+            make.height.equalTo(200)
+        }
+        
+        
+        self.postDurationLabel.font = UIFont.WDTAgoraRegular(16)
+        self.postDurationLabel.snp_makeConstraints { (make) in
+            make.bottom.equalTo(self.sliderView.snp_top).offset(-25)
+            make.centerX.equalTo(self.view)
+        }
+        
         self.postDurationLabel.text = "Use dial to set post expiration"
+        
+        
+        
 
         // hide keyboard tap
-        let hideTap = UITapGestureRecognizer(target: self, action: "hideKeyboardTap")
+        let hideTap = UITapGestureRecognizer(target: self, action: #selector(NewPostVC.hideKeyboardTap))
         hideTap.numberOfTapsRequired = 1
         self.view.userInteractionEnabled = true
         self.view.addGestureRecognizer(hideTap)
@@ -99,59 +199,45 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
                 self.geoPoint = geoPoint
             }
         }
-
     }
 
-    private func buildCircleSlider() {
-        
-        self.view.addSubview(self.sliderView)
-        self.sliderView.snp_makeConstraints { (make) in
-            make.top.equalTo(self.postDurationLabel.snp_bottom).offset(5)
-            make.centerX.equalTo(self.view)
-            make.width.equalTo(self.view).multipliedBy(0.7)
-            make.height.equalTo(self.view.snp_width).multipliedBy(0.7)
-        }
-        
-        self.circleSlider = CircleSlider(frame: CGRectZero, options: self.sliderOptions)
-        self.circleSlider?.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
-        
-        
-        self.sliderView.addSubview(self.circleSlider!)
-      
-        
-        
-        self.circleSlider.snp_makeConstraints { (make) in
+    func buildCircleSlider() {
+        self.wdtSlider.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
+        self.sliderView.addSubview(self.wdtSlider)
+        self.wdtSlider.snp_makeConstraints { (make) in
             make.edges.equalTo(self.sliderView)
         }
-      
+//        self.wdtSlider.value = 12
     }
-
+    
     func valueChange(sender: CircleSlider) {
-        if self.sliderValue == 24 {
-            self.circleSlider.changeOptions(sliderOptionsSecondCircle)
-        }
-        self.sliderValue = Int(sender.value)
-        self.postDurationLabel.text = "Post will be visible for \(Int(sender.value)) hours"
-    }
-    
-
-    // User Taps TextView
-    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
-        self.postTxt = textView
-        self.postTxt.text = ""
+        self.wdtSlider.roundControll()
         
-        return true
+        var s = ""
+        if Int(sender.value) == 1 {
+            s = ""
+        } else {
+            s = "s"
+        }
+        
+        if self.wdtSlider.circle == .Hours {
+            self.postDurationLabel.text = "Lasts for \(Int(sender.value)) hour" + s
+        } else {
+            self.postDurationLabel.text = "Lasts for \(Int(sender.value)) day" + s
+        }
+        
+        self.postGuard()
     }
     
-    @IBAction func addPhotoButtonTapped(sender: AnyObject) {
+    func addPhotoButtonTapped(sender: AnyObject) {
         let imagePickerController = ImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.imageLimit = 1
         presentViewController(imagePickerController, animated: true, completion: nil)
     }
     
-    @IBAction func deletePhotoButtonTapped(sender: AnyObject) {
-        self.deletePhotoButton.alpha = 0.0
+    func deletePhotoButtonTapped(sender: AnyObject) {
+        self.deletePhotoButton.hidden = true
         self.addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
     }
     
@@ -161,18 +247,18 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         
     }
     
+    func cancelButtonDidPress() {
+        
+    }
+    
     func doneButtonDidPress(images: [UIImage]) {
         for img in images {
             let resizedImage = UIImage.resizeImage(img, newWidth: 1080)
             self.addPhotoButton.setImage(resizedImage, forState: .Normal)
             self.photoImage = resizedImage
         }
-        self.deletePhotoButton.alpha = 1.0
+        self.deletePhotoButton.hidden = false
         self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func cancelButtonDidPress() {
-        
     }
     
     
@@ -181,25 +267,24 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     func textView(textView: UITextView,
         shouldChangeTextInRange range: NSRange,
         replacementText text: String) -> Bool{
-            
-            self.postTxt = textView
-            
+        
             let currentLength:Int = (textView.text as NSString).length
             let newLength:Int = (textView.text as NSString).length + (text as NSString).length - (range.length)
             let remainingChar:Int = 140 - currentLength
-            
-            
-            self.postTxt.textColor = UIColor .blackColor()
-            
-            remainingLabel.text = "\(remainingChar)"
-            
-            if remainingChar >= 0 && remainingChar <= 139 && self.sliderValue != nil {
-                self.postBtn.enabled = true
-            } else {
-                self.postBtn.enabled = false
-            }
         
+            self.postTxt.textColor = UIColor .blackColor()
+            remainingLabel.text = "\(remainingChar)"
+            self.postGuard()
             return (newLength > 140) ? false : true
+    }
+    
+    func postGuard() {
+        print(self.wdtSlider.value)
+        if self.postTxt.text.characters.count > 0 && self.wdtSlider.value > 1 {
+            self.postBtn.enabled = true
+        } else {
+            self.postBtn.enabled = false
+        }
     }
 
     // hide keyboard function
@@ -227,13 +312,17 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             object["geoPoint"] = geoPoint
         }
         
-        
-        if let sliderValue = self.sliderValue {
-            let today = NSDate()
-            let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(.Hour, value: sliderValue, toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))
-            print(tomorrow!)
-            object["hoursexpired"] = tomorrow
+        var calendarUnit: NSCalendarUnit!
+        if self.wdtSlider.circle == .Hours {
+            calendarUnit = .Hour
+        } else {
+            calendarUnit = .Day
         }
+
+        let tomorrow = NSCalendar.currentCalendar().dateByAddingUnit(calendarUnit, value: Int(self.wdtSlider.value), toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))
+        print(tomorrow!)
+        object["hoursexpired"] = tomorrow
+    
 
         let uuid = NSUUID().UUIDString
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"

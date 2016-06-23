@@ -12,7 +12,6 @@
 		3111475D1CAB210F00150ECD /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3111475B1CAB210F00150ECD /* FBSDKLoginKit.framework */; };
 		311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311147631CAB335A00150ECD /* FBSignUpVC.swift */; };
 		311147671CAB42AE00150ECD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 311147651CAB42AE00150ECD /* Main.storyboard */; };
-		31AFC6111CB20ABA00DBEBFA /* YourDownsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */; };
 		31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */; };
 		31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 31F12E911C9E115B00E63A2E /* Widdit.xcdatamodeld */; };
 		31F12E951C9E115B00E63A2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31F12E941C9E115B00E63A2E /* Assets.xcassets */; };
@@ -60,6 +59,7 @@
 		A67241151D1853740060FAC0 /* WDTArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241141D1853740060FAC0 /* WDTArray.swift */; };
 		A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */; };
 		A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241181D19326F0060FAC0 /* FeedFooter.swift */; };
+		A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */; };
 		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
 		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
 		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
@@ -74,7 +74,6 @@
 		3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Widdit-Bridging-Header.h"; sourceTree = "<group>"; };
 		311147631CAB335A00150ECD /* FBSignUpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBSignUpVC.swift; sourceTree = "<group>"; };
 		311147661CAB42AE00150ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YourDownsVC.swift; sourceTree = "<group>"; };
 		31F12E871C9E115B00E63A2E /* Widdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Widdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31F12E921C9E115B00E63A2E /* Widdit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Widdit.xcdatamodel; sourceTree = "<group>"; };
@@ -127,6 +126,7 @@
 		A67241141D1853740060FAC0 /* WDTArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTArray.swift; sourceTree = "<group>"; };
 		A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTNavigationBar.swift; sourceTree = "<group>"; };
 		A67241181D19326F0060FAC0 /* FeedFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFooter.swift; sourceTree = "<group>"; };
+		A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPlaceholderTextView.swift; sourceTree = "<group>"; };
 		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
 		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
 		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
@@ -224,6 +224,7 @@
 		A67240F91D1808220060FAC0 /* WDTUtils */ = {
 			isa = PBXGroup;
 			children = (
+				A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */,
 				A67241101D1847530060FAC0 /* Parse */,
 				A6E153061CFD967F00787394 /* Extension */,
 			);
@@ -266,7 +267,6 @@
 			children = (
 				31F12EC31C9E17D700E63A2E /* HomeVC.swift */,
 				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
-				31AFC6101CB20ABA00DBEBFA /* YourDownsVC.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -531,7 +531,6 @@
 				A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */,
 				A67240FB1D1808440060FAC0 /* WDTPush.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
-				31AFC6111CB20ABA00DBEBFA /* YourDownsVC.swift in Sources */,
 				79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */,
 				31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */,
 				31F12ED01C9E191000E63A2E /* NewPostVC.swift in Sources */,
@@ -540,6 +539,7 @@
 				A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */,
 				79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */,
 				A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */,
+				A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */,
 				31F12EA01C9E122B00E63A2E /* SignInVC.swift in Sources */,
 				31F12ED61C9E3A6900E63A2E /* EditVC.swift in Sources */,
 			);
@@ -694,7 +694,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "45870820-edc3-4956-9227-63255d7182d8";
+				PROVISIONING_PROFILE = "2db7da39-ac59-4532-b618-175524bff1fe";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";
 			};
 			name = Release;

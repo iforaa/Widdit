@@ -25,11 +25,16 @@ extension NSDateComponentsFormatter {
         formatter.unitsStyle = .Abbreviated
         let components = NSDateComponents()
 
-        let hours = seconds / 3600
-        let minuts = (seconds - (3600 * hours)) / 60
+        if seconds / 3600 > 24 {
+            components.day = seconds / (3600 * 24)
+        } else {
+            let hours = seconds / 3600
+            let minuts = (seconds - (3600 * hours)) / 60
+            
+            components.hour = hours
+            components.minute = minuts
+        }
         
-        components.hour = hours
-        components.minute = minuts
         
         return formatter.stringFromDateComponents(components)!
     }
