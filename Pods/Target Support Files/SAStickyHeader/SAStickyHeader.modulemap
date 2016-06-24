@@ -1,0 +1,6 @@
+framework module SAStickyHeader {
+  umbrella header "SAStickyHeader-umbrella.h"
+
+  export *
+  module * { export * }
+}
