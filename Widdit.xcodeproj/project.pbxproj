@@ -66,6 +66,7 @@
 		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
 		A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */; };
 		A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */; };
+		A6B9D0051D1D87640099F907 /* WDTImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */; };
 		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
 		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 		A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153111CFEB73E00787394 /* ReplyVC.swift */; };
@@ -136,6 +137,7 @@
 		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
 		A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTAvatar.swift; sourceTree = "<group>"; };
 		A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTCircleSlider.swift; sourceTree = "<group>"; };
+		A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImageProvider.swift; sourceTree = "<group>"; };
 		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
 		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 		A6E153111CFEB73E00787394 /* ReplyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyVC.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */,
 				A67241101D1847530060FAC0 /* Parse */,
 				A6E153061CFD967F00787394 /* Extension */,
+				A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */,
 			);
 			name = WDTUtils;
 			sourceTree = "<group>";
@@ -519,6 +522,7 @@
 				31F12EA21C9E124500E63A2E /* SignUpVC.swift in Sources */,
 				31F12EC81C9E181F00E63A2E /* ActivityVC.swift in Sources */,
 				31F12EA41C9E125900E63A2E /* ResetPasswordVC.swift in Sources */,
+				A6B9D0051D1D87640099F907 /* WDTImageProvider.swift in Sources */,
 				A67241081D18177D0060FAC0 /* WDTActivity.swift in Sources */,
 				31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */,
 				79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */,

@@ -10,9 +10,10 @@ import UIKit
 import Parse
 import ImagePicker
 
-class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ImagePickerDelegate {
-    
-    
+class EditVC: UIViewController, ImagePickerDelegate {
+
+    var tableView: UITableView!
+
     // UI objects
     
     var avaImg: UIImageView!
@@ -44,6 +45,27 @@ class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UI
         self.navigationItem.title = "Settings"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(doneButtonTapped))
         
+//        self.tableView = UITableView(frame: CGRectZero, style: .Grouped)
+//        self.tableView.delegate = self
+//        self.tableView.dataSource = self
+//        self.view.addSubview(self.tableView)
+//        self.tableView.snp_makeConstraints { (make) in
+//            make.top.equalTo(self.view).offset(60)
+//            make.left.equalTo(self.view)
+//            make.right.equalTo(self.view)
+//            make.bottom.equalTo(self.view)
+//        }
+//        
+//        self.tableView.backgroundColor = UIColor.whiteColor()
+//        self.tableView.rowHeight = UITableViewAutomaticDimension;
+//        self.tableView.estimatedRowHeight = 150.0;
+//        self.tableView.separatorStyle = .None
+        
+//        let header = SAStickyHeaderView(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 200), table: self.tableView, image: [])
+//        
+        
+        
+        
         
         
         self.view.addSubview(self.addAvatar1)
@@ -57,18 +79,6 @@ class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UI
             make.width.equalTo(self.view.snp_width).multipliedBy(0.4)
             make.height.equalTo(self.view.snp_width).multipliedBy(0.4)
         }
-        
-//        self.addAvatar1.addSubview(self.deleteAvatar1)
-//        self.deleteAvatar1.hidden = true
-//        self.deleteAvatar1.tag = 1
-//        self.deleteAvatar1.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
-//        self.deleteAvatar1.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
-//        self.deleteAvatar1.snp_makeConstraints { (make) in
-//            make.right.equalTo(self.addAvatar1).offset(5)
-//            make.bottom.equalTo(self.addAvatar1).offset(5)
-//            make.width.equalTo(18)
-//            make.height.equalTo(18)
-//        }
         
         
         self.view.addSubview(self.addAvatar2)
@@ -175,15 +185,8 @@ class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UI
             }
             
         }
-//            // create picker
-//            genderPicker = UIPickerView()
-//            genderPicker.dataSource = self
-//            genderPicker.delegate = self
-//            genderPicker.backgroundColor = UIColor.groupTableViewBackgroundColor()
-//            genderPicker.showsSelectionIndicator = true
-//            genderTxt.inputView = genderPicker
 
-        }
+    }
     
     func addAvatarButtonTapped(sender: AnyObject) {
         
@@ -250,7 +253,6 @@ class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UI
                 user["ava"] = avaFile
 //                self.deleteAvatar1.hidden = false
                 
-                
             } else if self.imagePickerController.view.tag == 2 {
                 self.addAvatar2.setImage(resizedImage, forState: .Normal)
                 user["ava2"] = avaFile
@@ -283,27 +285,7 @@ class EditVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UI
     func doneButtonTapped() {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-        
-    // func to hide keyboard
-    func hideKeyboard() {
-        self.view.endEditing(true)
-    }
     
-    // func to call UIImagePickerController
-    func loadImg (recognizer : UITapGestureRecognizer) {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.sourceType = .PhotoLibrary
-        picker.allowsEditing = true
-        presentViewController(picker, animated: true, completion: nil)
-    }
-    
-    
-    // method to finilize our actions with UIImagePickerController
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        avaImg.image = info[UIImagePickerControllerEditedImage] as? UIImage
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
     
     // user information function
     func information() {

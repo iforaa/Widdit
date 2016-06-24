@@ -46,7 +46,7 @@ class WDTCircleSlider: CircleSlider {
     init() {
         super.init(frame: CGRectZero, options: WDTCircleSlider.sliderOptionsHours)
         
-        UIView.animateWithDuration(0.1, delay: 0.1, options: UIViewAnimationOptions.TransitionNone, animations: { () -> Void in
+        UIView.animateWithDuration(0.1, delay: 0.5, options: UIViewAnimationOptions.TransitionNone, animations: { () -> Void in
             
             }, completion: { (finished: Bool) -> Void in
                 self.value = 12

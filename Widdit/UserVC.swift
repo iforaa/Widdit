@@ -31,8 +31,12 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         // Title at the top
         self.navigationItem.title = self.user.username?.uppercaseString
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonTapped))
         
+        if self.user.username == PFUser.currentUser()?.username {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonTapped))
+        }
+        
+        configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
         self.tableView = UITableView(frame: CGRectZero, style: .Grouped)
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -63,15 +67,15 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         header.layer.addSublayer(gradientLayer)
         
         
-//        let firstName = UILabel(frame: CGRectZero)
-//        header.addSubview(firstName)
-//        firstName.font = UIFont.WDTAgoraRegular(16)
-//        firstName.textColor = UIColor.whiteColor()
-//        firstName.text = self.user["firstName"] as? String
-//        firstName.snp_makeConstraints { (make) in
-//            make.left.equalTo(20)
-//            make.bottom.equalTo(-20)
-//        }
+        let firstName = UILabel(frame: CGRectZero)
+        header.addSubview(firstName)
+        firstName.font = UIFont.WDTAgoraRegular(16)
+        firstName.textColor = UIColor.whiteColor()
+        firstName.text = self.user["firstName"] as? String
+        firstName.snp_makeConstraints { (make) in
+            make.left.equalTo(20)
+            make.bottom.equalTo(-20)
+        }
         
         self.tableView.tableHeaderView = header
         
@@ -146,11 +150,25 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
+        cell.moreBtn.hidden = true
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
 
         return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let indexPath = tableView.indexPathForSelectedRow
+        let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as! PostCell
+        
+        if let img = currentCell.postPhoto.image {
+            
+            imageProvider.image = img
+            let imageViewer = ImageViewer(imageProvider: imageProvider, configuration: configuration, displacedView: currentCell.postPhoto)
+            
+            presentImageViewer(imageViewer)
+        }
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -172,23 +190,13 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let user = post["user"] as! PFUser
         
         if PFUser.currentUser()?.username == user.username {
-            return UIView()
+            return nil
         } else {
-            
-            footerView.hideSubvies(false)
-            
+            footerView.setDown(user, post: post)
             footerView.imDownBtn.tag = section
             footerView.replyBtn.tag = section
             footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
             footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-            footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
-            WDTActivity.isDown(user, post: post) { (down) in
-                if down == true {
-                    footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
-                } else {
-                    footerView.imDownBtn.setTitle("Undown", forState: .Normal)
-                }
-            }
         }
         
         return footerView
@@ -197,21 +205,18 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     
     func downBtnTapped(sender: AnyObject) {
-        
-        let title = sender.titleForState(.Normal)
-        
-        let post = self.wdtPost.collectionOfAllPosts[sender.tag]
+        let button: UIButton = sender as! UIButton
+        let post = wdtPost.collectionOfPosts[button.tag]
         let user = post["user"] as! PFUser
         
-        if title == "I'm Down" {
-            print("Downed")
-            sender.setTitle("Undown", forState: .Normal)
-            WDTActivity.addActivity(user, post: post, type: .Down)
-            
-        } else {
+        if button.selected == true {
             print("UnDown")
-            sender.setTitle("I'm Down", forState: .Normal)
+            button.selected = false
             WDTActivity.deleteActivity(user, type: .Down)
+        } else {
+            print("Downed")
+            button.selected = true
+            WDTActivity.addActivity(user, post: post, type: .Down)
         }
     }
     

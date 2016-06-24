@@ -20,8 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-
-        
         
 
         //configure push notifications
@@ -54,6 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //WDTPostModel.initialize()
         // Initialize Parse.
+        
         Parse.setApplicationId("CbvFKWpmIJFzo8gKzwPXdM5lN1bGPXu2Ln3lbjGx",
             clientKey: "H6X4RPx8lay4X1YUCu9gA1kPjI2gFxepr152h5x6")
         

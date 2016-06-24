@@ -116,6 +116,9 @@ class PostCell: UITableViewCell {
         postText.textColor = UIColor.grayColor()
         postText.editable = false
         postText.scrollEnabled = false
+        postText.userInteractionEnabled = true;
+        postText.dataDetectorTypes = [.Link, .PhoneNumber]
+        
         
         // Rounded Square Image
         avaImage.layer.cornerRadius = 8.0
@@ -218,13 +221,10 @@ class PostCell: UITableViewCell {
             })
         
 
-            
-
-//                moreBtn.snp_makeConstraints { (make) in
-//                    make.top.equalTo(postText.snp_bottom).offset(2)
-//                    make.right.equalTo(cardView).offset(-10)
-////                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-//                }
+            moreBtn.snp_remakeConstraints { (make) in
+                make.top.equalTo(postText.snp_bottom).offset(2)
+                make.right.equalTo(cardView).offset(-10)
+            }
 
         
         }

@@ -10,18 +10,7 @@ import UIKit
 import Parse
 import ImageViewer
 
-class WDTImageProvider: ImageProvider {
-    
-    var image: UIImage = UIImage()
-    
-    func provideImage(completion: UIImage? -> Void) {
-        completion(image)
-    }
-    
-    func provideImage(atIndex index: Int, completion: UIImage? -> Void) {
-        completion(image)
-    }
-}
+
 
 class FeedVC: UITableViewController {
     
@@ -29,11 +18,6 @@ class FeedVC: UITableViewController {
     @IBOutlet weak var ivarcator: UIActivityIndicatorView!
     var refresher = UIRefreshControl()
     
-    
-    
-    let buttonAssets = CloseButtonAssets(normal: UIImage(named:"DeletePhotoButton")!, highlighted: UIImage(named: "DeletePhotoButton"))
-    var configuration: ImageViewerConfiguration!
-    let imageProvider = WDTImageProvider()
     // Page Size
     var page : Int = 10
     
@@ -44,7 +28,13 @@ class FeedVC: UITableViewController {
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.setBottomBorderColor()
-
+        
+        
+        let queryOfAllUsers = PFUser.query()
+        queryOfAllUsers?.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) in
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Total users: " + String(objects!.count), style: .Done, target: self, action: #selector(self.nothingToDo))
+        })
+        
         
         let shadowPath = UIBezierPath(rect: self.tabBarController!.tabBar.bounds)
         self.tabBarController!.tabBar.layer.masksToBounds = false
@@ -56,7 +46,7 @@ class FeedVC: UITableViewController {
         
         
         
-        self.configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
+        configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
         
         // Title at the Top
         self.navigationItem.title = "The World"
@@ -81,6 +71,9 @@ class FeedVC: UITableViewController {
         self.loadPosts()
     }
     
+    func nothingToDo() {
+        
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -143,6 +136,14 @@ class FeedVC: UITableViewController {
         cell.avaImage.addGestureRecognizer(tapGestureRecognizer)
         
         
+        let postsCount = self.wdtPost.collectionOfAllPosts.filter({
+            let user1 = post["user"] as! PFUser
+            return user1.username == ($0["user"] as! PFUser).username
+        }).count
+        
+        cell.moreBtn.hidden = postsCount == 1
+        
+        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         
@@ -156,8 +157,8 @@ class FeedVC: UITableViewController {
         
         if let img = currentCell.postPhoto.image {
             
-            self.imageProvider.image = img
-            let imageViewer = ImageViewer(imageProvider: self.imageProvider, configuration: self.configuration, displacedView: currentCell.postPhoto)
+            imageProvider.image = img
+            let imageViewer = ImageViewer(imageProvider: imageProvider, configuration: configuration, displacedView: currentCell.postPhoto)
             
             self.presentImageViewer(imageViewer)
         }
@@ -185,24 +186,15 @@ class FeedVC: UITableViewController {
             return UIView()
         } else {
             
-            footerView.hideSubvies(false)
-            
+            footerView.setDown(user, post: post)
             footerView.imDownBtn.tag = section
             footerView.replyBtn.tag = section
             footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
             footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-            footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
-            WDTActivity.isDown(user, post: post) { (down) in
-                if down == true {
-                    footerView.imDownBtn.setTitle("I'm Down", forState: .Normal)
-                } else {
-                    footerView.imDownBtn.setTitle("Undown", forState: .Normal)
-                }
-            }
+            
         }
         
         return footerView
-
     }
     
     func avaImageTapped(sender: AnyObject) {
@@ -214,21 +206,18 @@ class FeedVC: UITableViewController {
     }
     
     func downBtnTapped(sender: AnyObject) {
-
-        let title = sender.titleForState(.Normal)
-        
-        let post = self.wdtPost.collectionOfPosts[sender.tag]
+        let button: UIButton = sender as! UIButton
+        let post = self.wdtPost.collectionOfPosts[button.tag]
         let user = post["user"] as! PFUser
         
-        if title == "I'm Down" {
-            print("Downed")
-            sender.setTitle("Undown", forState: .Normal)
-            WDTActivity.addActivity(user, post: post, type: .Down)
-            
-        } else {
+        if button.selected == true {
             print("UnDown")
-            sender.setTitle("I'm Down", forState: .Normal)
+            button.selected = false
             WDTActivity.deleteActivity(user, type: .Down)
+        } else {
+            print("Downed")
+            button.selected = true
+            WDTActivity.addActivity(user, post: post, type: .Down)
         }
     }
     
@@ -243,7 +232,7 @@ class FeedVC: UITableViewController {
     func moreBtnTapped(sender: AnyObject) {
         let post = self.wdtPost.collectionOfPosts[sender.tag]
         let user = post["user"] as! PFUser
-            let guest = GuestVC()
+            let guest = GuestVC(style: .Grouped)
             guest.user = user
             guest.geoPoint = self.geoPoint
             guest.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({
@@ -257,15 +246,5 @@ class FeedVC: UITableViewController {
             self.navigationController?.pushViewController(guest, animated: true)
     }
     
-    // alert action
-    func alert (title: String, message : String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let ok = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-        alert.addAction(ok)
-        presentViewController(alert, animated: true, completion: nil)
-    }
-
-
-   
 }
 
