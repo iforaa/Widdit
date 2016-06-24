@@ -30,7 +30,7 @@
 		31F12EBD1C9E13AB00E63A2E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EBC1C9E13AB00E63A2E /* AudioToolbox.framework */; };
 		31F12EBF1C9E13B800E63A2E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EBE1C9E13B800E63A2E /* libsqlite3.tbd */; };
 		31F12EC11C9E13C300E63A2E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EC01C9E13C300E63A2E /* libz.tbd */; };
-		31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC31C9E17D700E63A2E /* HomeVC.swift */; };
+		31F12EC41C9E17D700E63A2E /* UserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC31C9E17D700E63A2E /* UserVC.swift */; };
 		31F12EC81C9E181F00E63A2E /* ActivityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC71C9E181F00E63A2E /* ActivityVC.swift */; };
 		31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC91C9E184100E63A2E /* FeedVC.swift */; };
 		31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ECB1C9E185600E63A2E /* GuestVC.swift */; };
@@ -60,9 +60,12 @@
 		A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */; };
 		A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241181D19326F0060FAC0 /* FeedFooter.swift */; };
 		A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */; };
+		A672411D1D1C14B20060FAC0 /* UIImageEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */; };
 		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
 		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
 		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
+		A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */; };
+		A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */; };
 		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
 		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 		A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153111CFEB73E00787394 /* ReplyVC.swift */; };
@@ -94,7 +97,7 @@
 		31F12EBC1C9E13AB00E63A2E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		31F12EBE1C9E13B800E63A2E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		31F12EC01C9E13C300E63A2E /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		31F12EC31C9E17D700E63A2E /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		31F12EC31C9E17D700E63A2E /* UserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserVC.swift; sourceTree = "<group>"; };
 		31F12EC71C9E181F00E63A2E /* ActivityVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityVC.swift; sourceTree = "<group>"; };
 		31F12EC91C9E184100E63A2E /* FeedVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		31F12ECB1C9E185600E63A2E /* GuestVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuestVC.swift; sourceTree = "<group>"; };
@@ -127,9 +130,12 @@
 		A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTNavigationBar.swift; sourceTree = "<group>"; };
 		A67241181D19326F0060FAC0 /* FeedFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFooter.swift; sourceTree = "<group>"; };
 		A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPlaceholderTextView.swift; sourceTree = "<group>"; };
+		A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageEffects.swift; sourceTree = "<group>"; };
 		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
 		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
 		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
+		A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTAvatar.swift; sourceTree = "<group>"; };
+		A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTCircleSlider.swift; sourceTree = "<group>"; };
 		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
 		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 		A6E153111CFEB73E00787394 /* ReplyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyVC.swift; sourceTree = "<group>"; };
@@ -224,6 +230,8 @@
 		A67240F91D1808220060FAC0 /* WDTUtils */ = {
 			isa = PBXGroup;
 			children = (
+				A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */,
+				A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */,
 				A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */,
 				A67241101D1847530060FAC0 /* Parse */,
 				A6E153061CFD967F00787394 /* Extension */,
@@ -265,7 +273,7 @@
 		A672410F1D1844B10060FAC0 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				31F12EC31C9E17D700E63A2E /* HomeVC.swift */,
+				31F12EC31C9E17D700E63A2E /* UserVC.swift */,
 				31F12ED51C9E3A6900E63A2E /* EditVC.swift */,
 			);
 			name = Home;
@@ -277,6 +285,7 @@
 				A67240FA1D1808440060FAC0 /* WDTPush.swift */,
 				A67241071D18177D0060FAC0 /* WDTActivity.swift */,
 				A67241121D1851F90060FAC0 /* WDTPost.swift */,
+				A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */,
 			);
 			name = Parse;
 			sourceTree = "<group>";
@@ -523,11 +532,13 @@
 				31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */,
 				79B4230E1CEE824100888461 /* EnterVerifyPinViewController.swift in Sources */,
 				31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */,
+				A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */,
 				A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */,
 				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
 				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
 				A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */,
-				31F12EC41C9E17D700E63A2E /* HomeVC.swift in Sources */,
+				A672411D1D1C14B20060FAC0 /* UIImageEffects.swift in Sources */,
+				31F12EC41C9E17D700E63A2E /* UserVC.swift in Sources */,
 				A6E153121CFEB73E00787394 /* ReplyVC.swift in Sources */,
 				A67240FB1D1808440060FAC0 /* WDTPush.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
@@ -537,6 +548,7 @@
 				A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */,
 				311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */,
 				A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */,
+				A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */,
 				79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */,
 				A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */,
 				A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */,

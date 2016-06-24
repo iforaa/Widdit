@@ -27,6 +27,7 @@ PODS:
     - FBSDKLoginKit (~> 4.10)
     - FBSDKTVOSKit (~> 4.10)
     - Parse (~> 1.12)
+  - SAStickyHeader (0.6.0)
   - SinchVerification-Swift (1.4.4)
   - SlackTextViewController (1.9.3)
   - SnapKit (0.21.0)
@@ -42,6 +43,7 @@ DEPENDENCIES:
   - Kingfisher (~> 2.4)
   - MBProgressHUD (~> 0.9.2)
   - ParseFacebookUtilsV4
+  - SAStickyHeader
   - SinchVerification-Swift
   - SlackTextViewController
   - SnapKit
@@ -61,10 +63,11 @@ SPEC CHECKSUMS:
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
+  SAStickyHeader: 60b9779e94f03af78235f2c3da2e70404b000593
   SinchVerification-Swift: b62b0472825ce2be237d84c9ccc323eeccb4e0b6
   SlackTextViewController: bd2a34c188d4f7dec93cf42388f38551263fac82
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
 
-PODFILE CHECKSUM: 04435a3bf7b95635f1760b691c25e61354f4208a
+PODFILE CHECKSUM: 6944b88196cac1ed625072cc5ff4ff9e948ee594
 
 COCOAPODS: 1.0.0

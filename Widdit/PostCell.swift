@@ -9,20 +9,26 @@
 import UIKit
 import Parse
 
+class WDTCAShapeLayer: CAShapeLayer {
+    var tag: Int?
+}
+
 class WDTCellCardView: UIView {
     
-    var shadowLayer:CAShapeLayer? = nil
+    var shadowLayer:WDTCAShapeLayer? = nil
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
+        
         
         if self.shadowLayer == nil {
             let maskPath = UIBezierPath(roundedRect: bounds,
                                         byRoundingCorners: [.TopLeft, .TopRight],
                                         cornerRadii: CGSize(width: 4.0, height: 4.0))
             
-            self.shadowLayer = CAShapeLayer()
+            self.shadowLayer = WDTCAShapeLayer()
+            self.shadowLayer!.tag = 1
             self.shadowLayer!.path = maskPath.CGPath
             self.shadowLayer!.fillColor = UIColor.WDTGrayBlueColor().CGColor
             
@@ -35,6 +41,17 @@ class WDTCellCardView: UIView {
             layer.insertSublayer(self.shadowLayer!, atIndex: 0)
         }
         
+    }
+    
+    func updateLayer() {
+        layer.sublayers?.forEach {
+            if let layer = $0 as? WDTCAShapeLayer {
+                if layer.tag == 1 {
+                    layer.removeFromSuperlayer()
+                    self.shadowLayer = nil
+                }
+            }
+        }
     }
 }
 
@@ -66,7 +83,7 @@ class PostCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureSubviews()
-        self.selectionStyle = .None
+        selectionStyle = .None
     }
     
     // We won’t use this but it’s required for the class to compile
@@ -75,57 +92,59 @@ class PostCell: UITableViewCell {
     }
 
     func configureSubviews() {
+        backgroundColor = UIColor.whiteColor()
+        cardView.backgroundColor = UIColor.clearColor()
         
-        self.contentView.addSubview(self.cardView)
+        self.contentView.addSubview(cardView)
 
-        self.cardView.addSubview(self.avaImage)
-        self.cardView.addSubview(self.postPhoto)
-        self.cardView.addSubview(self.postText)
-        self.cardView.addSubview(self.timeLbl)
-        self.cardView.addSubview(self.firstNameLbl)
-        self.cardView.addSubview(self.userNameBtn)
-        self.cardView.addSubview(self.moreBtn)
+        cardView.addSubview(avaImage)
+        cardView.addSubview(postPhoto)
+        cardView.addSubview(postText)
+        cardView.addSubview(timeLbl)
+        cardView.addSubview(firstNameLbl)
+        cardView.addSubview(userNameBtn)
+        cardView.addSubview(moreBtn)
 
-        self.cardView.addSubview(self.vertLineView)
-        self.cardView.addSubview(self.distanceLbl)
+        cardView.addSubview(vertLineView)
+        cardView.addSubview(distanceLbl)
         
-        self.vertLineView.backgroundColor = UIColor.grayColor()
-        self.vertLineView.alpha = 0.5
+        vertLineView.backgroundColor = UIColor.grayColor()
+        vertLineView.alpha = 0.5
         
         
-        self.postText.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.postText.textColor = UIColor.grayColor()
-        self.postText.editable = false
-        self.postText.scrollEnabled = false
+        postText.backgroundColor = UIColor.WDTGrayBlueColor()
+        postText.textColor = UIColor.grayColor()
+        postText.editable = false
+        postText.scrollEnabled = false
         
         // Rounded Square Image
-        self.avaImage.layer.cornerRadius = 8.0
-        self.avaImage.clipsToBounds = true
-        
-        self.userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.userNameBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
-        self.userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
-        self.userNameBtn.titleLabel?.textAlignment = .Left
-        
-        self.moreBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        self.moreBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
-        self.moreBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
-        self.moreBtn.setTitle("More posts...", forState: .Normal)
+        avaImage.layer.cornerRadius = 8.0
+        avaImage.clipsToBounds = true
         
         
-        self.firstNameLbl.textColor = UIColor.grayColor()
-        self.firstNameLbl.font = UIFont.WDTAgoraRegular(12)
+        userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        userNameBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
+        userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
+        userNameBtn.titleLabel?.textAlignment = .Left
         
-        self.timeLbl.textColor = UIColor.grayColor()
-        self.timeLbl.font = UIFont.WDTAgoraRegular(12)
+        moreBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        moreBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
+        moreBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
+        moreBtn.setTitle("More posts...", forState: .Normal)
         
-        self.distanceLbl.textColor = UIColor.grayColor()
-        self.distanceLbl.font = UIFont.WDTAgoraRegular(12)
+        
+        firstNameLbl.textColor = UIColor.grayColor()
+        firstNameLbl.font = UIFont.WDTAgoraRegular(12)
+        
+        timeLbl.textColor = UIColor.grayColor()
+        timeLbl.font = UIFont.WDTAgoraRegular(12)
+        
+        distanceLbl.textColor = UIColor.grayColor()
+        distanceLbl.font = UIFont.WDTAgoraRegular(12)
         
         
-        self.backgroundColor = UIColor.whiteColor()
         
-        self.cardSetup()
+        
     }
     
     override func awakeFromNib() {
@@ -135,65 +154,84 @@ class PostCell: UITableViewCell {
     var isHeightCalculated: Bool = false
     
     override func updateConstraints() {
+        
 
-//        if isHeightCalculated == false {
+        postPhoto.snp_remakeConstraints(closure: { (make) in
+            make.top.equalTo(avaImage.snp_bottom).offset(10)
+            make.left.equalTo(cardView).offset(10)
+            make.right.equalTo(cardView).offset(-10)
+            if let img = postPhoto.image {
+                let scale = img.size.height / img.size.width
+                make.height.equalTo(postPhoto.snp_width).multipliedBy(scale)
+            } else {
+                make.height.equalTo(postPhoto.snp_width).multipliedBy(0.625)
+            }
+            
+        })
+        
+        postText.snp_remakeConstraints(closure: { (make) in
+            if let _ = self.postPhoto.image {
+                make.top.equalTo(postPhoto.snp_bottom).offset(10)
+            } else {
+                make.top.equalTo(avaImage.snp_bottom).offset(10)
+            }
+            make.left.equalTo(cardView).offset(10)
+            make.right.equalTo(cardView).offset(-10)
+            make.bottom.equalTo(cardView).offset(-25).priority(750)
+            
+        })
 
-            self.avaImage.snp_remakeConstraints(closure: { (make) in
-                make.top.equalTo(self.cardView).offset(10)
-                make.left.equalTo(self.cardView).offset(10)
+        if isHeightCalculated == false {
+
+            cardView.snp_remakeConstraints { (make) in
+                make.top.equalTo(contentView).offset(10)
+                make.left.equalTo(contentView).offset(10)
+                make.right.equalTo(contentView).offset(-10)
+                make.bottom.equalTo(contentView).priority(751)
+            }
+            
+            avaImage.snp_remakeConstraints(closure: { (make) in
+                make.top.equalTo(cardView).offset(10)
+                make.left.equalTo(cardView).offset(10)
                 make.width.equalTo(50)
                 make.height.equalTo(50)
             })
             
-            self.userNameBtn.snp_remakeConstraints(closure: { (make) in
-                make.left.equalTo(self.avaImage.snp_right).offset(7)
-                make.top.equalTo(self.cardView).offset(5)
+            userNameBtn.snp_remakeConstraints(closure: { (make) in
+                make.left.equalTo(avaImage.snp_right).offset(7)
+                make.top.equalTo(cardView).offset(5)
             })
         
-            self.firstNameLbl.snp_remakeConstraints(closure: { (make) in
-                make.left.equalTo(self.avaImage.snp_right).offset(10)
-                make.top.equalTo(self.userNameBtn.snp_bottom).offset(-4)
+            firstNameLbl.snp_remakeConstraints(closure: { (make) in
+                make.left.equalTo(avaImage.snp_right).offset(10)
+                make.top.equalTo(userNameBtn.snp_bottom).offset(-4)
             })
 
-            self.timeLbl.snp_remakeConstraints(closure: { (make) in
-                make.right.equalTo(self.cardView).offset(-10)
-                make.top.equalTo(self.cardView).offset(10)
+            timeLbl.snp_remakeConstraints(closure: { (make) in
+                make.right.equalTo(cardView).offset(-10)
+                make.top.equalTo(cardView).offset(10)
             })
         
-            self.distanceLbl.snp_remakeConstraints(closure: { (make) in
-                make.right.equalTo(self.cardView).offset(-10)
-                make.top.equalTo(self.timeLbl.snp_bottom).offset(5)
+            distanceLbl.snp_remakeConstraints(closure: { (make) in
+                make.right.equalTo(cardView).offset(-10)
+                make.top.equalTo(timeLbl.snp_bottom).offset(5)
             })
         
-            self.postPhoto.snp_remakeConstraints(closure: { (make) in
-                make.top.equalTo(self.avaImage.snp_bottom).offset(10)
-                make.left.equalTo(self.cardView).offset(10)
-                make.right.equalTo(self.cardView).offset(-10)
-                make.height.equalTo(self.postPhoto.snp_width).multipliedBy(0.625)
-            })
+
             
-            self.postText.snp_remakeConstraints(closure: { (make) in
-                if let _ = self.postPhoto.image {
-                    make.top.equalTo(self.postPhoto.snp_bottom).offset(10)
-                } else {
-                    make.top.equalTo(self.avaImage.snp_bottom).offset(10)
-                }
-                make.left.equalTo(self.cardView).offset(10)
-                make.right.equalTo(self.cardView).offset(-10)
-                make.bottom.equalTo(self.cardView).offset(-25).priority(750)
-                
-            })
 
-                self.moreBtn.snp_makeConstraints { (make) in
-                    make.top.equalTo(self.postText.snp_bottom).offset(2)
-                    make.right.equalTo(self.cardView).offset(-10)
-//                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
-                }
+//                moreBtn.snp_makeConstraints { (make) in
+//                    make.top.equalTo(postText.snp_bottom).offset(2)
+//                    make.right.equalTo(cardView).offset(-10)
+////                    make.bottom.equalTo(self.cardView).offset(-10).priority(750)
+//                }
 
         
-//        }
-//            isHeightCalculated = true
-
+        }
+            isHeightCalculated = true
+        
+        
+        
         super.updateConstraints()
     }
 
@@ -203,16 +241,15 @@ class PostCell: UITableViewCell {
         let user = post["user"] as! PFUser
         
         let username = user.username
-        self.userNameBtn.setTitle(username, forState: .Normal)
+        userNameBtn.setTitle(username, forState: .Normal)
         self.post = post
         self.user = user
     
         
-        self.postText.text = post["postText"] as! String
-        self.firstNameLbl.text = user["firstName"] as? String
-//        self.imDownBtn.hidden = false
-        self.userNameBtn.hidden = false
-        self.moreBtn.hidden = false
+        postText.text = post["postText"] as! String
+        firstNameLbl.text = user["firstName"] as? String
+        userNameBtn.hidden = false
+        moreBtn.hidden = false
         
         if PFUser.currentUser()?.username == user.username {
 //            self.replyBtn.hidden = true
@@ -228,41 +265,50 @@ class PostCell: UITableViewCell {
         
         
         // Place Profile Picture
-        let avaFile: PFFile = user["ava"] as! PFFile
-        self.avaImage.kf_setImageWithURL(NSURL(string: avaFile.url!)!)
+        let avaFile: PFFile? = user["ava"] as? PFFile
+        
+        if let avaFile = avaFile {
+            avaImage.kf_setImageWithURL(NSURL(string: avaFile.url!)!)
+        }
+        
         
         if let photoFile = post["photoFile"]  {
+            
+            guard let photoHeight = post["photoHeight"] as? CGFloat else {
+                return
+            }
+            guard let photoWidth = post["photoWidth"] as? CGFloat else {
+                return
+            }
+            
             
             
             let pfFile: PFFile = photoFile as! PFFile
             let url = pfFile.url!
-            self.postPhoto.kf_setImageWithURL(NSURL(string: url)!, placeholderImage: UIImage(color: UIColor.WDTBlueColor(), size: CGSizeMake(self.bounds.size.width, 200)), optionsInfo: nil, progressBlock: nil, completionHandler: nil)
+            postPhoto.kf_setImageWithURL(NSURL(string: url)!, placeholderImage: UIImage(color: UIColor.WDTBlueColor(), size: CGSizeMake(photoWidth, photoHeight)), optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) in
+                
+                
+                self.updateConstraints()
+                self.cardView.updateLayer()
+                
+                
+            })
+
 
         } else {
-            self.postPhoto.image = nil
+            postPhoto.image = nil
         }
         
         let hoursexpired = post["hoursexpired"] as! NSDate
         let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970
         
-        self.timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
+        timeLbl.text = NSDateComponentsFormatter.wdtLeftTime(Int(timeLeft)) + " left"
         
         if let postGeoPoint = post["geoPoint"] {
-            self.distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(self.geoPoint))
+            distanceLbl.text = String(format: "%.1f mi", postGeoPoint.distanceInMilesTo(geoPoint))
         } else {
-            self.distanceLbl.text = ""
+            distanceLbl.text = ""
         }
-    }
-    
-    func cardSetup() {
-        self.cardView.snp_makeConstraints { (make) in
-            make.top.equalTo(self.contentView).offset(10)
-            make.left.equalTo(self.contentView).offset(10)
-            make.right.equalTo(self.contentView).offset(-10)
-            make.bottom.equalTo(self.contentView)
-        }
-        
-        self.cardView.backgroundColor = UIColor.clearColor()
     }
     
     

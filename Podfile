@@ -18,6 +18,7 @@ pod 'ImageViewer'
 pod 'AsyncSwift'
 pod 'Kingfisher', '~> 2.4'
 pod 'AFImageHelper'
+pod 'SAStickyHeader'
 
 end
 

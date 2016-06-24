@@ -26,7 +26,7 @@ class WDTImageProvider: ImageProvider {
 class FeedVC: UITableViewController {
     
     // UI Objects
-    @IBOutlet weak var indicator: UIActivityIndicatorView!
+    @IBOutlet weak var ivarcator: UIActivityIndicatorView!
     var refresher = UIRefreshControl()
     
     
@@ -137,6 +137,11 @@ class FeedVC: UITableViewController {
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(FeedVC.avaImageTapped(_:)))
+        cell.avaImage.tag = indexPath.section
+        cell.avaImage.userInteractionEnabled = true
+        cell.avaImage.addGestureRecognizer(tapGestureRecognizer)
+        
         
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
@@ -200,6 +205,14 @@ class FeedVC: UITableViewController {
 
     }
     
+    func avaImageTapped(sender: AnyObject) {
+        let tapGR = sender as! UITapGestureRecognizer
+        let destVC = UserVC()
+        let post = self.wdtPost.collectionOfPosts[tapGR.view!.tag]
+        destVC.user = post.objectForKey("user") as! PFUser
+        self.navigationController?.pushViewController(destVC, animated: true)
+    }
+    
     func downBtnTapped(sender: AnyObject) {
 
         let title = sender.titleForState(.Normal)
@@ -228,13 +241,8 @@ class FeedVC: UITableViewController {
     }
     
     func moreBtnTapped(sender: AnyObject) {
-        // If user tapped on himself go home, else go to guest
         let post = self.wdtPost.collectionOfPosts[sender.tag]
         let user = post["user"] as! PFUser
-//        if user.username == PFUser.currentUser()?.username {
-//            let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as! HomeVC
-//            self.navigationController?.pushViewController(home, animated: true)
-//        } else {
             let guest = GuestVC()
             guest.user = user
             guest.geoPoint = self.geoPoint
@@ -247,7 +255,6 @@ class FeedVC: UITableViewController {
                 }
             })
             self.navigationController?.pushViewController(guest, animated: true)
-//        }
     }
     
     // alert action
@@ -258,13 +265,7 @@ class FeedVC: UITableViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
 
-    @IBAction func openSlack(sender: UIButton) {
-
-    }
 
    
 }
-
-
-
 

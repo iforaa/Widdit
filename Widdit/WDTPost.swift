@@ -13,12 +13,21 @@ class WDTPost {
     var collectionOfPosts = [PFObject]()
     var collectionOfAllPosts = [PFObject]()
     
+    var postsOfUser:PFUser?
+    
     func requestPosts(completion: (success: Bool) -> Void) {
         let query = PFQuery(className: "posts")
         query.limit = 10
         query.addDescendingOrder("createdAt")
         query.includeKey("user")
         query.whereKeyExists("user")
+        
+        
+        
+        if let postsOfUser = self.postsOfUser {
+            query.whereKey("user", equalTo: postsOfUser)
+        }
+        
         query.findObjectsInBackgroundWithBlock({ (posts: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let posts = posts {

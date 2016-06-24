@@ -8,88 +8,12 @@
 
 import UIKit
 import Parse
-import CircleSlider
+
 import ImagePicker
 import MBProgressHUD
+import CircleSlider
 
 
-class WDTCircleSlider: CircleSlider {
-    
-    enum WDTCircle {
-        case Hours
-        case Days
-    }
-    var circle: WDTCircle = .Hours
-    
-    class var sliderOptionsHours: [CircleSliderOption] {
-        return [
-            .BarColor(UIColor.grayColor()),
-            .ThumbColor(UIColor.WDTGrayBlueColor()),
-            .ThumbWidth(CGFloat(40)),
-            .TrackingColor(UIColor.WDTBlueColor()),
-            .BarWidth(2.5),
-            .StartAngle(270),
-            .MaxValue(23),
-            .MinValue(1)
-        ]
-    }
-    
-    class var sliderOptionsDays: [CircleSliderOption] {
-        return [
-            .BarColor(UIColor.WDTBlueColor()),
-            .ThumbColor(UIColor.WDTGrayBlueColor()),
-            .ThumbWidth(CGFloat(40)),
-            .TrackingColor(UIColor.purpleColor()),
-            .BarWidth(2.5),
-            .StartAngle(270),
-            .MaxValue(30),
-            .MinValue(1)
-        ]
-    }
-    
-    init() {
-        super.init(frame: CGRectZero, options: WDTCircleSlider.sliderOptionsHours)
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    func changeOptionsFromHoursToDays() {
-        if circle == .Hours {
-            circle = .Days
-            self.changeOptions(WDTCircleSlider.sliderOptionsDays)
-        }
-    }
-    
-    func changeOptionsFromDaysToHours() {
-        if circle == .Days {
-            circle = .Hours
-            self.changeOptions(WDTCircleSlider.sliderOptionsHours)
-        }
-    }
-    
-    
-    var lastValue: Int = 0
-    
-    func roundControll() {
-        let value = Int(self.value)
-        
-        if lastValue == 23 && circle == .Hours {
-            if value == 24 || value == 1 || value == 2 || value == 3 {
-                self.changeOptionsFromHoursToDays()
-            }
-        } else if lastValue == 1 && circle == .Days {
-            if value == 31 || value == 30 || value == 29 {
-                self.changeOptionsFromDaysToHours()
-            }
-        }
-        
-        lastValue = value
-    }
-}
 
 
 class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
@@ -207,7 +131,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         self.wdtSlider.snp_makeConstraints { (make) in
             make.edges.equalTo(self.sliderView)
         }
-//        self.wdtSlider.value = 12
+
+        
     }
     
     func valueChange(sender: CircleSlider) {
@@ -328,10 +253,14 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         object["uuid"] = "\(PFUser.currentUser()?.username) \(uuid)"
 
         if let image = self.photoImage {
-            let photoData = UIImagePNGRepresentation(image)
-            let photoFile = PFFile(name:"postPhoto.png", data:photoData!)
+            let photoData = UIImageJPEGRepresentation(image, 0.5)
+            let photoFile = PFFile(name: "postPhoto.jpg", data: photoData!)
+            
             
             object["photoFile"] = photoFile
+            
+            object["photoHeight"] = image.size.height
+            object["photoWidth"] = image.size.width
         }
         
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
