@@ -11,7 +11,8 @@ import UIKit
 /// SAStickyHeaderView - Simple sticky header with multiple image support via swipe gestures
 public class SAStickyHeaderView: UIView {
     
-    internal let imageView: UIImageView = UIImageView()
+//    internal let imageView: UIImageView = UIImageView()
+    internal let scrollView: UIScrollView = UIScrollView()
     internal let containerView = UIView()
     
     internal var heightLayoutConstraint = NSLayoutConstraint()
@@ -84,16 +85,17 @@ public class SAStickyHeaderView: UIView {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.clipsToBounds = true
-        imageView.contentMode = .ScaleAspectFill
-        containerView.addSubview(imageView)
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        imageView.clipsToBounds = true
+//        imageView.contentMode = .ScaleAspectFill
+        
+        containerView.addSubview(scrollView)
     }
     
     private func setupConsistent() {
-        bottomLayoutConstraint = NSLayoutConstraint(item: imageView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        bottomLayoutConstraint = NSLayoutConstraint(item: scrollView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
         
-        heightLayoutConstraint = NSLayoutConstraint(item: imageView, attribute: .Height, relatedBy: .Equal, toItem: containerView, attribute: .Height, multiplier: 1.0, constant: 0.0)
+        heightLayoutConstraint = NSLayoutConstraint(item: scrollView, attribute: .Height, relatedBy: .Equal, toItem: containerView, attribute: .Height, multiplier: 1.0, constant: 0.0)
         
         containerLayoutConstraint = NSLayoutConstraint(item: containerView, attribute: .Height, relatedBy: .Equal, toItem: self, attribute: .Height, multiplier: 1.0, constant: 0.0)
     }
@@ -132,7 +134,10 @@ public class SAStickyHeaderView: UIView {
     public func addImage(image: UIImage?) {
         if let image = image {
             images.append(image)
+            scrollView.addSubview(UIImageView(image: image))
         }
+        
+        
     }
     
     // MARK:
@@ -145,7 +150,7 @@ public class SAStickyHeaderView: UIView {
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[containerView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["containerView" : containerView]))
         addConstraint(containerLayoutConstraint)
         
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[imageView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["imageView" : imageView]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[imageView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["imageView" : scrollView]))
         containerView.addConstraint(bottomLayoutConstraint)
         containerView.addConstraint(heightLayoutConstraint)
     }

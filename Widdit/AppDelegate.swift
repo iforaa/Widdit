@@ -81,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if let topController = UIApplication.topViewController() {
                         let destVC = ReplyViewController()
                         destVC.usersPost = post
-                        destVC.recipient = user as! PFUser
+                        destVC.toUser = user as! PFUser
                         topController.navigationController?.pushViewController(destVC, animated: true)
                     }
                 })
@@ -138,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             query?.getObjectInBackgroundWithId(userObjectId, block: { (user: PFObject?, error: NSError?) in
                 let destVC = ReplyViewController()
-                destVC.recipient = user as! PFUser
+                destVC.toUser = user as! PFUser
                 destVC.usersPost = post
                 
                 if topController.isKindOfClass(ReplyViewController) {

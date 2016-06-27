@@ -10,8 +10,9 @@ import UIKit
 import Parse
 import ImageViewer
 
-class GuestVC: UITableViewController {
+class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    var tableView: UITableView!
     
     // UI Objects
     var refresher : UIRefreshControl!
@@ -25,28 +26,33 @@ class GuestVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Allow Vertical Scroll
-        tableView.alwaysBounceVertical = true
+        tableView = UITableView(frame: CGRectZero, style: .Grouped)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+        tableView.snp_makeConstraints { (make) in
+            make.top.equalTo(view)
+            make.left.equalTo(view)
+            make.right.equalTo(view)
+            make.bottom.equalTo(view)
+        }
         
-        // Background Color
-        tableView.backgroundColor = UIColor.whiteColor()
-        
-        // Swipe to go back
-        let backSwipe = UISwipeGestureRecognizer(target: self, action: #selector(GuestVC.back(_:)))
-        backSwipe.direction = UISwipeGestureRecognizerDirection.Right
-        view.addGestureRecognizer(backSwipe)
-        
-        // Pull to Refresh
-        refresher = UIRefreshControl()
-        
-        refresher.addTarget(self, action: #selector(GuestVC.refresh), forControlEvents: UIControlEvents.ValueChanged)
-        tableView.addSubview(refresher)
-        tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
+        tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooterMorePosts")
         tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
         tableView.backgroundColor = UIColor.whiteColor()
         tableView.rowHeight = UITableViewAutomaticDimension;
         tableView.estimatedRowHeight = 150.0;
         tableView.separatorStyle = .None
+        
+        // Pull to Refresh
+        
+        refresher = UIRefreshControl()
+        refresher.addTarget(self, action: #selector(MorePostsVC.refresh), forControlEvents: UIControlEvents.ValueChanged)
+        
+        // Swipe to go back
+        let backSwipe = UISwipeGestureRecognizer(target: self, action: #selector(MorePostsVC.back(_:)))
+        backSwipe.direction = UISwipeGestureRecognizerDirection.Right
+        view.addGestureRecognizer(backSwipe)
 
     }
     
@@ -67,19 +73,23 @@ class GuestVC: UITableViewController {
     
     
     // load more while scrolling down
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
         if scrollView.contentOffset.y >= scrollView.contentSize.height - view.frame.size.height {
 //            self.loadMore()
         }
     }
     
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return collectionOfPosts.count
     }
     
     // Create table view rows
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
         -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
@@ -95,7 +105,7 @@ class GuestVC: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let indexPath = tableView.indexPathForSelectedRow
         let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as! PostCell
         
@@ -108,7 +118,7 @@ class GuestVC: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let post = collectionOfPosts[section]
         let user = post["user"] as! PFUser
         
@@ -119,9 +129,9 @@ class GuestVC: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         
-        let footer = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("FeedFooter")
+        let footer = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("FeedFooterMorePosts")
         let footerView = footer as! FeedFooter
         let post = collectionOfPosts[section]
         let user = post["user"] as! PFUser
@@ -149,18 +159,18 @@ class GuestVC: UITableViewController {
         if button.selected == true {
             print("UnDown")
             button.selected = false
-            WDTActivity.deleteActivity(user, type: .Down)
+            WDTActivity.deleteActivity(user, post: post)
         } else {
             print("Downed")
             button.selected = true
-            WDTActivity.addActivity(user, post: post, type: .Down)
+            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
         }
     }
     
     func replyBtnTapped(sender: AnyObject) {
         let destVC = ReplyViewController()
         let post = collectionOfPosts[sender.tag]
-        destVC.recipient = post.objectForKey("user") as! PFUser
+        destVC.toUser = post.objectForKey("user") as! PFUser
         destVC.usersPost = post
         navigationController?.pushViewController(destVC, animated: true)
     }

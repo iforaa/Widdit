@@ -134,7 +134,7 @@ class FeedVC: UITableViewController {
         cell.avaImage.tag = indexPath.section
         cell.avaImage.userInteractionEnabled = true
         cell.avaImage.addGestureRecognizer(tapGestureRecognizer)
-        
+//        cell.isHeightCalculated = false
         
         let postsCount = self.wdtPost.collectionOfAllPosts.filter({
             let user1 = post["user"] as! PFUser
@@ -183,7 +183,7 @@ class FeedVC: UITableViewController {
         let user = post["user"] as! PFUser
         
         if PFUser.currentUser()?.username == user.username {
-            return UIView()
+            return nil
         } else {
             
             footerView.setDown(user, post: post)
@@ -213,26 +213,30 @@ class FeedVC: UITableViewController {
         if button.selected == true {
             print("UnDown")
             button.selected = false
-            WDTActivity.deleteActivity(user, type: .Down)
+            WDTActivity.deleteActivity(user, post: post)
         } else {
             print("Downed")
             button.selected = true
-            WDTActivity.addActivity(user, post: post, type: .Down)
+            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
         }
     }
     
     func replyBtnTapped(sender: AnyObject) {
         let destVC = ReplyViewController()
         let post = self.wdtPost.collectionOfPosts[sender.tag]
-        destVC.recipient = post.objectForKey("user") as! PFUser
+        let user = post["user"] as! PFUser
+        destVC.toUser = user
         destVC.usersPost = post
+        
+        
+        
         self.navigationController?.pushViewController(destVC, animated: true)
     }
     
     func moreBtnTapped(sender: AnyObject) {
         let post = self.wdtPost.collectionOfPosts[sender.tag]
         let user = post["user"] as! PFUser
-            let guest = GuestVC(style: .Grouped)
+            let guest = MorePostsVC()
             guest.user = user
             guest.geoPoint = self.geoPoint
             guest.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({

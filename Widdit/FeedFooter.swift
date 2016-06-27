@@ -89,15 +89,17 @@ class FeedFooter: UITableViewHeaderFooterView {
         
     }
     
-    
-    
-
     func setDown(user: PFUser, post: PFObject) {
         WDTActivity.isDown(user, post: post) { (down) in
-            if down == true {
-                self.imDownBtn.selected = false
+            if let down = down {
+                let type = down["type"] as! String
+                if type == WDTActivity.WDTActivityType.Down.rawValue {
+                    self.imDownBtn.selected = true
+                } else {
+                    self.imDownBtn.selected = false
+                }
             } else {
-                self.imDownBtn.selected = true
+                self.imDownBtn.selected = false
             }
         }
     }

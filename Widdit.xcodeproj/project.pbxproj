@@ -33,7 +33,7 @@
 		31F12EC41C9E17D700E63A2E /* UserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC31C9E17D700E63A2E /* UserVC.swift */; };
 		31F12EC81C9E181F00E63A2E /* ActivityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC71C9E181F00E63A2E /* ActivityVC.swift */; };
 		31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EC91C9E184100E63A2E /* FeedVC.swift */; };
-		31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ECB1C9E185600E63A2E /* GuestVC.swift */; };
+		31F12ECC1C9E185600E63A2E /* MorePostsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ECB1C9E185600E63A2E /* MorePostsVC.swift */; };
 		31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ECD1C9E188600E63A2E /* HeaderView.swift */; };
 		31F12ED01C9E191000E63A2E /* NewPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ECF1C9E191000E63A2E /* NewPostVC.swift */; };
 		31F12ED21C9E24D800E63A2E /* Pacifico.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31F12ED11C9E24D800E63A2E /* Pacifico.ttf */; };
@@ -54,7 +54,6 @@
 		A67241041D1812D60060FAC0 /* AgoraSansProRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67240FF1D1812D60060FAC0 /* AgoraSansProRegular.ttf */; };
 		A67241051D1812D60060FAC0 /* AgoraSansProThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67241001D1812D60060FAC0 /* AgoraSansProThinItalic.ttf */; };
 		A67241081D18177D0060FAC0 /* WDTActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241071D18177D0060FAC0 /* WDTActivity.swift */; };
-		A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241091D1818AC0060FAC0 /* MessagesVC.swift */; };
 		A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241121D1851F90060FAC0 /* WDTPost.swift */; };
 		A67241151D1853740060FAC0 /* WDTArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241141D1853740060FAC0 /* WDTArray.swift */; };
 		A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */; };
@@ -101,7 +100,7 @@
 		31F12EC31C9E17D700E63A2E /* UserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserVC.swift; sourceTree = "<group>"; };
 		31F12EC71C9E181F00E63A2E /* ActivityVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityVC.swift; sourceTree = "<group>"; };
 		31F12EC91C9E184100E63A2E /* FeedVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
-		31F12ECB1C9E185600E63A2E /* GuestVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuestVC.swift; sourceTree = "<group>"; };
+		31F12ECB1C9E185600E63A2E /* MorePostsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorePostsVC.swift; sourceTree = "<group>"; };
 		31F12ECD1C9E188600E63A2E /* HeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		31F12ECF1C9E191000E63A2E /* NewPostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPostVC.swift; sourceTree = "<group>"; };
 		31F12ED11C9E24D800E63A2E /* Pacifico.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pacifico.ttf; sourceTree = "<group>"; };
@@ -125,7 +124,6 @@
 		A67240FF1D1812D60060FAC0 /* AgoraSansProRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProRegular.ttf; sourceTree = "<group>"; };
 		A67241001D1812D60060FAC0 /* AgoraSansProThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProThinItalic.ttf; sourceTree = "<group>"; };
 		A67241071D18177D0060FAC0 /* WDTActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTActivity.swift; sourceTree = "<group>"; };
-		A67241091D1818AC0060FAC0 /* MessagesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
 		A67241121D1851F90060FAC0 /* WDTPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPost.swift; sourceTree = "<group>"; };
 		A67241141D1853740060FAC0 /* WDTArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTArray.swift; sourceTree = "<group>"; };
 		A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTNavigationBar.swift; sourceTree = "<group>"; };
@@ -258,7 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				31F12EC91C9E184100E63A2E /* FeedVC.swift */,
-				31F12ECB1C9E185600E63A2E /* GuestVC.swift */,
+				31F12ECB1C9E185600E63A2E /* MorePostsVC.swift */,
 				31F12ECF1C9E191000E63A2E /* NewPostVC.swift */,
 			);
 			name = Feed;
@@ -268,7 +266,6 @@
 			isa = PBXGroup;
 			children = (
 				31F12EC71C9E181F00E63A2E /* ActivityVC.swift */,
-				A67241091D1818AC0060FAC0 /* MessagesVC.swift */,
 			);
 			name = Activity;
 			sourceTree = "<group>";
@@ -526,7 +523,7 @@
 				A67241081D18177D0060FAC0 /* WDTActivity.swift in Sources */,
 				31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */,
 				79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */,
-				31F12ECC1C9E185600E63A2E /* GuestVC.swift in Sources */,
+				31F12ECC1C9E185600E63A2E /* MorePostsVC.swift in Sources */,
 				A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */,
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
 				A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */,
@@ -551,7 +548,6 @@
 				31F12ED01C9E191000E63A2E /* NewPostVC.swift in Sources */,
 				A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */,
 				311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */,
-				A672410A1D1818AC0060FAC0 /* MessagesVC.swift in Sources */,
 				A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */,
 				79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */,
 				A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */,

@@ -20,36 +20,27 @@ class ActivityVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Activity"
         
-        // dynamic collectionView height - dynamic cell
-        self.tableView.backgroundColor = UIColor .whiteColor()
-        self.tableView.registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
-        self.tableView.separatorStyle = .None
-        // title at the top
-        self.navigationItem.title = "Activity"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Messages", style: .Done, target: self, action: #selector(messagesButtonTapped))
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension;
-        self.tableView.estimatedRowHeight = 50;
-        self.tableView.separatorStyle = .None
+        tableView.backgroundColor = UIColor .whiteColor()
+        tableView.registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
+        tableView.separatorStyle = .None
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView.estimatedRowHeight = 60;
         
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.activity.requestDowns { (success) in
+        activity.requestDowns { (success) in
             self.tableView.reloadData()
         }
     }
     
-    func messagesButtonTapped() {
-        let destVC = MessagesVC()
-        self.navigationController?.pushViewController(destVC, animated: true)
-    }
-    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.activity.downs.count
+        return activity.downs.count
     }
     
     // Create table view rows
@@ -57,10 +48,9 @@ class ActivityVC: UITableViewController {
         -> UITableViewCell
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("ActivityCell", forIndexPath: indexPath) as! ActivityCell
-        if let postText = self.activity.downs[indexPath.row]["postText"], let sender = self.activity.downs[indexPath.row]["by"] {
-            cell.fillCell(sender as! PFUser, postText: postText as! String)
-        }
-        
+        cell.replyButton.tag = indexPath.row
+        cell.replyButton.addTarget(self, action: #selector(replyButtonTapped), forControlEvents: .TouchUpInside)
+        cell.fillCell(activity.downs[indexPath.row])
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         
@@ -68,19 +58,36 @@ class ActivityVC: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let post = activity.downs[indexPath.row]["post"] as! PFObject
+        let user = post["user"] as! PFUser
+        let guest = MorePostsVC()
+        guest.user = user
+//        guest.geoPoint = self.geoPoint
+        guest.collectionOfPosts = [post]
+        self.navigationController?.pushViewController(guest, animated: true)
+    }
+    
+    func replyButtonTapped(sender: AnyObject?) {
+        
+        let row = sender?.tag
         let destVC = ReplyViewController()
         
-        print(self.activity.downs[indexPath.row])
         
-        let sender = self.activity.downs[indexPath.row]["by"] as! PFUser
-        let post = self.activity.downs[indexPath.row]["post"] as! PFObject
+        let toUser = activity.downs[row!]["to"] as! PFUser
+        let byUser = activity.downs[row!]["by"] as! PFUser
         
-        destVC.recipient = sender
+        
+        let post = activity.downs[row!]["post"] as! PFObject
+        
+        if byUser.username == PFUser.currentUser()!.username {
+            destVC.toUser = toUser
+        } else {
+            destVC.toUser = byUser
+        }
+        
         destVC.usersPost = post
         
         self.navigationController?.pushViewController(destVC, animated: true)
-
     }
-    
 
 }

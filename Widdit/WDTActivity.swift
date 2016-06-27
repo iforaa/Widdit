@@ -13,6 +13,9 @@ class WDTActivity {
     
     enum WDTActivityType: String {
         case Down = "down"
+        case Undown = "undown"
+//        case Chat = "chat"
+//        case ChatDown = "downPlusChat"
     }
 
     let currentUser = PFUser.currentUser()!
@@ -20,61 +23,96 @@ class WDTActivity {
     var downs = [PFObject]()
     
     
-    class func isDown(user: PFUser, post: PFObject, completion: (down: Bool) -> Void) {
+    class func isDown(user: PFUser, post: PFObject, completion: (down: PFObject?) -> Void) {
         let didDown = PFQuery(className: "Activity")
         didDown.whereKey("by", equalTo: PFUser.currentUser()!)
         didDown.whereKey("to", equalTo: user)
         didDown.whereKey("post", equalTo: post)
-        didDown.countObjectsInBackgroundWithBlock { (count:Int32, error:NSError?) -> Void in
-            // if no any likes are found, else found likes
-            if count == 0 {
-                completion(down: true)
+        
+        didDown.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) in
+            if let object = objects?.first {
+                completion(down: object)
             } else {
-                completion(down: false)
+                completion(down: nil)
             }
         }
     }
     
-    class func addActivity(user: PFUser, post: PFObject, type: WDTActivityType) {
+    class func isDownAndReverseDown(user: PFUser, post: PFObject, completion: (down: PFObject?) -> Void) {
+        let didDown = PFQuery(className: "Activity")
+        didDown.whereKey("by", equalTo: PFUser.currentUser()!)
+        didDown.whereKey("to", equalTo: user)
+        didDown.whereKey("post", equalTo: post)
+        
+        let reverseDidDown = PFQuery(className: "Activity")
+        reverseDidDown.whereKey("by", equalTo: user)
+        reverseDidDown.whereKey("to", equalTo: PFUser.currentUser()!)
+        reverseDidDown.whereKey("post", equalTo: post)
+        
+        let allQueries = PFQuery.orQueryWithSubqueries([didDown, reverseDidDown])
+        
+        allQueries.findObjectsInBackgroundWithBlock { (objects: [PFObject]?, error: NSError?) in
+            if let object = objects?.first {
+                completion(down: object)
+            } else {
+                completion(down: nil)
+            }
+        }
+    }
+    
+
+    
+    class func addActivity(user: PFUser, post: PFObject, type: WDTActivityType, completion:(activityObj: PFObject)->Void) {
         WDTPush.sendPushAfterDownTapped(user.username!, postId: post.objectId!)
         
-        let activityObj = PFObject(className: "Activity")
-        
-        activityObj["by"] = PFUser.currentUser()
-        activityObj["to"] = user
-        activityObj["post"] = post
-        activityObj["postText"] = post["postText"]
-        activityObj["type"] = type.rawValue
-        
-        activityObj.saveEventually()
-    }
-    
-    class func deleteActivity(user: PFUser, type: WDTActivityType) {
-    
-        let activityQuery = PFQuery(className: "Activity")
-        activityQuery.whereKey("by", equalTo: PFUser.currentUser()!)
-        activityQuery.whereKey("to", equalTo: user)
-        activityQuery.whereKey("type", equalTo: type.rawValue)
-        
-        activityQuery.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                
-                for object in objects! {
-                    object.deleteEventually()
+        WDTActivity.isDown(user, post: post) { (down) in
+            if let down = down {
+                down["type"] = WDTActivityType.Down.rawValue
+                down.saveInBackgroundWithBlock { (success: Bool, error: NSError?) in
+                    completion(activityObj: down)
+                }
+            } else {
+                let activityObj = PFObject(className: "Activity")
+                activityObj["by"] = PFUser.currentUser()
+                activityObj["to"] = user
+                activityObj["post"] = post
+                activityObj["postText"] = post["postText"]
+                activityObj["type"] = WDTActivityType.Down.rawValue
+                activityObj.saveInBackgroundWithBlock { (success: Bool, error: NSError?) in
+                    completion(activityObj: activityObj)
                 }
             }
-        })
+        }
     }
+    
+    class func deleteActivity(user: PFUser, post: PFObject) {
+    
+        WDTActivity.isDown(user, post: post) { (down) in
+            if let down = down {
+                down["type"] = WDTActivityType.Undown.rawValue
+                down.saveInBackground()
+            }
+        }
+    }
+    
+    
     
     
     func requestDowns(completion: (success: Bool) -> Void) {
-        let downsQuery = PFQuery(className: "Activity")
-        downsQuery.includeKey("post")
-        downsQuery.includeKey("by")
-        downsQuery.whereKey("to", equalTo: self.currentUser)
-        downsQuery.addDescendingOrder("createdAt")
         
-        downsQuery.findObjectsInBackgroundWithBlock { (downs: [PFObject]?, error: NSError?) in
+        let activitiesToMeQuery = PFQuery(className: "Activity")
+        activitiesToMeQuery.whereKey("by", equalTo: currentUser)
+        
+        let activitiesFromMeQuery = PFQuery(className: "Activity")
+        activitiesFromMeQuery.whereKey("to", equalTo: currentUser)
+        
+        let activitiesQuery = PFQuery.orQueryWithSubqueries([activitiesToMeQuery, activitiesFromMeQuery])
+        activitiesQuery.includeKey("post")
+        activitiesQuery.includeKey("by")
+        activitiesQuery.includeKey("to")
+        activitiesQuery.addDescendingOrder("createdAt")
+        
+        activitiesQuery.findObjectsInBackgroundWithBlock { (downs: [PFObject]?, error: NSError?) in
             if let downs = downs {
                 self.downs = downs.filter({
                     if let _ = $0["post"] {

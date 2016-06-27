@@ -297,6 +297,8 @@ class PostCell: UITableViewCell {
 
         } else {
             postPhoto.image = nil
+            self.updateConstraints()
+            self.cardView.updateLayer()
         }
         
         let hoursexpired = post["hoursexpired"] as! NSDate

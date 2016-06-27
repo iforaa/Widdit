@@ -20,16 +20,14 @@ class ReplyViewController: SLKTextViewController {
         return formatter
   }()
     
-  //list of messages
-  var messages = [MessageModel]()
-  var usersPost: PFObject!
-  var userObjArray = [PFObject]()
 
-  //what user we are sending the message to
-//  var toUser: String!
-//  var fromUser: PFUser!
-  var recipient: PFUser!
-//  var sender: PFUser!
+    var messages = [MessageModel]()
+    var usersPost: PFObject!
+    var userObjArray = [PFObject]()
+    
+    var isDown = false
+    var toUser: PFUser!
+
 
   override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
     return .Plain
@@ -38,8 +36,6 @@ class ReplyViewController: SLKTextViewController {
   // MARK: View Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    print(usersPost)
 
     
     // Associate the device with a user
@@ -47,86 +43,83 @@ class ReplyViewController: SLKTextViewController {
     installation["user"] = PFUser.currentUser()
     installation.saveInBackground()
 
-    self.tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
-    self.inverted = false
-    self.tableView!.rowHeight = UITableViewAutomaticDimension
-    self.tableView!.estimatedRowHeight = 64.0
-    self.tableView!.separatorStyle = .None
-    self.registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
+    tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
+    inverted = false
+    tableView!.rowHeight = UITableViewAutomaticDimension
+    tableView!.estimatedRowHeight = 64.0
+    tableView!.separatorStyle = .None
+    registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
 
-    self.textView.placeholder = "Message";
+    textView.placeholder = "Message";
 
-    self.textView.registerMarkdownFormattingSymbol("*", withTitle: "Bold")
-    self.textView.registerMarkdownFormattingSymbol("_", withTitle: "Italics")
-    self.textView.registerMarkdownFormattingSymbol("~", withTitle: "Strike")
-    self.textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
-    self.textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
-    self.textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
+    textView.registerMarkdownFormattingSymbol("*", withTitle: "Bold")
+    textView.registerMarkdownFormattingSymbol("_", withTitle: "Italics")
+    textView.registerMarkdownFormattingSymbol("~", withTitle: "Strike")
+    textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
+    textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
+    textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
     
     
-    self.requestMessages()
+    requestMessages()
   }
 
     
     func requestMessages() {
-        let replyQuery = PFQuery(className: "replies")
-        //            self.recipient = users?.first as! PFUser
-        
-        replyQuery.whereKey("post", equalTo: self.usersPost)
-        replyQuery.whereKey("sender", containedIn: [PFUser.currentUser()!, self.recipient])
-        replyQuery.whereKey("recipient", containedIn: [PFUser.currentUser()!, self.recipient])
-        
-        replyQuery.includeKey("sender")
-        replyQuery.addAscendingOrder("createdAt")
-        
-        
-        replyQuery.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
-            if err == nil {
-                if replies?.count > 0 {
-                    self.messages = replies!.map({ (reply) -> MessageModel in
-                        
-                        var message = MessageModel(name: "", body: "", createdAt: NSDate())
-                        
-                        let sender = reply["sender"] as! PFUser
-                        
-                        if let firstName = sender["firstName"]  {
-                            message.name = firstName as! String
+        print(toUser.username)
+        WDTActivity.isDownAndReverseDown(toUser, post: usersPost) { (down) in
+            if let down = down  {
+                let relation = down.relationForKey("replies")
+                let query = relation.query()
+                query.addAscendingOrder("createdAt")
+                query.findObjectsInBackgroundWithBlock({ (replies: [PFObject]?, err) in
+                    if err == nil {
+                        if replies?.count > 0 {
+                            self.messages = replies!.map({ (reply) -> MessageModel in
+                                
+                                var message = MessageModel(name: "", body: "", createdAt: NSDate())
+                                
+                                let sender = reply["by"] as! PFUser
+                                
+                                if let firstName = sender["firstName"]  {
+                                    message.name = firstName as! String
+                                } else {
+                                    message.name = "No name"
+                                }
+                                
+                                if let body = reply["body"] {
+                                    message.body = body as! String
+                                }
+                                
+                                if let createdAt = reply.createdAt {
+                                    message.createdAt = createdAt
+                                }
+                                
+                                return message
+                            })
+                            print(replies)
+                            self.tableView?.reloadData()
                         } else {
-                            message.name = "No name"
+                            print("No objects")
                         }
-                        
-                        if let body = reply["body"] {
-                            message.body = body as! String
-                        }
-                        
-                        if let createdAt = reply.createdAt {
-                            message.createdAt = createdAt
-                        }
-                        
-                        return message
-                    })
-                    print(replies)
-                    self.tableView?.reloadData()
-                } else {
-                    print("No objects")
-                }
-            } else {
-                print(err)
+                    } else {
+                        print(err)
+                    }
+                })
             }
-        })
+        }
     }
     
   // MARK: UITableView Delegate
   // Return number of rows in the table
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.messages.count
+    return messages.count
   }
 
   // Create table view rows
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
     -> UITableViewCell {
-      let cell = self.tableView!.dequeueReusableCellWithIdentifier("MessageTableViewCell", forIndexPath: indexPath) as! MessageTableViewCell
-      let message = self.messages[indexPath.row]
+      let cell = tableView.dequeueReusableCellWithIdentifier("MessageTableViewCell", forIndexPath: indexPath) as! MessageTableViewCell
+      let message = messages[indexPath.row]
 
       // Set table cell values
       cell.nameLabel.text = message.name
@@ -144,45 +137,60 @@ class ReplyViewController: SLKTextViewController {
 }
 
 extension ReplyViewController {
-  override func didPressRightButton(sender: AnyObject?) {
-    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
-    self.textView.refreshFirstResponder()
-
-    let message = MessageModel(name: PFUser.currentUser()!["firstName"] as! String, body: self.textView.text, createdAt: NSDate())
-
-    let parseMessage = PFObject(className: "replies")
-
-    parseMessage["sender"] = PFUser.currentUser()
-    parseMessage["recipient"] = self.recipient
-    parseMessage["body"] = self.textView.text
-
-    parseMessage["postText"] = self.usersPost["postText"]
-    
-    WDTPush.sendPushAfterReply(self.recipient.username!, msg: self.textView.text, postId: self.usersPost.objectId!)
-
-    let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
-
-    parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
-    
-    //sends message
-    parseMessage.saveInBackgroundWithBlock { (bool, error) in
-      if bool {
-        print("Sent message")
-        print(parseMessage)
-        let rowAnimation: UITableViewRowAnimation = .Bottom
-        let scrollPosition: UITableViewScrollPosition = .Bottom
-        self.tableView!.beginUpdates()
-        self.messages.append(message)
-        self.tableView!.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
-        self.tableView!.endUpdates()
-        self.tableView!.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
-        // Fixes the cell from blinking (because of the transform, when using translucent cells)
-        // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
-        self.tableView!.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        super.didPressRightButton(sender)
-      } else {
-        print("Error sending message: \(error)")
-      }
+    override func didPressRightButton(sender: AnyObject?) {
+        // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+        
+        WDTActivity.isDownAndReverseDown(toUser, post: usersPost) { (down) in
+            if let down = down  {
+                self.sendMessage(sender, activityObj: down)
+            } else {
+                WDTActivity.addActivity(self.toUser, post: self.usersPost, type: .Undown, completion: { (activityObj) in
+                    self.sendMessage(sender, activityObj: activityObj)
+                })
+            }
+        }
     }
-  }
+    
+    func sendMessage(sender: AnyObject?, activityObj: PFObject) {
+        self.textView.refreshFirstResponder()
+        
+        let message = MessageModel(name: PFUser.currentUser()!["firstName"] as! String, body: self.textView.text, createdAt: NSDate())
+        
+        let parseMessage = PFObject(className: "replies")
+        
+        parseMessage["by"] = PFUser.currentUser()
+        parseMessage["to"] = self.toUser
+        parseMessage["body"] = self.textView.text
+        parseMessage["postText"] = self.usersPost["postText"]
+        parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
+        
+        WDTPush.sendPushAfterReply(self.toUser.username!, msg: self.textView.text, postId: self.usersPost.objectId!)
+        
+        let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
+        
+        parseMessage.saveInBackgroundWithBlock { (bool, error) in
+            let relation = activityObj.relationForKey("replies")
+            relation.addObject(parseMessage)
+            
+            //sends message
+            activityObj["whoRepliedLast"] = PFUser.currentUser()
+            activityObj.saveInBackgroundWithBlock { (bool, error) in
+                if bool {
+                    let rowAnimation: UITableViewRowAnimation = .Bottom
+                    let scrollPosition: UITableViewScrollPosition = .Bottom
+                    self.tableView!.beginUpdates()
+                    self.messages.append(message)
+                    self.tableView!.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
+                    self.tableView!.endUpdates()
+                    self.tableView!.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
+                    // Fixes the cell from blinking (because of the transform, when using translucent cells)
+                    // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
+                    self.tableView!.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    super.didPressRightButton(sender)
+                } else {
+                    print("Error sending message: \(error)")
+                }
+            }
+        }
+    }
 }

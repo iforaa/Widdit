@@ -10,6 +10,30 @@ import Foundation
 import Parse
 
 class WDTAvatar {
+    
+    class func countAvatars(user: PFUser, completion: (num: Int) -> Void) {
+        
+        var num = 0
+        if let _ = user["ava"] {
+            num += 1
+        }
+        
+        if let _ = user["ava2"] {
+            num += 1
+        }
+        
+        if let _ = user["ava3"] {
+            num += 1
+        }
+        
+        if let _ = user["ava4"] {
+            num += 1
+        }
+        
+        completion(num: num)
+        
+    }
+    
     class func getAvatar(user: PFUser, avaNum: Int, completion: (ava: UIImage?) -> Void) {
         
         let avaQuery: PFFile!

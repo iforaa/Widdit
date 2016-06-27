@@ -39,40 +39,40 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         // disable post button
         postBtn.enabled = false
 
-        self.view.backgroundColor = UIColor.WDTGrayBlueColor()
+        view.backgroundColor = UIColor.WDTGrayBlueColor()
         
-        self.view.addSubview(self.postDurationLabel)
-        self.view.addSubview(self.postTxt)
-        self.view.addSubview(self.addPhotoButton)
-        self.view.addSubview(self.remainingLabel)
-        self.view.addSubview(self.postDurationLabel)
-        self.view.addSubview(self.sliderView)
-        self.view.addSubview(self.deletePhotoButton)
+        view.addSubview(postDurationLabel)
+        view.addSubview(postTxt)
+        view.addSubview(addPhotoButton)
+        view.addSubview(remainingLabel)
+        view.addSubview(postDurationLabel)
+        view.addSubview(sliderView)
+        view.addSubview(deletePhotoButton)
         
-        self.postTxt.font = UIFont.WDTAgoraRegular(18)
-        self.postTxt.placeholder = "What do you feel like doing"
-        self.postTxt.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.postTxt.snp_makeConstraints { (make) in
-            make.top.equalTo(self.view).offset(5)
-            make.left.equalTo(self.view).offset(5)
-            make.right.equalTo(self.view).offset(-5)
+        postTxt.font = UIFont.WDTAgoraRegular(18)
+        postTxt.placeholder = "What do you feel like doing"
+        postTxt.backgroundColor = UIColor.WDTGrayBlueColor()
+        postTxt.snp_makeConstraints { (make) in
+            make.top.equalTo(view).offset(5)
+            make.left.equalTo(view).offset(5)
+            make.right.equalTo(view).offset(-5)
             make.height.equalTo(150)
         }
-        self.addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
-        self.addPhotoButton.addTarget(self, action: #selector(addPhotoButtonTapped), forControlEvents: .TouchUpInside)
-        self.addPhotoButton.snp_makeConstraints { (make) in
-            make.right.equalTo(self.view).offset(-20)
-            make.top.equalTo(self.postTxt.snp_bottom).offset(20)
+        addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
+        addPhotoButton.addTarget(self, action: #selector(addPhotoButtonTapped), forControlEvents: .TouchUpInside)
+        addPhotoButton.snp_makeConstraints { (make) in
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(postTxt.snp_bottom).offset(20)
             make.width.equalTo(50)
             make.height.equalTo(50)
         }
         
-        self.deletePhotoButton.hidden = true
-        self.deletePhotoButton.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
-        self.deletePhotoButton.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
-        self.deletePhotoButton.snp_makeConstraints { (make) in
-            make.right.equalTo(self.view).offset(-11)
-            make.top.equalTo(self.postTxt.snp_bottom).offset(11)
+        deletePhotoButton.hidden = true
+        deletePhotoButton.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
+        deletePhotoButton.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
+        deletePhotoButton.snp_makeConstraints { (make) in
+            make.right.equalTo(view).offset(-11)
+            make.top.equalTo(postTxt.snp_bottom).offset(11)
             make.width.equalTo(18)
             make.height.equalTo(18)
         }
@@ -82,28 +82,28 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         self.view.addSubview(line)
         line.backgroundColor = UIColor.grayColor()
         line.snp_makeConstraints { (make) in
-            make.top.equalTo(self.addPhotoButton.snp_bottom).offset(20)
-            make.centerX.equalTo(self.view)
-            make.width.equalTo(self.view).multipliedBy(0.9)
+            make.top.equalTo(addPhotoButton.snp_bottom).offset(20)
+            make.centerX.equalTo(view)
+            make.width.equalTo(view).multipliedBy(0.9)
             make.height.equalTo(1)
         }
 
         
-        self.sliderView.snp_makeConstraints { (make) in
-            make.bottom.equalTo(self.view).offset(-50)
-            make.centerX.equalTo(self.view)
+        sliderView.snp_makeConstraints { (make) in
+            make.bottom.equalTo(view).offset(-50)
+            make.centerX.equalTo(view)
             make.width.equalTo(200)
             make.height.equalTo(200)
         }
         
         
-        self.postDurationLabel.font = UIFont.WDTAgoraRegular(16)
-        self.postDurationLabel.snp_makeConstraints { (make) in
-            make.bottom.equalTo(self.sliderView.snp_top).offset(-25)
-            make.centerX.equalTo(self.view)
+        postDurationLabel.font = UIFont.WDTAgoraRegular(16)
+        postDurationLabel.snp_makeConstraints { (make) in
+            make.bottom.equalTo(sliderView.snp_top).offset(-25)
+            make.centerX.equalTo(view)
         }
         
-        self.postDurationLabel.text = "Use dial to set post expiration"
+        postDurationLabel.text = "Use dial to set post expiration"
         
         
         
@@ -111,11 +111,11 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         // hide keyboard tap
         let hideTap = UITapGestureRecognizer(target: self, action: #selector(NewPostVC.hideKeyboardTap))
         hideTap.numberOfTapsRequired = 1
-        self.view.userInteractionEnabled = true
-        self.view.addGestureRecognizer(hideTap)
+        view.userInteractionEnabled = true
+        view.addGestureRecognizer(hideTap)
         
-        self.postTxt.delegate = self
-        self.buildCircleSlider()
+        postTxt.delegate = self
+        buildCircleSlider()
         
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
@@ -126,9 +126,9 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
 
     func buildCircleSlider() {
-        self.wdtSlider.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
-        self.sliderView.addSubview(self.wdtSlider)
-        self.wdtSlider.snp_makeConstraints { (make) in
+        wdtSlider.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
+        sliderView.addSubview(self.wdtSlider)
+        wdtSlider.snp_makeConstraints { (make) in
             make.edges.equalTo(self.sliderView)
         }
 
@@ -136,7 +136,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
     
     func valueChange(sender: CircleSlider) {
-        self.wdtSlider.roundControll()
+        wdtSlider.roundControll()
         
         var s = ""
         if Int(sender.value) == 1 {
@@ -145,13 +145,13 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             s = "s"
         }
         
-        if self.wdtSlider.circle == .Hours {
-            self.postDurationLabel.text = "Lasts for \(Int(sender.value)) hour" + s
+        if wdtSlider.circle == .Hours {
+            postDurationLabel.text = "Lasts for \(Int(sender.value)) hour" + s
         } else {
-            self.postDurationLabel.text = "Lasts for \(Int(sender.value)) day" + s
+            postDurationLabel.text = "Lasts for \(Int(sender.value)) day" + s
         }
         
-        self.postGuard()
+        postGuard()
     }
     
     func addPhotoButtonTapped(sender: AnyObject) {
@@ -162,8 +162,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
     
     func deletePhotoButtonTapped(sender: AnyObject) {
-        self.deletePhotoButton.hidden = true
-        self.addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
+        deletePhotoButton.hidden = true
+        addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
     }
     
     // MARK: UIImagePickerControllerDelegate
@@ -182,8 +182,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             self.addPhotoButton.setImage(resizedImage, forState: .Normal)
             self.photoImage = resizedImage
         }
-        self.deletePhotoButton.hidden = false
-        self.dismissViewControllerAnimated(true, completion: nil)
+        deletePhotoButton.hidden = false
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     
@@ -204,29 +204,29 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
     
     func postGuard() {
-        print(self.wdtSlider.value)
-        if self.postTxt.text.characters.count > 0 && self.wdtSlider.value > 1 {
-            self.postBtn.enabled = true
+        print(wdtSlider.value)
+        if postTxt.text.characters.count > 0 && self.wdtSlider.value > 1 {
+            postBtn.enabled = true
         } else {
-            self.postBtn.enabled = false
+            postBtn.enabled = false
         }
     }
 
     // hide keyboard function
     func hideKeyboardTap() {
-        self.view.endEditing(true)
+        view.endEditing(true)
     }
     
     // Cancel button tapped
     @IBAction func cancelBtnTapped(sender: AnyObject) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func postBtnTapped(sender: AnyObject) {
         
         // dismiss keyboard
-        self.view.endEditing(true)
+        view.endEditing(true)
         
         // send data to server to "posts" class in Parse
         let object = PFObject(className: "posts")
@@ -238,7 +238,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         }
         
         var calendarUnit: NSCalendarUnit!
-        if self.wdtSlider.circle == .Hours {
+        if wdtSlider.circle == .Hours {
             calendarUnit = .Hour
         } else {
             calendarUnit = .Day

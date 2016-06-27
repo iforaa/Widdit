@@ -12,7 +12,7 @@ import ParseFacebookUtilsV4
 import SAStickyHeader
 import ImageViewer
 
-class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
 
     
     var tableView: UITableView!
@@ -25,78 +25,154 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     let wdtPost = WDTPost()
     
     var user: PFUser = PFUser.currentUser()!
-
+    var headerHeight: CGFloat = 200.0
+    var headerView: UIView!
+    
+    var avatars: [UIImage] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Title at the top
-        self.navigationItem.title = self.user.username?.uppercaseString
+        navigationItem.title = self.user.username?.uppercaseString
         
-        if self.user.username == PFUser.currentUser()?.username {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonTapped))
+        if user.username == PFUser.currentUser()?.username {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonTapped))
         }
         
         configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
-        self.tableView = UITableView(frame: CGRectZero, style: .Grouped)
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.view.addSubview(self.tableView)
-        self.tableView.snp_makeConstraints { (make) in
-            make.top.equalTo(self.view).offset(60)
-            make.left.equalTo(self.view)
-            make.right.equalTo(self.view)
-            make.bottom.equalTo(self.view)
+        tableView = UITableView(frame: CGRectZero, style: .Grouped)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(self.tableView)
+        tableView.snp_makeConstraints { (make) in
+            make.top.equalTo(view).offset(60)
+            make.left.equalTo(view)
+            make.right.equalTo(view)
+            make.bottom.equalTo(view)
         }
         
-        self.tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
-        self.tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
-        self.tableView.backgroundColor = UIColor.whiteColor()
-        self.tableView.rowHeight = UITableViewAutomaticDimension;
-        self.tableView.estimatedRowHeight = 150.0;
-        self.tableView.separatorStyle = .None
+        tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
+        tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
+        tableView.backgroundColor = UIColor.whiteColor()
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView.estimatedRowHeight = 150.0;
+        tableView.separatorStyle = .None
         
-        let header = SAStickyHeaderView(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 200), table: self.tableView, image: [])
+        headerHeight = view.frame.width
         
-        self.view.backgroundColor = UIColor.greenColor()
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = header.bounds
-        let color3 = UIColor.clearColor().CGColor as CGColorRef
-        let color4 = UIColor(white: 0.0, alpha: 0.6).CGColor as CGColorRef
-        gradientLayer.colors = [color3, color4]
-        gradientLayer.locations = [0.2, 1.0]
-        header.layer.addSublayer(gradientLayer)
+        let scrollView = UIScrollView(frame: CGRectMake(0, 0, headerHeight, headerHeight))
+        scrollView.backgroundColor = UIColor.WDTBlueColor()
+        
+        scrollView.pagingEnabled = true
+        scrollView.showsHorizontalScrollIndicator = false
         
         
-        let firstName = UILabel(frame: CGRectZero)
-        header.addSubview(firstName)
-        firstName.font = UIFont.WDTAgoraRegular(16)
-        firstName.textColor = UIColor.whiteColor()
-        firstName.text = self.user["firstName"] as? String
-        firstName.snp_makeConstraints { (make) in
-            make.left.equalTo(20)
-            make.bottom.equalTo(-20)
+        WDTAvatar.countAvatars(user) { (num) in
+            scrollView.contentSize = CGSizeMake(self.headerHeight * CGFloat(num), self.headerHeight)
+        }
+        avatars = []
+        
+        WDTAvatar.getAvatar(user, avaNum: 1) { (ava) in
+            if let ava = ava {
+                self.avatars.append(ava)
+                self.placeAvatars(scrollView)
+            }
+            
         }
         
-        self.tableView.tableHeaderView = header
-        
-        
-        WDTAvatar.getAvatar(self.user, avaNum: 1) { (ava) in
-            header.addImage(ava)
+        WDTAvatar.getAvatar(user, avaNum: 2) { (ava) in
+            if let ava = ava {
+                self.avatars.append(ava)
+                self.placeAvatars(scrollView)
+            }
         }
         
-        WDTAvatar.getAvatar(self.user, avaNum: 2) { (ava) in
-            header.addImage(ava)
+        WDTAvatar.getAvatar(user, avaNum: 3) { (ava) in
+            if let ava = ava {
+                self.avatars.append(ava)
+                self.placeAvatars(scrollView)
+            }
+            
         }
         
-        WDTAvatar.getAvatar(self.user, avaNum: 3) { (ava) in
-            header.addImage(ava)
+        WDTAvatar.getAvatar(user, avaNum: 4) { (ava) in
+            if let ava = ava {
+                self.avatars.append(ava)
+                self.placeAvatars(scrollView)
+            }
+            
         }
         
-        WDTAvatar.getAvatar(self.user, avaNum: 4) { (ava) in
-            header.addImage(ava)
-        }
+      
+        tableView.tableHeaderView = scrollView
+        headerView = tableView.tableHeaderView
+        tableView.tableHeaderView = nil
+        tableView.addSubview(headerView)
+        
+        tableView.contentInset = UIEdgeInsets(top: headerHeight, left: 0, bottom: 0, right: 0)
+        tableView.contentOffset = CGPoint(x: 0, y: -headerHeight)
+        
+        
+//        
+//        
+//        
+//        self.view.backgroundColor = UIColor.greenColor()
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.frame = header.bounds
+//        let color3 = UIColor.clearColor().CGColor as CGColorRef
+//        let color4 = UIColor(white: 0.0, alpha: 0.6).CGColor as CGColorRef
+//        gradientLayer.colors = [color3, color4]
+//        gradientLayer.locations = [0.2, 1.0]
+//        header.layer.addSublayer(gradientLayer)
+//        
+//        
+//        let firstName = UILabel(frame: CGRectZero)
+//        header.addSubview(firstName)
+//        firstName.font = UIFont.WDTAgoraRegular(16)
+//        firstName.textColor = UIColor.whiteColor()
+//        firstName.text = self.user["firstName"] as? String
+//        firstName.snp_makeConstraints { (make) in
+//            make.left.equalTo(20)
+//            make.bottom.equalTo(-20)
+//        }
+//        
+//        self.tableView.tableHeaderView = header
+        
+        
+
+//        
+
         
         self.loadPosts()
+    }
+    
+    func placeAvatars(scrollView: UIScrollView) {
+        scrollView.subviews.forEach({
+            $0.removeFromSuperview()
+        })
+        print(avatars.count)
+        for (index, avatar) in avatars.enumerate() {
+            let imageView = UIImageView(image: avatar)
+            imageView.frame = CGRectMake(self.headerHeight * CGFloat(index), 0, self.headerHeight, self.headerHeight)
+            print(imageView.frame)
+            scrollView.addSubview(imageView)
+        }
+    }
+    
+    func updateHeaderView() {
+        var headerRect = CGRectMake(0, -headerHeight, view.frame.width, headerHeight)
+        
+        if tableView.contentOffset.y < -headerHeight {
+            headerRect.origin.y = tableView.contentOffset.y
+            headerRect.size.height = -tableView.contentOffset.y
+        }
+        
+        headerView.frame = headerRect
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        updateHeaderView()
     }
     
     func editButtonTapped() {
@@ -142,8 +218,8 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
         -> UITableViewCell
     {
-        let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
-        let post = self.wdtPost.collectionOfAllPosts[indexPath.section]
+        let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
+        let post = wdtPost.collectionOfAllPosts[indexPath.section]
         
         cell.userNameBtn.tag = indexPath.section
         cell.moreBtn.tag = indexPath.section
@@ -212,18 +288,19 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         if button.selected == true {
             print("UnDown")
             button.selected = false
-            WDTActivity.deleteActivity(user, type: .Down)
+            WDTActivity.deleteActivity(user, post: post)
         } else {
             print("Downed")
             button.selected = true
-            WDTActivity.addActivity(user, post: post, type: .Down)
+            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
+            
         }
     }
     
     func replyBtnTapped(sender: AnyObject) {
         let destVC = ReplyViewController()
         let post = self.wdtPost.collectionOfAllPosts[sender.tag]
-        destVC.recipient = post.objectForKey("user") as! PFUser
+        destVC.toUser = post.objectForKey("user") as! PFUser
         destVC.usersPost = post
         self.navigationController?.pushViewController(destVC, animated: true)
     }
@@ -231,7 +308,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     func moreBtnTapped(sender: AnyObject) {
         let post = self.wdtPost.collectionOfAllPosts[sender.tag]
         let user = post["user"] as! PFUser
-        let guest = GuestVC()
+        let guest = MorePostsVC()
         guest.user = user
         guest.geoPoint = self.geoPoint
         guest.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({
