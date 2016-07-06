@@ -11,10 +11,10 @@ import Parse
 import ParseFacebookUtilsV4
 import ImageViewer
 
-class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+class UserVC: WDTFeed {
 
     
-    var tableView: UITableView!
+//    var tableView: UITableView!
     var configuration: ImageViewerConfiguration!
     let imageProvider = WDTImageProvider()
     // Page Size
@@ -40,16 +40,16 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         }
         
         configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
-        tableView = UITableView(frame: CGRectZero, style: .Grouped)
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(self.tableView)
-        tableView.snp_makeConstraints { (make) in
-            make.top.equalTo(view).offset(60)
-            make.left.equalTo(view)
-            make.right.equalTo(view)
-            make.bottom.equalTo(view)
-        }
+//        tableView = UITableView(frame: CGRectZero, style: .Grouped)
+//        tableView.delegate = self
+//        tableView.dataSource = self
+//        view.addSubview(self.tableView)
+//        tableView.snp_makeConstraints { (make) in
+//            make.top.equalTo(view).offset(60)
+//            make.left.equalTo(view)
+//            make.right.equalTo(view)
+//            make.bottom.equalTo(view)
+//        }
         
         tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
         tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
@@ -179,7 +179,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
 //        updateHeaderView()
 //    }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
         let headerView = self.tableView.tableHeaderView as! WDTHeader
         headerView.scrollViewDidScroll(scrollView)
     }
@@ -191,7 +191,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         self.presentViewController(nc, animated: true, completion: nil)
     }
     
-    func loadPosts() {
+    override func loadPosts() {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             
@@ -214,22 +214,22 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         self.viewDidLoad()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.wdtPost.collectionOfAllPosts.count
     }
     
     
     // Create table view rows
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
         -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = wdtPost.collectionOfAllPosts[indexPath.section]
-        
+        cell.viewController = self
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
@@ -242,7 +242,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let indexPath = tableView.indexPathForSelectedRow
         let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as! PostCell
         
@@ -255,7 +255,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         }
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let post = self.wdtPost.collectionOfAllPosts[section]
         let user = post["user"] as! PFUser
         
@@ -266,7 +266,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         }
     }
     
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         
         let footer = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("FeedFooter")
         let footerView = footer as! FeedFooter
@@ -319,14 +319,6 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         let guest = MorePostsVC()
         guest.user = user
         guest.geoPoint = self.geoPoint
-        guest.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({
-            let u = $0["user"] as! PFUser
-            if u.username == user.username {
-                return true
-            } else {
-                return false
-            }
-        })
         self.navigationController?.pushViewController(guest, animated: true)
     }
     

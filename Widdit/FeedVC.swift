@@ -12,7 +12,17 @@ import ImageViewer
 import XCGLogger
 
 
-class FeedVC: UITableViewController {
+protocol WDTLoad {
+    func loadPosts()
+}
+
+class WDTFeed: UITableViewController, WDTLoad {
+    func loadPosts() {
+        
+    }
+}
+
+class FeedVC: WDTFeed {
     
     // UI Objects
     @IBOutlet weak var ivarcator: UIActivityIndicatorView!
@@ -28,7 +38,7 @@ class FeedVC: UITableViewController {
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.setBottomBorderColor()
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Post", style: .Done, target: self, action: #selector(newPostButtonTapped))
         
         let queryOfAllUsers = PFUser.query()
         queryOfAllUsers?.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) in
@@ -71,6 +81,12 @@ class FeedVC: UITableViewController {
         self.loadPosts()
     }
     
+    func newPostButtonTapped() {
+        let newPostVC = NewPostVC()
+        let nc = UINavigationController(rootViewController: newPostVC)
+        presentViewController(nc, animated: true, completion: nil)
+    }
+    
     func nothingToDo() {
         
     }
@@ -86,10 +102,9 @@ class FeedVC: UITableViewController {
     // reloading func with posts after received notification
     func uploaded(notification: NSNotification) {
         loadPosts()
-        
     }
     
-    func loadPosts() {
+    override func loadPosts() {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             
@@ -127,6 +142,7 @@ class FeedVC: UITableViewController {
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
+        cell.viewController = self
         cell.fillCell(post)
         let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(FeedVC.avaImageTapped(_:)))
         cell.avaImage.tag = indexPath.section
@@ -233,14 +249,6 @@ class FeedVC: UITableViewController {
             let guest = MorePostsVC()
             guest.user = user
             guest.geoPoint = self.geoPoint
-            guest.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({
-                let u = $0["user"] as! PFUser
-                if u.username == user.username {
-                    return true
-                } else {
-                    return false
-                }
-            })
             self.navigationController?.pushViewController(guest, animated: true)
     }
     

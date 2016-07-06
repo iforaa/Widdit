@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import SimpleAlert
 
 class WDTCAShapeLayer: CAShapeLayer {
     var tag: Int?
@@ -79,7 +80,8 @@ class PostCell: UITableViewCell {
     var user: PFUser!
     var post: PFObject!
     
-    
+    var viewController: WDTFeed!
+    var tableView: UITableView!
     
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -154,23 +156,42 @@ class PostCell: UITableViewCell {
     }
     
     func settingsButtonTapped() {
-//        // Set title, message and alert style
-//        let alertController = DOAlertController(title: "title", message: "message", preferredStyle: .Alert)
-//        
-//        // Create the action.
-//        let cancelAction = DOAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-//        
-//        // You can add plural action.
-//        let okAction = DOAlertAction(title: "OK", style: .Default) { action in
-//            NSLog("OK action occured.")
-//        }
-//        
-//        // Add the action.
-//        alertController.addAction(cancelAction)
-//        alertController.addAction(okAction)
-//        
-//        // Show alert
-//        presentViewController(alertController, animated: true, completion: nil)
+        //let alert = SimpleAlert.Controller(title: "", message: "", style: .ActionSheet)
+        let alert = SimpleAlert.Controller(view: nil, style: .ActionSheet)
+        
+        if user.username == PFUser.currentUser()?.username {
+            alert.addAction(SimpleAlert.Action(title: "Edit", style: .Default) { action in
+                
+                let newPostVC = NewPostVC()
+                
+                let nc = UINavigationController(rootViewController: newPostVC)
+                self.viewController.presentViewController(nc, animated: true, completion:  {
+                    newPostVC.editMode(self.post, postPhoto: self.postPhoto.image)    
+                })
+            
+            })
+            
+            alert.addAction(SimpleAlert.Action(title: "Delete", style: .Destructive) { action in
+                WDTPost.deletePost(self.post, completion: { (success) in
+                    self.viewController.loadPosts()
+                })
+            })
+            
+        } else {
+            alert.addAction(SimpleAlert.Action(title: "Report", style: .Default) { action in
+                let reportAlert = SimpleAlert.Controller(title: "Report", message: "[message]", style: .Alert)
+                reportAlert.addAction(SimpleAlert.Action(title: "OK", style: .OK))
+                self.viewController.presentViewController(reportAlert, animated: true, completion: nil)
+            })
+        }
+        
+
+        
+        alert.addAction(SimpleAlert.Action(title: "Cancel", style: .Cancel))
+        
+        viewController.presentViewController(alert, animated: true, completion: nil)
+        
+
     }
     
     
@@ -296,16 +317,12 @@ class PostCell: UITableViewCell {
             let placeholderImage = UIImage(color: UIColor.WDTGrayBlueColor(), size: CGSizeMake(CGFloat(320), CGFloat(320)))
             
             postPhoto.kf_setImageWithURL(NSURL(string: photoFile.url!)!, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) in
-                self.updateConstraints()
-                self.cardView.updateLayer()
             })
-
-
         } else {
             postPhoto.image = nil
-            self.updateConstraints()
-            self.cardView.updateLayer()
         }
+        self.updateConstraints()
+        self.cardView.updateLayer()
         
         let hoursexpired = post["hoursexpired"] as! NSDate
         let timeLeft = hoursexpired.timeIntervalSince1970 - NSDate().timeIntervalSince1970

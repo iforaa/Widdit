@@ -9,7 +9,6 @@ PODS:
     - Bolts/Tasks
   - Bolts/Tasks (1.7.0)
   - CircleSlider (0.2.0)
-  - DOAlertController (1.0.0)
   - FBSDKCoreKit (4.11.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.11.0):
@@ -28,6 +27,7 @@ PODS:
     - FBSDKLoginKit (~> 4.10)
     - FBSDKTVOSKit (~> 4.10)
     - Parse (~> 1.12)
+  - SimpleAlert (1.3.1)
   - SinchVerification-Swift (1.4.4)
   - SlackTextViewController (1.9.3)
   - SnapKit (0.21.0)
@@ -39,12 +39,12 @@ DEPENDENCIES:
   - AsyncSwift
   - Bolts
   - CircleSlider
-  - DOAlertController
   - ImageViewer
   - JSQMessagesViewController
   - Kingfisher (~> 2.4)
   - MBProgressHUD (~> 0.9.2)
   - ParseFacebookUtilsV4
+  - SimpleAlert
   - SinchVerification-Swift
   - SlackTextViewController
   - SnapKit
@@ -56,7 +56,6 @@ SPEC CHECKSUMS:
   AsyncSwift: 46a78bceb11f0e5bb52747f740d9692ec78d2d7c
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   CircleSlider: 66e5bf0059f5feffc954e5666f5286f4a331ebe3
-  DOAlertController: d22fca7cd83b5eeeb24b78a1c6c76ed08cc28dac
   FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b
   FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
   ImageViewer: 00eae024d0cb2eebb4b228f4669b6c4872afadb9
@@ -66,11 +65,12 @@ SPEC CHECKSUMS:
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
+  SimpleAlert: 05215ee656e1da1428998e76a76bb153a16c7a21
   SinchVerification-Swift: b62b0472825ce2be237d84c9ccc323eeccb4e0b6
   SlackTextViewController: bd2a34c188d4f7dec93cf42388f38551263fac82
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: b5eb31744b5482c8ddf308400499c09ba4771edc
+PODFILE CHECKSUM: e5783fa716f47e9d3ebca8ef411f329666d71b40
 
 COCOAPODS: 1.0.0

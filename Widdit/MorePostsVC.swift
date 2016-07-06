@@ -10,15 +10,16 @@ import UIKit
 import Parse
 import ImageViewer
 
-class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MorePostsVC: WDTFeed {
     
-    var tableView: UITableView!
+//    var tableView: UITableView!
     
     // UI Objects
     var refresher : UIRefreshControl!
     var page : Int = 12
 
     var user: PFUser!
+    let wdtPost = WDTPost()
     var collectionOfPosts = [PFObject]()
     var geoPoint: PFGeoPoint?
     
@@ -26,16 +27,6 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView = UITableView(frame: CGRectZero, style: .Grouped)
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(tableView)
-        tableView.snp_makeConstraints { (make) in
-            make.top.equalTo(view)
-            make.left.equalTo(view)
-            make.right.equalTo(view)
-            make.bottom.equalTo(view)
-        }
         
         tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooterMorePosts")
         tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
@@ -44,15 +35,42 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         tableView.estimatedRowHeight = 150.0;
         tableView.separatorStyle = .None
         
-        // Pull to Refresh
-        
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(MorePostsVC.refresh), forControlEvents: UIControlEvents.ValueChanged)
         
-        // Swipe to go back
         let backSwipe = UISwipeGestureRecognizer(target: self, action: #selector(MorePostsVC.back(_:)))
         backSwipe.direction = UISwipeGestureRecognizerDirection.Right
         view.addGestureRecognizer(backSwipe)
+        self.loadPosts()
+        
+        // Receive Notification from NewPostVC
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MorePostsVC.uploaded(_:)), name: "uploaded", object: nil)
+
+    }
+    
+    // reloading func with posts after received notification
+    func uploaded(notification: NSNotification) {
+        loadPosts()
+    }
+    
+    override func loadPosts() {
+        
+        wdtPost.requestPosts { (success) in
+            self.tableView.reloadData()
+            self.refresher.endRefreshing()
+            
+            self.collectionOfPosts = self.wdtPost.collectionOfAllPosts.filter({
+                let u = $0["user"] as! PFUser
+                if u.username == self.user.username {
+                    return true
+                } else {
+                    return false
+                }
+                
+            })
+            self.tableView.reloadData()
+        }
+        
 
     }
     
@@ -73,28 +91,28 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     
     
     // load more while scrolling down
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
         if scrollView.contentOffset.y >= scrollView.contentSize.height - view.frame.size.height {
 //            self.loadMore()
         }
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return collectionOfPosts.count
     }
     
     // Create table view rows
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
         -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = collectionOfPosts[indexPath.section]
-       
+        cell.viewController = self
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
         cell.moreBtn.hidden = true
@@ -104,7 +122,7 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let indexPath = tableView.indexPathForSelectedRow
         let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as! PostCell
         
@@ -117,7 +135,7 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let post = collectionOfPosts[section]
         let user = post["user"] as! PFUser
         
@@ -128,7 +146,7 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         
         let footer = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("FeedFooterMorePosts")
         let footerView = footer as! FeedFooter

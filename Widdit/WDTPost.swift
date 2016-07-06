@@ -15,6 +15,15 @@ class WDTPost {
     
     var postsOfUser:PFUser?
     
+    class func deletePost(post: PFObject, completion: (success: Bool) -> Void) {
+        let query = PFQuery(className: "posts")
+        query.getObjectInBackgroundWithId(post.objectId!) { (object, error) in
+            object?.deleteInBackgroundWithBlock({ (success, error) in
+                completion(success: success)
+            })
+        }
+    }
+    
     func requestPosts(completion: (success: Bool) -> Void) {
         let query = PFQuery(className: "posts")
         query.limit = 10

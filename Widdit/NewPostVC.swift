@@ -18,9 +18,6 @@ import ALCameraViewController
 
 class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate {
     
-    @IBOutlet weak var postBtn: UIButton!
-    @IBOutlet weak var cancelBtn: UIBarButtonItem!
-    
     var deletePhotoButton: UIButton = UIButton()
     var addPhotoButton: UIButton = UIButton()
     var postTxt: WDTPlaceholderTextView = WDTPlaceholderTextView()
@@ -32,12 +29,17 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     var photoImage: UIImage?
     var geoPoint: PFGeoPoint?
 
+    var postBtn:UIBarButtonItem!
+    private var editPost: PFObject? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // disable post button
+        postBtn = UIBarButtonItem(title: "Post", style: .Done, target: self, action: #selector(postBtnTapped))
         postBtn.enabled = false
+        navigationItem.rightBarButtonItem = postBtn
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Done, target: self, action: #selector(cancelBtnTapped))
+        
 
         view.backgroundColor = UIColor.WDTGrayBlueColor()
         
@@ -124,6 +126,25 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
             }
         }
     }
+    
+    
+    func editMode(post: PFObject, postPhoto: UIImage?) {
+        editPost = post
+        postBtn = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(postBtnTapped))
+        postBtn.enabled = false
+        navigationItem.rightBarButtonItem = postBtn
+        
+        if let text = post["postText"] as? String {
+            postTxt.text = text
+        }
+        
+        if let image = postPhoto {
+            addPhotoButton.setImage(image, forState: .Normal)
+            photoImage = image
+            deletePhotoButton.hidden = false
+        }
+        postGuard()
+    }
 
     func buildCircleSlider() {
         wdtSlider.addTarget(self, action: #selector(NewPostVC.valueChange(_:)), forControlEvents: .ValueChanged)
@@ -134,6 +155,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
 
         
     }
+    
+    
     
     func valueChange(sender: CircleSlider) {
         wdtSlider.roundControll()
@@ -172,17 +195,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     func deletePhotoButtonTapped(sender: AnyObject) {
         deletePhotoButton.hidden = true
         addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
-    }
-    
-
-    func doneButtonDidPress(images: [UIImage]) {
-        for img in images {
-            let resizedImage = UIImage.resizeImage(img, newWidth: 1080)
-            self.addPhotoButton.setImage(resizedImage, forState: .Normal)
-            self.photoImage = resizedImage
-        }
-        deletePhotoButton.hidden = false
-        dismissViewControllerAnimated(true, completion: nil)
+        photoImage = nil
     }
     
     
@@ -217,18 +230,30 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
     
     // Cancel button tapped
-    @IBAction func cancelBtnTapped(sender: AnyObject) {
+    func cancelBtnTapped(sender: AnyObject) {
         
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction func postBtnTapped(sender: AnyObject) {
+    func postBtnTapped(sender: AnyObject) {
         
         // dismiss keyboard
         view.endEditing(true)
         
+        
+        
+        
+        
+        
         // send data to server to "posts" class in Parse
-        let object = PFObject(className: "posts")
+        var object = PFObject(className: "posts")
+        
+        
+        if let editPost = editPost {
+            object = editPost
+            object.removeObjectForKey("photoFile")
+        }
+        
         object["postText"] = postTxt.text
         object["user"] = PFUser.currentUser()!
 
@@ -254,12 +279,8 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         if let image = self.photoImage {
             let photoData = UIImageJPEGRepresentation(image, 0.5)
             let photoFile = PFFile(name: "postPhoto.jpg", data: photoData!)
-            
-            
             object["photoFile"] = photoFile
-            
-            object["photoHeight"] = image.size.height
-            object["photoWidth"] = image.size.width
+
         }
         
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)

@@ -17,9 +17,10 @@ pod 'ImageViewer'
 pod 'AsyncSwift'
 pod 'Kingfisher', '~> 2.4'
 pod 'AFImageHelper'
-pod 'DOAlertController'
+
 pod 'XCGLogger', '~> 3.3'
 pod 'ALCameraViewController'
+pod 'SimpleAlert'
 
 end
 
