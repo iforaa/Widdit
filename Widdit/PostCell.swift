@@ -40,7 +40,6 @@ class WDTCellCardView: UIView {
             
             layer.insertSublayer(self.shadowLayer!, atIndex: 0)
         }
-        
     }
     
     func updateLayer() {
@@ -67,7 +66,8 @@ class PostCell: UITableViewCell {
     var moreBtn: UIButton = UIButton(type: .Custom)
     var timeLbl: UILabel = UILabel()
     var firstNameLbl: UILabel = UILabel()
-    var userNameBtn: UIButton = UIButton(type: .Custom)
+    var userNameLbl: UILabel = UILabel()
+    var settings: UIButton = UIButton()
     var cardView: WDTCellCardView = WDTCellCardView()
     
     var morePostsButton: UIButton = UIButton(type: .Custom)
@@ -78,7 +78,9 @@ class PostCell: UITableViewCell {
     
     var user: PFUser!
     var post: PFObject!
-    var myPost: Bool = false
+    
+    
+    
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -102,15 +104,22 @@ class PostCell: UITableViewCell {
         cardView.addSubview(postText)
         cardView.addSubview(timeLbl)
         cardView.addSubview(firstNameLbl)
-        cardView.addSubview(userNameBtn)
+        cardView.addSubview(userNameLbl)
         cardView.addSubview(moreBtn)
+        cardView.addSubview(settings)
 
         cardView.addSubview(vertLineView)
         cardView.addSubview(distanceLbl)
         
+        
+        settings.setImage(UIImage(named: "more"), forState: .Normal)
+        settings.addTarget(self, action: #selector(settingsButtonTapped), forControlEvents: .TouchUpInside)
+        
         vertLineView.backgroundColor = UIColor.grayColor()
         vertLineView.alpha = 0.5
         
+        
+        postPhoto.contentMode = .ScaleAspectFit
         
         postText.backgroundColor = UIColor.WDTGrayBlueColor()
         postText.textColor = UIColor.grayColor()
@@ -124,11 +133,8 @@ class PostCell: UITableViewCell {
         avaImage.layer.cornerRadius = 8.0
         avaImage.clipsToBounds = true
         
-        
-        userNameBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        userNameBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
-        userNameBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
-        userNameBtn.titleLabel?.textAlignment = .Left
+        userNameLbl.font = UIFont.WDTAgoraRegular(12)
+        userNameLbl.textColor = UIColor.WDTBlueColor()
         
         moreBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         moreBtn.titleLabel?.font = UIFont.WDTAgoraRegular(12)
@@ -145,10 +151,28 @@ class PostCell: UITableViewCell {
         distanceLbl.textColor = UIColor.grayColor()
         distanceLbl.font = UIFont.WDTAgoraRegular(12)
         
-        
-        
-        
     }
+    
+    func settingsButtonTapped() {
+//        // Set title, message and alert style
+//        let alertController = DOAlertController(title: "title", message: "message", preferredStyle: .Alert)
+//        
+//        // Create the action.
+//        let cancelAction = DOAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+//        
+//        // You can add plural action.
+//        let okAction = DOAlertAction(title: "OK", style: .Default) { action in
+//            NSLog("OK action occured.")
+//        }
+//        
+//        // Add the action.
+//        alertController.addAction(cancelAction)
+//        alertController.addAction(okAction)
+//        
+//        // Show alert
+//        presentViewController(alertController, animated: true, completion: nil)
+    }
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -159,19 +183,6 @@ class PostCell: UITableViewCell {
     override func updateConstraints() {
         
 
-        postPhoto.snp_remakeConstraints(closure: { (make) in
-            make.top.equalTo(avaImage.snp_bottom).offset(10)
-            make.left.equalTo(cardView).offset(10)
-            make.right.equalTo(cardView).offset(-10)
-            if let img = postPhoto.image {
-                let scale = img.size.height / img.size.width
-                make.height.equalTo(postPhoto.snp_width).multipliedBy(scale)
-            } else {
-                make.height.equalTo(postPhoto.snp_width).multipliedBy(0.625)
-            }
-            
-        })
-        
         postText.snp_remakeConstraints(closure: { (make) in
             if let _ = self.postPhoto.image {
                 make.top.equalTo(postPhoto.snp_bottom).offset(10)
@@ -180,11 +191,29 @@ class PostCell: UITableViewCell {
             }
             make.left.equalTo(cardView).offset(10)
             make.right.equalTo(cardView).offset(-10)
-            make.bottom.equalTo(cardView).offset(-25).priority(750)
+            make.bottom.equalTo(cardView).offset(-25)
             
         })
 
+
+
         if isHeightCalculated == false {
+            
+            postPhoto.snp_remakeConstraints(closure: { (make) in
+                make.top.equalTo(avaImage.snp_bottom).offset(15)
+                make.left.equalTo(cardView).offset(10)
+                make.right.equalTo(cardView).offset(-10)
+                make.height.equalTo(postPhoto.snp_width)
+
+//                if let img = postPhoto.image {
+//                    let scale = img.size.height / img.size.width
+//                    make.height.equalTo(postPhoto.snp_width).multipliedBy(scale)
+//                } else {
+//                    make.height.equalTo(postPhoto.snp_width).multipliedBy(0.625)
+//                }
+                
+            })
+
 
             cardView.snp_remakeConstraints { (make) in
                 make.top.equalTo(contentView).offset(10)
@@ -200,19 +229,26 @@ class PostCell: UITableViewCell {
                 make.height.equalTo(50)
             })
             
-            userNameBtn.snp_remakeConstraints(closure: { (make) in
+            userNameLbl.snp_remakeConstraints(closure: { (make) in
                 make.left.equalTo(avaImage.snp_right).offset(7)
                 make.top.equalTo(cardView).offset(5)
             })
         
             firstNameLbl.snp_remakeConstraints(closure: { (make) in
-                make.left.equalTo(avaImage.snp_right).offset(10)
-                make.top.equalTo(userNameBtn.snp_bottom).offset(-4)
+                make.left.equalTo(avaImage.snp_right).offset(7)
+                make.top.equalTo(userNameLbl.snp_bottom).offset(3)
+            })
+            
+            settings.snp_remakeConstraints(closure: { (make) in
+                make.right.equalTo(cardView).offset(-10)
+                make.top.equalTo(cardView).offset(10)
+                make.width.equalTo(25)
+                make.height.equalTo(25)
             })
 
             timeLbl.snp_remakeConstraints(closure: { (make) in
                 make.right.equalTo(cardView).offset(-10)
-                make.top.equalTo(cardView).offset(10)
+                make.top.equalTo(settings.snp_bottom).offset(10)
             })
         
             distanceLbl.snp_remakeConstraints(closure: { (make) in
@@ -241,57 +277,27 @@ class PostCell: UITableViewCell {
         let user = post["user"] as! PFUser
         
         let username = user.username
-        userNameBtn.setTitle(username, forState: .Normal)
+        userNameLbl.text = username
         self.post = post
         self.user = user
-    
         
         postText.text = post["postText"] as! String
         firstNameLbl.text = user["firstName"] as? String
-        userNameBtn.hidden = false
+        userNameLbl.hidden = false
         moreBtn.hidden = false
         
-        if PFUser.currentUser()?.username == user.username {
-//            self.replyBtn.hidden = true
-//            self.imDownBtn.hidden = true
-            self.myPost = true
-        } else {
-//            self.replyBtn.hidden = false
-//            self.imDownBtn.hidden = false
-            self.myPost = false
-        }
-        
-
-        
-        
         // Place Profile Picture
-        let avaFile: PFFile? = user["ava"] as? PFFile
-        
-        if let avaFile = avaFile {
+        if let avaFile = user["ava"] as? PFFile {
             avaImage.kf_setImageWithURL(NSURL(string: avaFile.url!)!)
         }
         
-        
-        if let photoFile = post["photoFile"]  {
+        if let photoFile = post["photoFile"] as? PFFile  {
             
-            guard let photoHeight = post["photoHeight"] as? CGFloat else {
-                return
-            }
-            guard let photoWidth = post["photoWidth"] as? CGFloat else {
-                return
-            }
+            let placeholderImage = UIImage(color: UIColor.WDTGrayBlueColor(), size: CGSizeMake(CGFloat(320), CGFloat(320)))
             
-            
-            
-            let pfFile: PFFile = photoFile as! PFFile
-            let url = pfFile.url!
-            postPhoto.kf_setImageWithURL(NSURL(string: url)!, placeholderImage: UIImage(color: UIColor.WDTBlueColor(), size: CGSizeMake(photoWidth, photoHeight)), optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) in
-                
-                
+            postPhoto.kf_setImageWithURL(NSURL(string: photoFile.url!)!, placeholderImage: placeholderImage, optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) in
                 self.updateConstraints()
                 self.cardView.updateLayer()
-                
-                
             })
 
 

@@ -13,12 +13,13 @@ pod 'ParseFacebookUtilsV4'
 pod 'SinchVerification-Swift'
 pod 'JSQMessagesViewController'
 pod 'MBProgressHUD', '~> 0.9.2'
-pod 'ImagePicker'
 pod 'ImageViewer'
 pod 'AsyncSwift'
 pod 'Kingfisher', '~> 2.4'
 pod 'AFImageHelper'
-pod 'SAStickyHeader'
+pod 'DOAlertController'
+pod 'XCGLogger', '~> 3.3'
+pod 'ALCameraViewController'
 
 end
 

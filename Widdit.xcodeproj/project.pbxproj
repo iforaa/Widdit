@@ -47,6 +47,7 @@
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
+		A638AC6E1D2A617400AC5781 /* WDTHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A638AC6D1D2A617400AC5781 /* WDTHeader.swift */; };
 		A67240FB1D1808440060FAC0 /* WDTPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67240FA1D1808440060FAC0 /* WDTPush.swift */; };
 		A67241011D1812D60060FAC0 /* AgoraSansProItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67240FC1D1812D60060FAC0 /* AgoraSansProItalic.ttf */; };
 		A67241021D1812D60060FAC0 /* AgoraSansProLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67240FD1D1812D60060FAC0 /* AgoraSansProLight.ttf */; };
@@ -117,6 +118,7 @@
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		A638AC6D1D2A617400AC5781 /* WDTHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTHeader.swift; sourceTree = "<group>"; };
 		A67240FA1D1808440060FAC0 /* WDTPush.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPush.swift; sourceTree = "<group>"; };
 		A67240FC1D1812D60060FAC0 /* AgoraSansProItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProItalic.ttf; sourceTree = "<group>"; };
 		A67240FD1D1812D60060FAC0 /* AgoraSansProLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProLight.ttf; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				A67241101D1847530060FAC0 /* Parse */,
 				A6E153061CFD967F00787394 /* Extension */,
 				A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */,
+				A638AC6D1D2A617400AC5781 /* WDTHeader.swift */,
 			);
 			name = WDTUtils;
 			sourceTree = "<group>";
@@ -536,6 +539,7 @@
 				A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */,
 				A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */,
 				79B4230C1CEE675D00888461 /* TextVerifyViewController.swift in Sources */,
+				A638AC6E1D2A617400AC5781 /* WDTHeader.swift in Sources */,
 				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
 				A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */,
 				A672411D1D1C14B20060FAC0 /* UIImageEffects.swift in Sources */,

@@ -93,9 +93,8 @@ class MorePostsVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
-        let post = collectionOfPosts[indexPath.row]
+        let post = collectionOfPosts[indexPath.section]
        
-        cell.userNameBtn.tag = indexPath.section
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
         cell.moreBtn.hidden = true

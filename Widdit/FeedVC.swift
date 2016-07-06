@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import ImageViewer
-
+import XCGLogger
 
 
 class FeedVC: UITableViewController {
@@ -124,8 +124,6 @@ class FeedVC: UITableViewController {
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = self.wdtPost.collectionOfPosts[indexPath.section]
-        
-        cell.userNameBtn.tag = indexPath.section
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
@@ -134,13 +132,11 @@ class FeedVC: UITableViewController {
         cell.avaImage.tag = indexPath.section
         cell.avaImage.userInteractionEnabled = true
         cell.avaImage.addGestureRecognizer(tapGestureRecognizer)
-//        cell.isHeightCalculated = false
-        
         let postsCount = self.wdtPost.collectionOfAllPosts.filter({
             let user1 = post["user"] as! PFUser
             return user1.username == ($0["user"] as! PFUser).username
         }).count
-        
+
         cell.moreBtn.hidden = postsCount == 1
         
         
@@ -185,13 +181,11 @@ class FeedVC: UITableViewController {
         if PFUser.currentUser()?.username == user.username {
             return nil
         } else {
-            
             footerView.setDown(user, post: post)
             footerView.imDownBtn.tag = section
             footerView.replyBtn.tag = section
             footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
             footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-            
         }
         
         return footerView

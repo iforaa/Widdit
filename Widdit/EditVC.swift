@@ -8,9 +8,9 @@
 
 import UIKit
 import Parse
-import ImagePicker
+import ALCameraViewController
 
-class EditVC: UIViewController, ImagePickerDelegate {
+class EditVC: UIViewController {
 
     var tableView: UITableView!
 
@@ -28,7 +28,6 @@ class EditVC: UIViewController, ImagePickerDelegate {
     var genderPicker : UIPickerView!
     let genders = ["male","female"]
     
-    let imagePickerController = ImagePickerController()
     
     let addAvatar1 = UIButton()
     let addAvatar2 = UIButton()
@@ -190,11 +189,48 @@ class EditVC: UIViewController, ImagePickerDelegate {
     
     func addAvatarButtonTapped(sender: AnyObject) {
         
-        self.imagePickerController.delegate = self
-        self.imagePickerController.imageLimit = 1
-        self.imagePickerController.view.tag = sender.tag!
-        self.presentViewController(self.imagePickerController, animated: true, completion: nil)
+        let cameraViewController = CameraViewController(croppingEnabled: true) { image in
+            if let image = image.0 {
+                var resizedImage: UIImage!
+                let user = PFUser.currentUser()!
+                
+                resizedImage = UIImage.resizeImage(image, newWidth: 400)
+                resizedImage = resizedImage.roundCorners(20)
+                let avaData = UIImageJPEGRepresentation(resizedImage, 0.5)
+                let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+                
+                if sender.tag == 1 {
+                    self.addAvatar1.setImage(resizedImage, forState: .Normal)
+                    user["ava"] = avaFile
+                    
+                } else if sender.tag == 2 {
+                    self.addAvatar2.setImage(resizedImage, forState: .Normal)
+                    user["ava2"] = avaFile
+                    self.deleteAvatar2.hidden = false
+                    
+                } else if sender.tag == 3 {
+                    self.addAvatar3.setImage(resizedImage, forState: .Normal)
+                    user["ava3"] = avaFile
+                    self.deleteAvatar3.hidden = false
+                    
+                } else if sender.tag == 4 {
+                    self.addAvatar4.setImage(resizedImage, forState: .Normal)
+                    user["ava4"] = avaFile
+                    self.deleteAvatar4.hidden = false
+                }
+                
+                user.saveInBackgroundWithBlock ({ (success:Bool, error:NSError?) -> Void in
+                    if success {
+                        
+                    }
+                })
+            }
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
+        presentViewController(cameraViewController, animated: true, completion: nil)
     }
+    
     
     func deletePhotoButtonTapped(sender: AnyObject) {
         let user = PFUser.currentUser()!
@@ -224,61 +260,6 @@ class EditVC: UIViewController, ImagePickerDelegate {
         
         user.saveInBackground()
         
-    }
-    
-    // MARK: UIImagePickerControllerDelegate
-    
-    func wrapperDidPress(images: [UIImage]) {
-        
-    }
-    
-    func cancelButtonDidPress() {
-        
-    }
-    
-    func doneButtonDidPress(images: [UIImage]) {
-        var resizedImage: UIImage!
-        
-        
-        let user = PFUser.currentUser()!
-        
-        for img in images {
-            resizedImage = UIImage.resizeImage(img, newWidth: 400)
-            resizedImage = resizedImage.roundCorners(20)
-            let avaData = UIImageJPEGRepresentation(resizedImage, 0.5)
-            let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-            
-            if self.imagePickerController.view.tag == 1 {
-                self.addAvatar1.setImage(resizedImage, forState: .Normal)
-                user["ava"] = avaFile
-//                self.deleteAvatar1.hidden = false
-                
-            } else if self.imagePickerController.view.tag == 2 {
-                self.addAvatar2.setImage(resizedImage, forState: .Normal)
-                user["ava2"] = avaFile
-                self.deleteAvatar2.hidden = false
-                
-            } else if self.imagePickerController.view.tag == 3 {
-                self.addAvatar3.setImage(resizedImage, forState: .Normal)
-                user["ava3"] = avaFile
-                self.deleteAvatar3.hidden = false
-                
-            } else if self.imagePickerController.view.tag == 4 {
-                self.addAvatar4.setImage(resizedImage, forState: .Normal)
-                user["ava4"] = avaFile
-                self.deleteAvatar4.hidden = false
-            }
-        }
-        
-        
-        user.saveInBackgroundWithBlock ({ (success:Bool, error:NSError?) -> Void in
-            if success {
-                
-            }
-        })
-        
-//        self.deletePhotoButton.hidden = false
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     

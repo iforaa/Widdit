@@ -9,14 +9,14 @@
 import UIKit
 import Parse
 
-import ImagePicker
+
 import MBProgressHUD
 import CircleSlider
 
+import ALCameraViewController
 
 
-
-class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate, ImagePickerDelegate {
+class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDelegate {
     
     @IBOutlet weak var postBtn: UIButton!
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
@@ -155,10 +155,18 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     }
     
     func addPhotoButtonTapped(sender: AnyObject) {
-        let imagePickerController = ImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.imageLimit = 1
-        presentViewController(imagePickerController, animated: true, completion: nil)
+        let croppingEnabled = true
+        let cameraViewController = CameraViewController(croppingEnabled: croppingEnabled) { image in
+            if let image = image.0 {
+                let resizedImage = UIImage.resizeImage(image, newWidth: 1080)
+                self.addPhotoButton.setImage(resizedImage, forState: .Normal)
+                self.photoImage = resizedImage
+            }
+            self.dismissViewControllerAnimated(true, completion: nil)
+            self.deletePhotoButton.hidden = false
+        }
+        
+        presentViewController(cameraViewController, animated: true, completion: nil)
     }
     
     func deletePhotoButtonTapped(sender: AnyObject) {
@@ -166,16 +174,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         addPhotoButton.setImage(UIImage(named: "AddPhotoButton"), forState: .Normal)
     }
     
-    // MARK: UIImagePickerControllerDelegate
-    
-    func wrapperDidPress(images: [UIImage]) {
-        
-    }
-    
-    func cancelButtonDidPress() {
-        
-    }
-    
+
     func doneButtonDidPress(images: [UIImage]) {
         for img in images {
             let resizedImage = UIImage.resizeImage(img, newWidth: 1080)

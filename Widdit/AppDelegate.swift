@@ -11,6 +11,9 @@ import CoreData
 import Parse
 import Bolts
 import ParseFacebookUtilsV4
+import XCGLogger
+
+let log = XCGLogger.defaultInstance()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        log.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: "path/to/file", fileLogLevel: .Debug)
+        
+        log.debug("A debug message")
 
         //configure push notifications
         let userNotificationTypes: UIUserNotificationType = [.Alert, .Badge, .Sound]

@@ -9,7 +9,6 @@
 import UIKit
 import Parse
 import ParseFacebookUtilsV4
-import SAStickyHeader
 import ImageViewer
 
 class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
@@ -59,26 +58,33 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         tableView.estimatedRowHeight = 150.0;
         tableView.separatorStyle = .None
         
-        headerHeight = view.frame.width
+        headerHeight = 200
         
-        let scrollView = UIScrollView(frame: CGRectMake(0, 0, headerHeight, headerHeight))
-        scrollView.backgroundColor = UIColor.WDTBlueColor()
+        let scrollView = UIScrollView(frame: CGRectMake(0, 0, view.frame.width, headerHeight))
+        scrollView.backgroundColor = UIColor.whiteColor()
         
         scrollView.pagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         
         
+        let wdtHeader = WDTHeader.init(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds)));
+        
         WDTAvatar.countAvatars(user) { (num) in
-            scrollView.contentSize = CGSizeMake(self.headerHeight * CGFloat(num), self.headerHeight)
+            scrollView.contentSize = CGSizeMake(self.view.frame.width * CGFloat(num), self.headerHeight)
         }
         avatars = []
         
         WDTAvatar.getAvatar(user, avaNum: 1) { (ava) in
             if let ava = ava {
                 self.avatars.append(ava)
-                self.placeAvatars(scrollView)
+                
+                WDTAvatar.getAvatar(self.user, avaNum: 2) { (ava2) in
+                    if let ava2 = ava2 {
+                        self.avatars.append(ava2)
+                        wdtHeader.setImages([ava, ava2])
+                    }
+                }
             }
-            
         }
         
         WDTAvatar.getAvatar(user, avaNum: 2) { (ava) in
@@ -103,15 +109,17 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
             }
             
         }
+    
         
-      
-        tableView.tableHeaderView = scrollView
-        headerView = tableView.tableHeaderView
-        tableView.tableHeaderView = nil
-        tableView.addSubview(headerView)
-        
-        tableView.contentInset = UIEdgeInsets(top: headerHeight, left: 0, bottom: 0, right: 0)
-        tableView.contentOffset = CGPoint(x: 0, y: -headerHeight)
+        tableView.tableHeaderView = wdtHeader
+
+//        tableView.tableHeaderView = scrollView
+//        headerView = tableView.tableHeaderView
+//        tableView.tableHeaderView = nil
+//        tableView.addSubview(headerView)
+//        
+//        tableView.contentInset = UIEdgeInsets(top: headerHeight, left: 0, bottom: 0, right: 0)
+//        tableView.contentOffset = CGPoint(x: 0, y: -headerHeight)
         
         
 //        
@@ -138,11 +146,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
 //        }
 //        
 //        self.tableView.tableHeaderView = header
-        
-        
-
-//        
-
+//
         
         self.loadPosts()
     }
@@ -151,10 +155,10 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         scrollView.subviews.forEach({
             $0.removeFromSuperview()
         })
-        print(avatars.count)
+
         for (index, avatar) in avatars.enumerate() {
             let imageView = UIImageView(image: avatar)
-            imageView.frame = CGRectMake(self.headerHeight * CGFloat(index), 0, self.headerHeight, self.headerHeight)
+            imageView.frame = CGRectMake(view.frame.width * CGFloat(index), 0, view.frame.width, self.headerHeight)
             print(imageView.frame)
             scrollView.addSubview(imageView)
         }
@@ -171,8 +175,13 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         headerView.frame = headerRect
     }
     
+//    func scrollViewDidScroll(scrollView: UIScrollView) {
+//        updateHeaderView()
+//    }
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        updateHeaderView()
+        let headerView = self.tableView.tableHeaderView as! WDTHeader
+        headerView.scrollViewDidScroll(scrollView)
     }
     
     func editButtonTapped() {
@@ -221,7 +230,6 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UISc
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = wdtPost.collectionOfAllPosts[indexPath.section]
         
-        cell.userNameBtn.tag = indexPath.section
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
