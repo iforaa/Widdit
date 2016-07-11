@@ -22,7 +22,6 @@ class WDTActivity {
     var chats = [PFObject]()
     var downs = [PFObject]()
     
-    
     class func isDown(user: PFUser, post: PFObject, completion: (down: PFObject?) -> Void) {
         let didDown = PFQuery(className: "Activity")
         didDown.whereKey("by", equalTo: PFUser.currentUser()!)

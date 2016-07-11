@@ -9,31 +9,45 @@
 import UIKit
 import Parse
 import ALCameraViewController
+import ParseFacebookUtilsV4
 
-class EditVC: UIViewController {
+enum WDTSituation: Int {
+    case School
+    case Working
+    case Opportunity
+    
+    
+    func getDescription() -> String {
+        switch self {
+        case .School:
+            return "School"
+        case .Working:
+            return "Working"
+        case .Opportunity:
+            return "Opportunity"
+        }
+    }
+    
+}
+
+class EditVC: UIViewController, UITextViewDelegate {
 
     var tableView: UITableView!
 
     // UI objects
+    let scrollView = UIScrollView()
     
-    var avaImg: UIImageView!
-    
-    var firstNameTxt: UITextField!
-    var usernameTxt: UITextField!
-    var bioTxt: UITextView!
-    
-    var emailTxt: UITextField!
-    var genderTxt: UITextField!
-    // pickerView & pickerData
-    var genderPicker : UIPickerView!
-    let genders = ["male","female"]
-    
+    var firstNameTxt: UITextField = UITextField()
+    var usernameTxt: UITextField = UITextField()
+    var emailTxt: UITextField = UITextField()
+    var aboutTxt: WDTPlaceholderTextView = WDTPlaceholderTextView()
+    let facebookLinkingBtn = UIButton(type: .Custom)
+    let situationSgmtCtrl = UISegmentedControl(items: ["School", "Working", "Opportunity"])
     
     let addAvatar1 = UIButton()
     let addAvatar2 = UIButton()
     let addAvatar3 = UIButton()
     let addAvatar4 = UIButton()
-//    let deleteAvatar1 = UIButton()
     let deleteAvatar2 = UIButton()
     let deleteAvatar3 = UIButton()
     let deleteAvatar4 = UIButton()
@@ -41,121 +55,193 @@ class EditVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "Settings"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(doneButtonTapped))
         
-//        self.tableView = UITableView(frame: CGRectZero, style: .Grouped)
-//        self.tableView.delegate = self
-//        self.tableView.dataSource = self
-//        self.view.addSubview(self.tableView)
-//        self.tableView.snp_makeConstraints { (make) in
-//            make.top.equalTo(self.view).offset(60)
-//            make.left.equalTo(self.view)
-//            make.right.equalTo(self.view)
-//            make.bottom.equalTo(self.view)
-//        }
-//        
-//        self.tableView.backgroundColor = UIColor.whiteColor()
-//        self.tableView.rowHeight = UITableViewAutomaticDimension;
-//        self.tableView.estimatedRowHeight = 150.0;
-//        self.tableView.separatorStyle = .None
+        view.addSubview(scrollView)
+        scrollView.snp_makeConstraints { (make) in
+            make.edges.equalTo(view)
+        }
         
-//        let header = SAStickyHeaderView(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 200), table: self.tableView, image: [])
-//        
+        navigationItem.title = "Settings"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(doneButtonTapped))
         
-        
-        
-        
-        
-        self.view.addSubview(self.addAvatar1)
-        self.addAvatar1.layer.cornerRadius = 10
-        self.addAvatar1.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.addAvatar1.tag = 1
-        self.addAvatar1.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
-        self.addAvatar1.snp_makeConstraints { (make) in
-            make.left.equalTo(self.view).offset(20)
-            make.top.equalTo(self.view).offset(80)
-            make.width.equalTo(self.view.snp_width).multipliedBy(0.4)
-            make.height.equalTo(self.view.snp_width).multipliedBy(0.4)
+        scrollView.addSubview(addAvatar1)
+        addAvatar1.layer.cornerRadius = 10
+        addAvatar1.backgroundColor = UIColor.WDTGrayBlueColor()
+        addAvatar1.tag = 1
+        addAvatar1.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
+        addAvatar1.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.top.equalTo(scrollView).offset(50)
+            make.width.equalTo(view.snp_width).multipliedBy(0.4)
+            make.height.equalTo(view.snp_width).multipliedBy(0.4)
         }
         
         
-        self.view.addSubview(self.addAvatar2)
-        self.addAvatar2.layer.cornerRadius = 10
-        self.addAvatar2.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.addAvatar2.tag = 2
-        self.addAvatar2.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
-        self.addAvatar2.snp_makeConstraints { (make) in
-            make.right.equalTo(self.view).offset(-20)
-            make.top.equalTo(self.view).offset(80)
-            make.width.equalTo(self.view.snp_width).multipliedBy(0.4)
-            make.height.equalTo(self.view.snp_width).multipliedBy(0.4)
+        scrollView.addSubview(addAvatar2)
+        addAvatar2.layer.cornerRadius = 10
+        addAvatar2.backgroundColor = UIColor.WDTGrayBlueColor()
+        addAvatar2.tag = 2
+        addAvatar2.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
+        addAvatar2.snp_makeConstraints { (make) in
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(scrollView).offset(50)
+            make.width.equalTo(view.snp_width).multipliedBy(0.4)
+            make.height.equalTo(view.snp_width).multipliedBy(0.4)
         }
         
-        self.addAvatar2.addSubview(self.deleteAvatar2)
-        self.deleteAvatar2.hidden = true
-        self.deleteAvatar2.tag = 2
-        self.deleteAvatar2.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
-        self.deleteAvatar2.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
-        self.deleteAvatar2.snp_makeConstraints { (make) in
-            make.right.equalTo(self.addAvatar2).offset(5)
-            make.bottom.equalTo(self.addAvatar2).offset(5)
+        addAvatar2.addSubview(deleteAvatar2)
+        deleteAvatar2.hidden = true
+        deleteAvatar2.tag = 2
+        deleteAvatar2.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
+        deleteAvatar2.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
+        deleteAvatar2.snp_makeConstraints { (make) in
+            make.right.equalTo(addAvatar2).offset(5)
+            make.bottom.equalTo(addAvatar2).offset(5)
             make.width.equalTo(18)
             make.height.equalTo(18)
         }
         
         
-        self.view.addSubview(addAvatar3)
-        self.addAvatar3.layer.cornerRadius = 10
-        self.addAvatar3.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.addAvatar3.tag = 3
+        scrollView.addSubview(addAvatar3)
+        addAvatar3.layer.cornerRadius = 10
+        addAvatar3.backgroundColor = UIColor.WDTGrayBlueColor()
+        addAvatar3.tag = 3
         addAvatar3.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
         addAvatar3.snp_makeConstraints { (make) in
-            make.left.equalTo(self.view).offset(20)
+            make.left.equalTo(view).offset(20)
             make.top.equalTo(addAvatar1.snp_bottom).offset(30)
-            make.width.equalTo(self.view.snp_width).multipliedBy(0.4)
-            make.height.equalTo(self.view.snp_width).multipliedBy(0.4)
+            make.width.equalTo(view.snp_width).multipliedBy(0.4)
+            make.height.equalTo(view.snp_width).multipliedBy(0.4)
         }
         
-        self.addAvatar3.addSubview(self.deleteAvatar3)
-        self.deleteAvatar3.hidden = true
-        self.deleteAvatar3.tag = 3
-        self.deleteAvatar3.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
-        self.deleteAvatar3.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
-        self.deleteAvatar3.snp_makeConstraints { (make) in
-            make.right.equalTo(self.addAvatar3).offset(5)
-            make.bottom.equalTo(self.addAvatar3).offset(5)
+        addAvatar3.addSubview(deleteAvatar3)
+        deleteAvatar3.hidden = true
+        deleteAvatar3.tag = 3
+        deleteAvatar3.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
+        deleteAvatar3.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
+        deleteAvatar3.snp_makeConstraints { (make) in
+            make.right.equalTo(addAvatar3).offset(5)
+            make.bottom.equalTo(addAvatar3).offset(5)
             make.width.equalTo(18)
             make.height.equalTo(18)
         }
         
-        self.view.addSubview(addAvatar4)
-        self.addAvatar4.layer.cornerRadius = 10
-        self.addAvatar4.backgroundColor = UIColor.WDTGrayBlueColor()
-        self.addAvatar4.tag = 4
+        scrollView.addSubview(addAvatar4)
+        addAvatar4.layer.cornerRadius = 10
+        addAvatar4.backgroundColor = UIColor.WDTGrayBlueColor()
+        addAvatar4.tag = 4
         addAvatar4.addTarget(self, action: #selector(addAvatarButtonTapped), forControlEvents: .TouchUpInside)
         addAvatar4.snp_makeConstraints { (make) in
-            make.right.equalTo(self.view).offset(-20)
+            make.right.equalTo(view).offset(-20)
             make.top.equalTo(addAvatar2.snp_bottom).offset(30)
-            make.width.equalTo(self.view.snp_width).multipliedBy(0.4)
-            make.height.equalTo(self.view.snp_width).multipliedBy(0.4)
+            make.width.equalTo(view.snp_width).multipliedBy(0.4)
+            make.height.equalTo(view.snp_width).multipliedBy(0.4)
         }
         
-        self.addAvatar4.addSubview(self.deleteAvatar4)
-        self.deleteAvatar4.hidden = true
-        self.deleteAvatar4.tag = 4
-        self.deleteAvatar4.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
-        self.deleteAvatar4.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
-        self.deleteAvatar4.snp_makeConstraints { (make) in
-            make.right.equalTo(self.addAvatar4).offset(5)
-            make.bottom.equalTo(self.addAvatar4).offset(5)
+        addAvatar4.addSubview(deleteAvatar4)
+        deleteAvatar4.hidden = true
+        deleteAvatar4.tag = 4
+        deleteAvatar4.setImage(UIImage(named: "DeletePhotoButton"), forState: .Normal)
+        deleteAvatar4.addTarget(self, action: #selector(deletePhotoButtonTapped), forControlEvents: .TouchUpInside)
+        deleteAvatar4.snp_makeConstraints { (make) in
+            make.right.equalTo(addAvatar4).offset(5)
+            make.bottom.equalTo(addAvatar4).offset(5)
             make.width.equalTo(18)
             make.height.equalTo(18)
         }
+        
+        firstNameTxt.placeholder = "Enter Name"
+        firstNameTxt.font = UIFont.WDTAgoraRegular(16)
+        scrollView.addSubview(firstNameTxt)
+        firstNameTxt.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(addAvatar4.snp_bottom).offset(20)
+        }
+        
+        usernameTxt.placeholder = "Enter Username"
+        usernameTxt.font = UIFont.WDTAgoraRegular(16)
+        scrollView.addSubview(usernameTxt)
+        usernameTxt.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(firstNameTxt.snp_bottom).offset(20)
+        }
+        
+        emailTxt.placeholder = "Enter Email"
+        emailTxt.font = UIFont.WDTAgoraRegular(16)
+        scrollView.addSubview(emailTxt)
+        emailTxt.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(usernameTxt.snp_bottom).offset(20)
+        }
+        
+
+        scrollView.addSubview(aboutTxt)
+        aboutTxt.placeholder = "Enter About Text"
+        aboutTxt.delegate = self
+        aboutTxt.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(emailTxt.snp_bottom).offset(20)
+            make.height.equalTo(80)
+        }
+        
+        
+        
+        facebookLinkingBtn.backgroundColor = UIColor.WDTBlueColor()
+        facebookLinkingBtn.addTarget(self, action: #selector(facebookLinkingBtnTapped), forControlEvents: .TouchUpInside)
+        facebookLinkingBtn.layer.cornerRadius = 4
+        facebookLinkingBtn.clipsToBounds = true
+        scrollView.addSubview(facebookLinkingBtn)
+        if PFFacebookUtils.isLinkedWithUser(PFUser.currentUser()!) == true {
+            facebookLinkingBtn.setTitle("Unlink Facebook", forState: .Normal)
+        } else {
+            facebookLinkingBtn.setTitle("Link Facebook", forState: .Normal)
+        }
+        
+        facebookLinkingBtn.snp_makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(aboutTxt.snp_bottom).offset(20)
+            make.height.equalTo(40)
+        }
+        
+        
+        
+        scrollView.addSubview(situationSgmtCtrl)
+        situationSgmtCtrl.tintColor = UIColor.WDTBlueColor()
+        situationSgmtCtrl.addTarget(self, action: #selector(situationSgmtCtrlTapped), forControlEvents: .ValueChanged)
+        situationSgmtCtrl.snp_makeConstraints { (make) in
+            make.top.equalTo(facebookLinkingBtn.snp_bottom).offset(20)
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.height.equalTo(40)
+        }
+        
+        
+        
+        let vvv = UIView()
+        scrollView.addSubview(vvv)
+        vvv.snp_makeConstraints { (make) in
+            make.left.equalTo(view)
+            make.right.equalTo(view)
+            make.top.equalTo(situationSgmtCtrl.snp_bottom)
+            make.bottom.equalTo(scrollView).offset(-30).priority(751)
+        }
+        
+        
+        information()
+
+    }
+    
+    
+    func information() {
         
         WDTAvatar.getAvatar(PFUser.currentUser()!, avaNum: 1) { (ava) in
             if let ava = ava {
-//                self.deleteAvatar1.hidden = false
+                //                self.deleteAvatar1.hidden = false
                 self.addAvatar1.setImage(ava, forState: .Normal)
             }
             
@@ -184,8 +270,51 @@ class EditVC: UIViewController {
             }
             
         }
-
+        
+        // receive text information
+        usernameTxt.text = PFUser.currentUser()?.username
+        firstNameTxt.text = PFUser.currentUser()?.objectForKey("firstName") as? String
+        aboutTxt.text = PFUser.currentUser()?.objectForKey("about") as? String
+        emailTxt.text = PFUser.currentUser()?.objectForKey("email") as? String
+        
+        
+        let situationInt = PFUser.currentUser()?.objectForKey("situation") as? Int
+        if let situationInt = situationInt {
+            situationSgmtCtrl.selectedSegmentIndex = situationInt
+        }
+        
     }
+    
+    
+    func situationSgmtCtrlTapped() {
+        
+    }
+    
+    func facebookLinkingBtnTapped() {
+        let user = PFUser.currentUser()!
+        
+        if PFFacebookUtils.isLinkedWithUser(user) == true {
+            user["facebookVerified"] = false
+            user.saveInBackground()
+            PFFacebookUtils.unlinkUserInBackground(user, block: { (succeeded: Bool?, error: NSError?) in
+                if let _ = succeeded {
+                    self.facebookLinkingBtn.setTitle("Link Facebook", forState: .Normal)
+                }
+            })
+            
+        } else {
+            facebookLinkingBtn.setTitle("Link Facebook", forState: .Normal)
+            user["facebookVerified"] = true
+            user.saveInBackground()
+            PFFacebookUtils.linkUserInBackground(user, withReadPermissions: nil, block: {
+                (succeeded: Bool?, error: NSError?) -> Void in
+                if let _ = succeeded {
+                    self.facebookLinkingBtn.setTitle("Unlink Facebook", forState: .Normal)
+                }
+            })
+        }
+    }
+    
     
     func addAvatarButtonTapped(sender: AnyObject) {
         
@@ -236,7 +365,7 @@ class EditVC: UIViewController {
         let user = PFUser.currentUser()!
         if sender.tag! == 1 {
             self.addAvatar1.setImage(nil, forState: .Normal)
-//            self.deleteAvatar1.hidden = true
+            //            self.deleteAvatar1.hidden = true
             user.removeObjectForKey("ava")
             
         } else if sender.tag! == 2 {
@@ -264,50 +393,7 @@ class EditVC: UIViewController {
     
     
     func doneButtonTapped() {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    
-    // user information function
-    func information() {
-        
-        // receive profile picture
-        let ava = PFUser.currentUser()?.objectForKey("ava") as! PFFile
-        ava.getDataInBackgroundWithBlock { (data:NSData?, error:NSError?) -> Void in
-            self.avaImg.image = UIImage(data: data!)
-        }
-        
-        // receive text information
-        usernameTxt.text = PFUser.currentUser()?.username
-        firstNameTxt.text = PFUser.currentUser()?.objectForKey("firstName") as? String
-        bioTxt.text = PFUser.currentUser()?.objectForKey("bio") as? String
-        
-        emailTxt.text = PFUser.currentUser()?.objectForKey("email") as? String
-        genderTxt.text = PFUser.currentUser()?.objectForKey("gender") as? String
-    }
-    
-    
-    // regex restrictions for email textfield
-    func validateEmail (email : String) -> Bool {
-        let regex = "[A-Z0-9a-z._%+-]{4}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2}"
-        let range = email.rangeOfString(regex, options: .RegularExpressionSearch)
-        let result = range != nil ? true : false
-        return result
-    }
-    
-    
-    // alert message function
-    func alert (error: String, message : String) {
-        let alert = UIAlertController(title: error, message: message, preferredStyle: .Alert)
-        let ok = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-        alert.addAction(ok)
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    
-    // clicked save button
-    @IBAction func saveBtnTapped (sender: AnyObject) {
-        
+
         //            // if incorrect email according to regex
         //            if !validateEmail(emailTxt.text!) {
         //                alert("Incorrect email", message: "please provide correct email address")
@@ -320,20 +406,16 @@ class EditVC: UIViewController {
         user.username = usernameTxt.text?.lowercaseString
         user.email = emailTxt.text?.lowercaseString
         user["firstName"] = firstNameTxt.text?.lowercaseString
-        user["bio"] = bioTxt.text
-        
+        user["about"] = aboutTxt.text
+        user["situation"] = situationSgmtCtrl.selectedSegmentIndex
         
         // if "gender" is empty, send empty data, else entered data
-        if genderTxt.text!.isEmpty {
-            user["gender"] = ""
-        } else {
-            user["gender"] = genderTxt.text
-        }
+        //        if genderTxt.text!.isEmpty {
+        //            user["gender"] = ""
+        //        } else {
+        //            user["gender"] = genderTxt.text
+        //        }
         
-        // send profile picture
-        let avaData = UIImageJPEGRepresentation(avaImg.image!, 0.5)
-        let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-        user["ava"] = avaFile
         
         // send filled information to server
         user.saveInBackgroundWithBlock ({ (success:Bool, error:NSError?) -> Void in
@@ -352,38 +434,33 @@ class EditVC: UIViewController {
                 print(error!.localizedDescription)
             }
         })
+    }
+    
+    // regex restrictions for email textfield
+    func validateEmail (email : String) -> Bool {
+        let regex = "[A-Z0-9a-z._%+-]{4}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2}"
+        let range = email.rangeOfString(regex, options: .RegularExpressionSearch)
+        let result = range != nil ? true : false
+        return result
+    }
+    
+    func textView(textView: UITextView,
+                  shouldChangeTextInRange range: NSRange,
+                                          replacementText text: String) -> Bool{
+        
+        let currentLength:Int = (textView.text as NSString).length
+        let newLength:Int = (textView.text as NSString).length + (text as NSString).length - (range.length)
+//        let remainingChar:Int = 140 - currentLength
+        
+        aboutTxt.textColor = UIColor .blackColor()
+        if text != "" {
+            return (newLength > 140) ? false : true
+        } else {
+            return true
+        }
         
     }
-    
-    
-    // clicked cancel button
-    @IBAction func cancelBtnTapped (sender: AnyObject) {
-        self.view.endEditing(true)
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    
-    // PICKER VIEW METHODS
-    // picker comp numb
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    // picker text numb
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return genders.count
-    }
-    
-    // picker text config
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return genders[row]
-    }
-    
-    // picker did selected some value from it
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        genderTxt.text = genders[row]
-        self.view.endEditing(true)
-    }
-    
-    
+
+
+
 }

@@ -112,7 +112,7 @@ class MorePostsVC: WDTFeed {
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = collectionOfPosts[indexPath.section]
-        cell.viewController = self
+        cell.feed = self
         cell.geoPoint = self.geoPoint
         cell.fillCell(post)
         cell.moreBtn.hidden = true

@@ -80,7 +80,7 @@ class PostCell: UITableViewCell {
     var user: PFUser!
     var post: PFObject!
     
-    var viewController: WDTFeed!
+    var feed: WDTFeed!
     var tableView: UITableView!
     
     
@@ -165,7 +165,7 @@ class PostCell: UITableViewCell {
                 let newPostVC = NewPostVC()
                 
                 let nc = UINavigationController(rootViewController: newPostVC)
-                self.viewController.presentViewController(nc, animated: true, completion:  {
+                self.feed.presentViewController(nc, animated: true, completion:  {
                     newPostVC.editMode(self.post, postPhoto: self.postPhoto.image)    
                 })
             
@@ -173,7 +173,7 @@ class PostCell: UITableViewCell {
             
             alert.addAction(SimpleAlert.Action(title: "Delete", style: .Destructive) { action in
                 WDTPost.deletePost(self.post, completion: { (success) in
-                    self.viewController.loadPosts()
+                    self.feed.loadPosts()
                 })
             })
             
@@ -181,7 +181,7 @@ class PostCell: UITableViewCell {
             alert.addAction(SimpleAlert.Action(title: "Report", style: .Default) { action in
                 let reportAlert = SimpleAlert.Controller(title: "Report", message: "[message]", style: .Alert)
                 reportAlert.addAction(SimpleAlert.Action(title: "OK", style: .OK))
-                self.viewController.presentViewController(reportAlert, animated: true, completion: nil)
+                self.feed.presentViewController(reportAlert, animated: true, completion: nil)
             })
         }
         
@@ -189,7 +189,7 @@ class PostCell: UITableViewCell {
         
         alert.addAction(SimpleAlert.Action(title: "Cancel", style: .Cancel))
         
-        viewController.presentViewController(alert, animated: true, completion: nil)
+        feed.presentViewController(alert, animated: true, completion: nil)
         
 
     }

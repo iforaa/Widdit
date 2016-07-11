@@ -142,7 +142,7 @@ class FeedVC: WDTFeed {
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
-        cell.viewController = self
+        cell.feed = self
         cell.fillCell(post)
         let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(FeedVC.avaImageTapped(_:)))
         cell.avaImage.tag = indexPath.section

@@ -32,6 +32,13 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+
+        
+        
+        
+        
+        
         // Scrollview Frame Size
         scrollView.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height)
         scrollView.contentSize.height = self.view.frame.height

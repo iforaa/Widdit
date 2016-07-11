@@ -21,6 +21,6 @@ pod 'AFImageHelper'
 pod 'XCGLogger', '~> 3.3'
 pod 'ALCameraViewController'
 pod 'SimpleAlert'
-
+pod 'IQKeyboardManagerSwift'
 end
 

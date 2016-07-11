@@ -12,6 +12,7 @@ import Parse
 import Bolts
 import ParseFacebookUtilsV4
 import XCGLogger
+import IQKeyboardManagerSwift
 
 let log = XCGLogger.defaultInstance()
 
@@ -27,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         log.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: "path/to/file", fileLogLevel: .Debug)
         
         log.debug("A debug message")
+        IQKeyboardManager.sharedManager().enable = true
 
         //configure push notifications
         let userNotificationTypes: UIUserNotificationType = [.Alert, .Badge, .Sound]

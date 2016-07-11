@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import ParseFacebookUtilsV4
 import ImageViewer
+import SimpleAlert
 
 class UserVC: WDTFeed {
 
@@ -27,29 +28,21 @@ class UserVC: WDTFeed {
     var headerHeight: CGFloat = 200.0
     var headerView: UIView!
     
-    var avatars: [UIImage] = []
+    var avatars: [PFFile] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Title at the top
+        
         navigationItem.title = self.user.username?.uppercaseString
         
         if user.username == PFUser.currentUser()?.username {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonTapped))
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "settings"), style: .Done, target: self, action: #selector(editButtonTapped))
         }
         
         configuration = ImageViewerConfiguration(imageSize: CGSize(width: 10, height: 10), closeButtonAssets: buttonAssets)
-//        tableView = UITableView(frame: CGRectZero, style: .Grouped)
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//        view.addSubview(self.tableView)
-//        tableView.snp_makeConstraints { (make) in
-//            make.top.equalTo(view).offset(60)
-//            make.left.equalTo(view)
-//            make.right.equalTo(view)
-//            make.bottom.equalTo(view)
-//        }
+
         
         tableView.registerClass(FeedFooter.self, forHeaderFooterViewReuseIdentifier: "FeedFooter")
         tableView.registerClass(PostCell.self, forCellReuseIdentifier: "PostCell")
@@ -58,7 +51,10 @@ class UserVC: WDTFeed {
         tableView.estimatedRowHeight = 150.0;
         tableView.separatorStyle = .None
         
+        
+        
         headerHeight = 200
+        
         
         let scrollView = UIScrollView(frame: CGRectMake(0, 0, view.frame.width, headerHeight))
         scrollView.backgroundColor = UIColor.whiteColor()
@@ -67,130 +63,119 @@ class UserVC: WDTFeed {
         scrollView.showsHorizontalScrollIndicator = false
         
         
-        let wdtHeader = WDTHeader.init(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds)));
+        let wdtHeader = WDTHeader(frame: CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds) + 100));
+        
+        print(user["firstName"] as? String)
+        wdtHeader.setName(user["firstName"] as? String)
         
         WDTAvatar.countAvatars(user) { (num) in
             scrollView.contentSize = CGSizeMake(self.view.frame.width * CGFloat(num), self.headerHeight)
         }
         avatars = []
         
-        WDTAvatar.getAvatar(user, avaNum: 1) { (ava) in
-            if let ava = ava {
-                self.avatars.append(ava)
-                
-                WDTAvatar.getAvatar(self.user, avaNum: 2) { (ava2) in
-                    if let ava2 = ava2 {
-                        self.avatars.append(ava2)
-                        wdtHeader.setImages([ava, ava2])
-                    }
-                }
-            }
+        if let ava = user["ava"] as? PFFile {
+            avatars.append(ava)
         }
         
-        WDTAvatar.getAvatar(user, avaNum: 2) { (ava) in
-            if let ava = ava {
-                self.avatars.append(ava)
-                self.placeAvatars(scrollView)
-            }
+        if let ava = user["ava2"] as? PFFile {
+            avatars.append(ava)
         }
         
-        WDTAvatar.getAvatar(user, avaNum: 3) { (ava) in
-            if let ava = ava {
-                self.avatars.append(ava)
-                self.placeAvatars(scrollView)
-            }
+        if let ava = user["ava3"] as? PFFile {
+            avatars.append(ava)
+        }
+        
+        if let ava = user["ava4"] as? PFFile {
+            avatars.append(ava)
+        }
+        wdtHeader.setImages(avatars)
+        
+        
+//        WDTAvatar.getAvatar(user, avaNum: 1) { (ava) in
+//            if let ava = ava {
+//                self.avatars.append(ava)
+//                
+//                WDTAvatar.getAvatar(self.user, avaNum: 2) { (ava2) in
+//                    if let ava2 = ava2 {
+//                        self.avatars.append(ava2)
+//                        wdtHeader.setImages([ava, ava2])
+//                    }
+//                    
+//                }
+//            }
+//        }
+        
+        if let _ = user["phoneNumber"] {
+            wdtHeader.phoneVerified.tintColor = UIColor.whiteColor()
+            wdtHeader.phoneVerified.selected = true
             
         }
         
-        WDTAvatar.getAvatar(user, avaNum: 4) { (ava) in
-            if let ava = ava {
-                self.avatars.append(ava)
-                self.placeAvatars(scrollView)
-            }
-            
+        if let _ = user["email"] {
+            wdtHeader.emailVerified.tintColor = UIColor.whiteColor()
+            wdtHeader.emailVerified.selected = true
         }
-    
+        
+        if let facebookVerified = user["facebookVerified"] as? Bool {
+            if facebookVerified == true {
+                wdtHeader.facebookVerified.tintColor = UIColor.whiteColor()
+                wdtHeader.facebookVerified.selected = true
+            }
+        }
+        
+        if let about = user["about"] as? String {
+            if about.characters.count > 0 {
+                wdtHeader.setAbout(about)
+                wdtHeader.frame.size.height += 60
+            }
+        }
+        
+        if let situation = user["situation"] as? Int {
+            if situation == 0 {
+                wdtHeader.schoolSituation.tintColor = UIColor.whiteColor()
+                wdtHeader.schoolSituation.selected = true
+            } else if situation == 1 {
+                wdtHeader.workingSituation.tintColor = UIColor.whiteColor()
+                wdtHeader.workingSituation.selected = true
+            } else if situation == 2 {
+                wdtHeader.opportunitySituation.tintColor = UIColor.whiteColor()
+                wdtHeader.opportunitySituation.selected = true
+            }
+        }
+
         
         tableView.tableHeaderView = wdtHeader
-
-//        tableView.tableHeaderView = scrollView
-//        headerView = tableView.tableHeaderView
-//        tableView.tableHeaderView = nil
-//        tableView.addSubview(headerView)
-//        
-//        tableView.contentInset = UIEdgeInsets(top: headerHeight, left: 0, bottom: 0, right: 0)
-//        tableView.contentOffset = CGPoint(x: 0, y: -headerHeight)
-        
-        
-//        
-//        
-//        
-//        self.view.backgroundColor = UIColor.greenColor()
-//        let gradientLayer = CAGradientLayer()
-//        gradientLayer.frame = header.bounds
-//        let color3 = UIColor.clearColor().CGColor as CGColorRef
-//        let color4 = UIColor(white: 0.0, alpha: 0.6).CGColor as CGColorRef
-//        gradientLayer.colors = [color3, color4]
-//        gradientLayer.locations = [0.2, 1.0]
-//        header.layer.addSublayer(gradientLayer)
-//        
-//        
-//        let firstName = UILabel(frame: CGRectZero)
-//        header.addSubview(firstName)
-//        firstName.font = UIFont.WDTAgoraRegular(16)
-//        firstName.textColor = UIColor.whiteColor()
-//        firstName.text = self.user["firstName"] as? String
-//        firstName.snp_makeConstraints { (make) in
-//            make.left.equalTo(20)
-//            make.bottom.equalTo(-20)
-//        }
-//        
-//        self.tableView.tableHeaderView = header
-//
-        
         self.loadPosts()
     }
     
-    func placeAvatars(scrollView: UIScrollView) {
-        scrollView.subviews.forEach({
-            $0.removeFromSuperview()
-        })
-
-        for (index, avatar) in avatars.enumerate() {
-            let imageView = UIImageView(image: avatar)
-            imageView.frame = CGRectMake(view.frame.width * CGFloat(index), 0, view.frame.width, self.headerHeight)
-            print(imageView.frame)
-            scrollView.addSubview(imageView)
-        }
-    }
-    
-    func updateHeaderView() {
-        var headerRect = CGRectMake(0, -headerHeight, view.frame.width, headerHeight)
-        
-        if tableView.contentOffset.y < -headerHeight {
-            headerRect.origin.y = tableView.contentOffset.y
-            headerRect.size.height = -tableView.contentOffset.y
-        }
-        
-        headerView.frame = headerRect
-    }
-    
-//    func scrollViewDidScroll(scrollView: UIScrollView) {
-//        updateHeaderView()
-//    }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         let headerView = self.tableView.tableHeaderView as! WDTHeader
         headerView.scrollViewDidScroll(scrollView)
     }
     
+    
     func editButtonTapped() {
-        let destVC = EditVC()
-        destVC.view.backgroundColor = UIColor.whiteColor()
-        let nc = UINavigationController(rootViewController: destVC)
-        self.presentViewController(nc, animated: true, completion: nil)
+        
+        let alert = SimpleAlert.Controller(view: nil, style: .ActionSheet)
+        alert.addAction(SimpleAlert.Action(title: "Edit", style: .Default) { action in
+            let destVC = EditVC()
+            destVC.view.backgroundColor = UIColor.whiteColor()
+            let nc = UINavigationController(rootViewController: destVC)
+            self.presentViewController(nc, animated: true, completion: nil)
+        })
+        
+        alert.addAction(SimpleAlert.Action(title: "Logout", style: .Destructive) { action in
+            self.logout()
+        })
+        
+        alert.addAction(SimpleAlert.Action(title: "Cancel", style: .Cancel))
+        
+        presentViewController(alert, animated: true, completion: nil)
+        
     }
     
+
     override func loadPosts() {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
@@ -229,7 +214,7 @@ class UserVC: WDTFeed {
     {
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell", forIndexPath: indexPath) as! PostCell
         let post = wdtPost.collectionOfAllPosts[indexPath.section]
-        cell.viewController = self
+        cell.feed = self
         cell.moreBtn.tag = indexPath.section
         cell.moreBtn.addTarget(self, action: #selector(moreBtnTapped), forControlEvents: .TouchUpInside)
         cell.geoPoint = self.geoPoint
@@ -323,7 +308,7 @@ class UserVC: WDTFeed {
     }
     
     
-    @IBAction func logout(sender: AnyObject) {
+    func logout() {
         
         // implement log out
         PFUser.logOutInBackgroundWithBlock { (error:NSError?) -> Void in

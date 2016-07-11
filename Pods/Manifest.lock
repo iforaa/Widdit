@@ -14,6 +14,7 @@ PODS:
   - FBSDKLoginKit (4.11.0):
     - FBSDKCoreKit
   - ImageViewer (2.0)
+  - IQKeyboardManagerSwift (4.0.3)
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - Bolts
   - CircleSlider
   - ImageViewer
+  - IQKeyboardManagerSwift
   - JSQMessagesViewController
   - Kingfisher (~> 2.4)
   - MBProgressHUD (~> 0.9.2)
@@ -59,6 +61,7 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b
   FBSDKLoginKit: bade9fc78277764149ccc5bfaadbf13c83175c6a
   ImageViewer: 00eae024d0cb2eebb4b228f4669b6c4872afadb9
+  IQKeyboardManagerSwift: b6883b720b0e76473692fdc80828442566e1075f
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
@@ -71,6 +74,6 @@ SPEC CHECKSUMS:
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: e5783fa716f47e9d3ebca8ef411f329666d71b40
+PODFILE CHECKSUM: 37ba711156c20cafd98a262d48e60e614cb8a112
 
 COCOAPODS: 1.0.0
