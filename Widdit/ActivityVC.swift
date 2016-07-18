@@ -8,11 +8,13 @@
 
 import UIKit
 import Parse
+import MBProgressHUD
 
 
 class ActivityVC: UITableViewController {
     
     let activity = WDTActivity()
+    var chatsAndDowns: [PFObject] = []
     
     override func viewWillAppear(animated: Bool) {
         
@@ -33,14 +35,24 @@ class ActivityVC: UITableViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
         activity.requestDowns { (success) in
             self.tableView.reloadData()
+            self.activity.requestChats { (success) in
+                self.tableView.reloadData()
+            }
         }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return activity.downs.count
+        if section == 0 {
+            return self.activity.chats.count
+        } else {
+            return self.activity.downs.count
+        }
+    }
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
     }
     
     // Create table view rows
@@ -49,8 +61,15 @@ class ActivityVC: UITableViewController {
     {
         let cell = self.tableView!.dequeueReusableCellWithIdentifier("ActivityCell", forIndexPath: indexPath) as! ActivityCell
         cell.replyButton.tag = indexPath.row
-        cell.replyButton.addTarget(self, action: #selector(replyButtonTapped), forControlEvents: .TouchUpInside)
-        cell.fillCell(activity.downs[indexPath.row])
+        cell.activityVC = self
+        if indexPath.section == 0 {
+            cell.downCell = false
+            cell.fillCell(self.activity.chats[indexPath.row])
+        } else {
+            cell.downCell = true
+            cell.fillCell(self.activity.downs[indexPath.row])
+        }
+        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         
@@ -58,36 +77,22 @@ class ActivityVC: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let post = activity.downs[indexPath.row]["post"] as! PFObject
-        let user = post["user"] as! PFUser
-        let guest = MorePostsVC()
-        guest.user = user
-//        guest.geoPoint = self.geoPoint
-        guest.collectionOfPosts = [post]
-        self.navigationController?.pushViewController(guest, animated: true)
-    }
-    
-    func replyButtonTapped(sender: AnyObject?) {
-        
-        let row = sender?.tag
-        let destVC = ReplyViewController()
-        
-        
-        let toUser = activity.downs[row!]["to"] as! PFUser
-        let byUser = activity.downs[row!]["by"] as! PFUser
-        
-        
-        let post = activity.downs[row!]["post"] as! PFObject
-        
-        if byUser.username == PFUser.currentUser()!.username {
-            destVC.toUser = toUser
+        let activityObj: PFObject!
+        if indexPath.section == 0 {
+            activityObj = self.activity.chats[indexPath.row]
         } else {
-            destVC.toUser = byUser
+            activityObj = self.activity.downs[indexPath.row]
         }
         
-        destVC.usersPost = post
+//        let user = activityObj["by"] as! PFUser
+        let post = activityObj["post"] as! PFObject
+        let guest = MorePostsVC()
+//        guest.user = user
+        guest.collectionOfPosts = [post]
+        self.navigationController?.pushViewController(guest, animated: true)
         
-        self.navigationController?.pushViewController(destVC, animated: true)
+        
+        
     }
 
 }

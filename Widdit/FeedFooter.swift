@@ -46,9 +46,11 @@ class FeedFooter: UITableViewHeaderFooterView {
 
 
     var replyBtn: UIButton = UIButton(type: .Custom)
-//    var horlLineView = UIView()
     var imDownBtn: UIButton = UIButton(type: .Custom)
     var cardView: WDTFooterCardView = WDTFooterCardView()
+    var feed: WDTFeed!
+    var post: PFObject!
+    var user: PFUser!
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -64,13 +66,14 @@ class FeedFooter: UITableViewHeaderFooterView {
         replyBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         replyBtn.setTitle("Reply", forState: .Normal)
         replyBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
+        replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
         
         imDownBtn.backgroundColor = UIColor.WDTGrayBlueColor()
         imDownBtn.setTitleColor(UIColor.grayColor(), forState: .Normal)
         imDownBtn.titleLabel?.font = UIFont.WDTAgoraRegular(14)
         imDownBtn.setTitleColor(UIColor.WDTBlueColor(), forState: .Selected)
         imDownBtn.setTitle("I'm Down", forState: .Normal)
-
+        imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
         
         replyBtn.snp_remakeConstraints { (make) in
             make.top.equalTo(cardView).offset(10)
@@ -90,6 +93,8 @@ class FeedFooter: UITableViewHeaderFooterView {
     }
     
     func setDown(user: PFUser, post: PFObject) {
+        self.user = user
+        self.post = post
         WDTActivity.isDown(user, post: post) { (down) in
             if let down = down {
                 let type = down["type"] as! String
@@ -114,6 +119,30 @@ class FeedFooter: UITableViewHeaderFooterView {
         
         cardView.backgroundColor = UIColor.clearColor()
     }
+    
+    
+    func downBtnTapped(sender: AnyObject) {
+        let button: UIButton = sender as! UIButton
+        
+        if button.selected == true {
+            print("UnDown")
+            button.selected = false
+            WDTActivity.deleteActivity(user, post: post)
+        } else {
+            print("Downed")
+            button.selected = true
+            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
+        }
+    }
+    
+    func replyBtnTapped(sender: AnyObject) {
+        let destVC = ReplyViewController()
+        destVC.toUser = user
+        destVC.usersPost = post
+        destVC.comeFromTheFeed = true
+        feed!.navigationController!.pushViewController(destVC, animated: true)
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

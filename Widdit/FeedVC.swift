@@ -42,7 +42,9 @@ class FeedVC: WDTFeed {
         
         let queryOfAllUsers = PFUser.query()
         queryOfAllUsers?.findObjectsInBackgroundWithBlock({ (objects: [PFObject]?, error: NSError?) in
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Total users: " + String(objects!.count), style: .Done, target: self, action: #selector(self.nothingToDo))
+            if let objects = objects {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Total users: " + String(objects.count), style: .Done, target: self, action: #selector(self.nothingToDo))
+            }
         })
         
         
@@ -144,10 +146,7 @@ class FeedVC: WDTFeed {
         cell.geoPoint = self.geoPoint
         cell.feed = self
         cell.fillCell(post)
-        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(FeedVC.avaImageTapped(_:)))
-        cell.avaImage.tag = indexPath.section
-        cell.avaImage.userInteractionEnabled = true
-        cell.avaImage.addGestureRecognizer(tapGestureRecognizer)
+        
         let postsCount = self.wdtPost.collectionOfAllPosts.filter({
             let user1 = post["user"] as! PFUser
             return user1.username == ($0["user"] as! PFUser).username
@@ -197,59 +196,24 @@ class FeedVC: WDTFeed {
         if PFUser.currentUser()?.username == user.username {
             return nil
         } else {
+            footerView.feed = self
             footerView.setDown(user, post: post)
-            footerView.imDownBtn.tag = section
-            footerView.replyBtn.tag = section
-            footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
-            footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
         }
         
         return footerView
     }
     
-    func avaImageTapped(sender: AnyObject) {
-        let tapGR = sender as! UITapGestureRecognizer
-        let destVC = UserVC()
-        let post = self.wdtPost.collectionOfPosts[tapGR.view!.tag]
-        destVC.user = post.objectForKey("user") as! PFUser
-        self.navigationController?.pushViewController(destVC, animated: true)
-    }
     
-    func downBtnTapped(sender: AnyObject) {
-        let button: UIButton = sender as! UIButton
-        let post = self.wdtPost.collectionOfPosts[button.tag]
-        let user = post["user"] as! PFUser
-        
-        if button.selected == true {
-            print("UnDown")
-            button.selected = false
-            WDTActivity.deleteActivity(user, post: post)
-        } else {
-            print("Downed")
-            button.selected = true
-            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
-        }
-    }
     
-    func replyBtnTapped(sender: AnyObject) {
-        let destVC = ReplyViewController()
-        let post = self.wdtPost.collectionOfPosts[sender.tag]
-        let user = post["user"] as! PFUser
-        destVC.toUser = user
-        destVC.usersPost = post
-        
-        
-        
-        self.navigationController?.pushViewController(destVC, animated: true)
-    }
     
     func moreBtnTapped(sender: AnyObject) {
         let post = self.wdtPost.collectionOfPosts[sender.tag]
         let user = post["user"] as! PFUser
-            let guest = MorePostsVC()
-            guest.user = user
-            guest.geoPoint = self.geoPoint
-            self.navigationController?.pushViewController(guest, animated: true)
+            let morePosts = MorePostsVC()
+            morePosts.user = user
+            morePosts.geoPoint = self.geoPoint
+            morePosts.loadPosts()
+            self.navigationController?.pushViewController(morePosts, animated: true)
     }
     
 }

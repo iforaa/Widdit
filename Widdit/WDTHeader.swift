@@ -34,7 +34,6 @@ class WDTHeader: UIView, UIScrollViewDelegate {
         super.init(frame: frame)
         
         
-        
         backgroundColor = UIColor.whiteColor()
         addSubview(scrollView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -271,7 +270,8 @@ class WDTHeader: UIView, UIScrollViewDelegate {
                 
                 imageView.snp_makeConstraints(closure: { (make) in
                     make.left.equalTo(containerView)
-                    make.height.equalTo(self)
+                    make.top.equalTo(self).offset(-5)
+                    make.height.equalTo(imageView.snp_width).offset(10)
                     make.width.equalTo(self)
                 })
             } else {
@@ -279,7 +279,8 @@ class WDTHeader: UIView, UIScrollViewDelegate {
                     containerView.addSubview(imageView)
                     imageView.snp_makeConstraints(closure: { (make) in
                         make.left.equalTo(lastView.snp_right)
-                        make.height.equalTo(self)
+                        make.top.equalTo(self).offset(-5)
+                        make.height.equalTo(imageView.snp_width).offset(10)
                         make.width.equalTo(self)
                         make.right.equalTo(containerView).priority(751 + index)
                         

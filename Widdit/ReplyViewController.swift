@@ -27,6 +27,7 @@ class ReplyViewController: SLKTextViewController {
     
     var isDown = false
     var toUser: PFUser!
+    var comeFromTheFeed = true
 
 
   override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
@@ -142,9 +143,11 @@ extension ReplyViewController {
         
         WDTActivity.isDownAndReverseDown(toUser, post: usersPost) { (down) in
             if let down = down  {
+                
                 self.sendMessage(sender, activityObj: down)
             } else {
                 WDTActivity.addActivity(self.toUser, post: self.usersPost, type: .Undown, completion: { (activityObj) in
+                
                     self.sendMessage(sender, activityObj: activityObj)
                 })
             }
@@ -164,7 +167,7 @@ extension ReplyViewController {
         parseMessage["postText"] = self.usersPost["postText"]
         parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
         
-        WDTPush.sendPushAfterReply(self.toUser.username!, msg: self.textView.text, postId: self.usersPost.objectId!)
+        WDTPush.sendPushAfterReply(self.toUser.username!, msg: self.textView.text, postId: self.usersPost.objectId!, comeFromTheFeed: comeFromTheFeed)
         
         let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
         
@@ -173,6 +176,7 @@ extension ReplyViewController {
             relation.addObject(parseMessage)
             
             //sends message
+            activityObj["comeFromTheFeed"] = self.comeFromTheFeed
             activityObj["whoRepliedLast"] = PFUser.currentUser()
             activityObj.saveInBackgroundWithBlock { (bool, error) in
                 if bool {

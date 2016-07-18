@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="MF1-Yp-iBE">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -127,7 +127,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZlI-xv-8FA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="516" y="345"/>
+            <point key="canvasLocation" x="842" y="583"/>
         </scene>
         <!--Reset PasswordVC-->
         <scene sceneID="63d-Oc-zVg">
@@ -224,7 +224,6 @@
         <!--Sign InVC-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="SignInVC" id="BYZ-38-t0r" customClass="SignInVC" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FZQ-s7-F3z"/>
@@ -248,20 +247,38 @@
                             <constraint firstItem="7mr-I1-4CV" firstAttribute="top" secondItem="FZQ-s7-F3z" secondAttribute="bottom" constant="8" symbolic="YES" id="IgF-8H-jnh"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="4Em-yh-6UX"/>
                     <connections>
                         <outlet property="label" destination="7mr-I1-4CV" id="FJf-rp-M68"/>
                         <segue destination="ZwH-jn-PFg" kind="modal" identifier="FBVerifyPin" id="WFS-3d-vmw"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-130" y="345"/>
+            <point key="canvasLocation" x="-22" y="339"/>
         </scene>
         <!--Navigation Controller-->
+        <scene sceneID="7tA-HN-plz">
+            <objects>
+                <navigationController id="MF1-Yp-iBE" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="sYJ-HY-ePa">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="ZMa-cn-pJz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="48X-9x-PVh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-596" y="175"/>
+        </scene>
+        <!--Profile-->
         <scene sceneID="5Df-3C-uZJ">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5Mt-kN-Q7y" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" tag="2" image="ProfileTab" id="rOj-xX-brg">
-                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="20"/>
+                    <tabBarItem key="tabBarItem" tag="2" title="Profile" image="ProfileTab" id="rOj-xX-brg">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-2"/>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="HD1-oX-wnc">
@@ -275,12 +292,12 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dzf-Ds-FZw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1665" y="18"/>
+            <point key="canvasLocation" x="1622" y="-18"/>
         </scene>
-        <!--UserVC-->
+        <!--ProfileVC-->
         <scene sceneID="ZRo-FD-9K5">
             <objects>
-                <tableViewController id="iSw-OH-S2X" customClass="UserVC" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="iSw-OH-S2X" customClass="ProfileVC" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="di6-2M-EOa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -304,7 +321,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Emb-hJ-cZo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2062" y="-49"/>
+            <point key="canvasLocation" x="1996" y="-28"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="939-Ag-spK">
@@ -327,13 +344,15 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yig-W6-DQ0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1199" y="389"/>
+            <point key="canvasLocation" x="1083" y="235"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Activity-->
         <scene sceneID="kHk-t3-Zr1">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RvW-CH-eSO" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" tag="1" image="ActivityTab" id="ynd-Un-uxF"/>
+                    <tabBarItem key="tabBarItem" tag="1" title="Activity" image="ActivityTab" id="ynd-Un-uxF">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-2"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="hws-H1-I88">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -377,12 +396,12 @@
             </objects>
             <point key="canvasLocation" x="2666" y="697"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Feed-->
         <scene sceneID="apu-st-aS5">
             <objects>
                 <navigationController id="pZF-IL-5hW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" image="FeedTab" id="oOR-wu-Pb0">
-                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="30"/>
+                    <tabBarItem key="tabBarItem" title="Feed" image="FeedTab" id="oOR-wu-Pb0">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-2"/>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="IFR-UQ-mNy">
@@ -421,10 +440,10 @@
             </objects>
             <point key="canvasLocation" x="2700" y="1400"/>
         </scene>
-        <!--Text Verify View Controller-->
+        <!--View Controller-->
         <scene sceneID="sGv-5r-A8y">
             <objects>
-                <viewController storyboardIdentifier="VerifyPin" id="ZwH-jn-PFg" customClass="TextVerifyViewController" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VerifyPin" id="ZwH-jn-PFg" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="bJW-K7-Ppr"/>
                         <viewControllerLayoutGuide type="bottom" id="NCz-v7-7wM"/>
@@ -500,12 +519,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cu3-vT-s3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="525" y="1374"/>
+            <point key="canvasLocation" x="555" y="1348"/>
         </scene>
-        <!--Enter Verify Pin View Controller-->
+        <!--View Controller-->
         <scene sceneID="AA4-Rc-ZDS">
             <objects>
-                <viewController id="7q1-wo-1tu" customClass="EnterVerifyPinViewController" customModule="Widdit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="7q1-wo-1tu" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9Ki-ke-9yF"/>
                         <viewControllerLayoutGuide type="bottom" id="LHw-w8-ggH"/>
@@ -546,7 +565,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B4E-te-FhP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="886" y="1711"/>
+            <point key="canvasLocation" x="1124" y="1729"/>
         </scene>
         <!--FBSignUpVC-->
         <scene sceneID="ckf-tp-TbQ">
@@ -668,7 +687,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gxf-JN-Irt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1011" y="1022"/>
+            <point key="canvasLocation" x="1291" y="1038"/>
         </scene>
         <!--GuestVC-->
         <scene sceneID="YuW-us-ebI">
@@ -773,7 +792,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RN9-9M-t7A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="112" y="1374"/>
+            <point key="canvasLocation" x="112" y="1408"/>
         </scene>
     </scenes>
     <resources>
@@ -783,7 +802,7 @@
         <image name="empty-profile" width="150" height="150"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="I7T-J6-Cm1"/>
         <segue reference="WFS-3d-vmw"/>
+        <segue reference="S99-bq-g0X"/>
     </inferredMetricsTieBreakers>
 </document>

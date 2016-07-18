@@ -52,7 +52,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         view.addSubview(deletePhotoButton)
         
         postTxt.font = UIFont.WDTAgoraRegular(18)
-        postTxt.placeholder = "What do you feel like doing"
+        postTxt.placeholder = "What do you feel like doing?"
         postTxt.backgroundColor = UIColor.WDTGrayBlueColor()
         postTxt.snp_makeConstraints { (make) in
             make.top.equalTo(view).offset(5)
@@ -130,7 +130,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
     
     func editMode(post: PFObject, postPhoto: UIImage?) {
         editPost = post
-        postBtn = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(postBtnTapped))
+        postBtn = UIBarButtonItem(title: "Save", style: .Done, target: self, action: #selector(postBtnTapped))
         postBtn.enabled = false
         navigationItem.rightBarButtonItem = postBtn
         

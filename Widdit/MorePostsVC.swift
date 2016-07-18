@@ -41,7 +41,7 @@ class MorePostsVC: WDTFeed {
         let backSwipe = UISwipeGestureRecognizer(target: self, action: #selector(MorePostsVC.back(_:)))
         backSwipe.direction = UISwipeGestureRecognizerDirection.Right
         view.addGestureRecognizer(backSwipe)
-        self.loadPosts()
+        
         
         // Receive Notification from NewPostVC
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MorePostsVC.uploaded(_:)), name: "uploaded", object: nil)
@@ -76,7 +76,9 @@ class MorePostsVC: WDTFeed {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        navigationItem.title = user.username?.uppercaseString
+        if let user = user {
+            navigationItem.title = user.username?.uppercaseString
+        }
     }
 
     func back(sender: UIBarButtonItem) {
@@ -156,40 +158,10 @@ class MorePostsVC: WDTFeed {
         if PFUser.currentUser()?.username == user.username {
             return nil
         } else {
-            
+            footerView.feed = self
             footerView.setDown(user, post: post)
-            footerView.imDownBtn.tag = section
-            footerView.replyBtn.tag = section
-            footerView.replyBtn.addTarget(self, action: #selector(replyBtnTapped), forControlEvents: .TouchUpInside)
-            footerView.imDownBtn.addTarget(self, action: #selector(downBtnTapped), forControlEvents: .TouchUpInside)
-            
         }
         
         return footerView
     }
-    
-    func downBtnTapped(sender: AnyObject) {
-        let button: UIButton = sender as! UIButton
-        let post = collectionOfPosts[button.tag]
-        let user = post["user"] as! PFUser
-        
-        if button.selected == true {
-            print("UnDown")
-            button.selected = false
-            WDTActivity.deleteActivity(user, post: post)
-        } else {
-            print("Downed")
-            button.selected = true
-            WDTActivity.addActivity(user, post: post, type: .Down, completion: { _ in })
-        }
-    }
-    
-    func replyBtnTapped(sender: AnyObject) {
-        let destVC = ReplyViewController()
-        let post = collectionOfPosts[sender.tag]
-        destVC.toUser = post.objectForKey("user") as! PFUser
-        destVC.usersPost = post
-        navigationController?.pushViewController(destVC, animated: true)
-    }
-  
 }

@@ -41,7 +41,7 @@ class WDTPush {
         WDTPush.sendPush(toUsername, data: data)
     }
     
-    class func sendPushAfterReply(toUsername: String, msg: String, postId: String) {
+    class func sendPushAfterReply(toUsername: String, msg: String, postId: String, comeFromTheFeed: Bool) {
         guard let username = PFUser.currentUser()?.username else {
             print("username is not set")
             return
@@ -51,7 +51,15 @@ class WDTPush {
             return
         }
         
-        let data = ["alert": "New message from \(username): \(msg)", "badge": "Increment", "sound": "notification.mp3", "who": userObjectId, "post": postId]
+        var message: String = ""
+        
+        if comeFromTheFeed {
+            message = "replied to your post"
+        } else {
+            message = "replied back"
+        }
+        
+        let data = ["alert": "\(username) \(message)", "badge": "Increment", "sound": "notification.mp3", "who": userObjectId, "post": postId]
         WDTPush.sendPush(toUsername, data: data)
     }
 }

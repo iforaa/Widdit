@@ -9,31 +9,28 @@
 import UIKit
 import Parse
 import ParseFacebookUtilsV4
+import MBProgressHUD
 
-class SignInVC: UIViewController/*, FBSDKLoginButtonDelegate */{
+enum VerificationMode {
+    case SignIn
+    case SignUp
+}
+
+class SignInVC: UIViewController {
     
     
     @IBOutlet weak var label: UILabel!
-//    @IBOutlet weak var forgotPasswordBtn: UIButton!
-//    @IBOutlet weak var signUpBtn: UIButton!
-//    @IBOutlet weak var signInBtn: UIButton!
-//    @IBOutlet weak var passwordTxt: UITextField!
-//    @IBOutlet weak var usernameTxt: UITextField!
-
-//    @IBOutlet weak var btnFacebook: FBSDKLoginButton!
-    var info : FBInfo?
-
-    var avaImg: UIImage?
-    var firstName: String?
-    var emailTxt: String?
-    var user: PFUser!
+    
+    let usernameTF = UITextField()
+    let passwordTF = UITextField()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.WDTBlueColor()
+        navigationController?.navigationBarHidden = true
+        let loginManager: FBSDKLoginManager = FBSDKLoginManager()
+        loginManager.logOut()
         
-//        view.backgroundColor = UIColor.WDTGrayBlueColor()
-        
-        let usernameTF = UITextField()
         usernameTF.WDTRoundedWhite(nil, height: 50)
         usernameTF.WDTFontSettings("Enter Username")
         usernameTF.autocapitalizationType = .None
@@ -45,82 +42,186 @@ class SignInVC: UIViewController/*, FBSDKLoginButtonDelegate */{
             make.width.equalTo(view).multipliedBy(0.7)
             make.height.equalTo(50)
         }
+
+        passwordTF.WDTRoundedWhite(nil, height: 50)
+        passwordTF.WDTFontSettings("Enter Password")
+        passwordTF.autocapitalizationType = .None
         
-        
-        let signupButton: UIButton = UIButton(type: .Custom)
-        signupButton.WDTButtonStyle(UIColor.whiteColor(), title: "Sign Up")
-//        signupButton.addTarget(self, action: #selector(signupButtonTapped), forControlEvents: .TouchUpInside)
-        view.addSubview(signupButton)
-        signupButton.snp_makeConstraints { (make) in
-            make.left.equalTo(view.snp_centerX).offset(10)
-            make.right.equalTo(view).offset(-20)
-            make.bottom.equalTo(view).offset(-30)
+        view.addSubview(passwordTF)
+        passwordTF.snp_makeConstraints { (make) in
+            make.top.equalTo(usernameTF.snp_bottom).offset(20)
+            make.centerX.equalTo(view)
+            make.width.equalTo(view).multipliedBy(0.7)
             make.height.equalTo(50)
         }
 
+        
+        
+        let signInBtn: UIButton = UIButton(type: .Custom)
+        signInBtn.WDTButtonStyle(UIColor.whiteColor(), title: "Sign In")
+        signInBtn.addTarget(self, action: #selector(signInBtnTapped), forControlEvents: .TouchUpInside)
+        view.addSubview(signInBtn)
+        signInBtn.snp_makeConstraints { (make) in
+            make.top.equalTo(passwordTF.snp_bottom).offset(25)
+            make.left.equalTo(usernameTF)
+            make.right.equalTo(usernameTF)
+            make.height.equalTo(50)
+        }
+        
+//        let facebookBtn : FBSDKLoginButton = FBSDKLoginButton()
+        let facebookBtn : UIButton = UIButton()
+        view.addSubview(facebookBtn)
+        facebookBtn.WDTButtonStyle(UIColor.whiteColor(), title: "Log in with Facebook")
+        facebookBtn.addTarget(self, action: #selector(loginToFacebook), forControlEvents: .TouchUpInside)
+//        facebookBtn.readPermissions = ["public_profile", "email", "user_friends"]
+//        facebookBtn.delegate = self
+        facebookBtn.snp_makeConstraints(closure: { (make) in
+            make.top.equalTo(signInBtn.snp_bottom).offset(20)
+            make.left.equalTo(usernameTF)
+            make.right.equalTo(usernameTF)
+            make.height.equalTo(50)
+        })
+        
+        
+        let signUpBtn: UIButton = UIButton(type: .Custom)
+        signUpBtn.WDTButtonStyle(UIColor.whiteColor(), title: "Sign Up")
+        signUpBtn.addTarget(self, action: #selector(signUpBtnTapped), forControlEvents: .TouchUpInside)
+        view.addSubview(signUpBtn)
+        signUpBtn.snp_makeConstraints { (make) in
+            make.bottom.equalTo(view).offset(-25)
+            make.left.equalTo(usernameTF)
+            make.right.equalTo(usernameTF)
+            make.height.equalTo(50)
+        }
+        
+        
+//        let resetPswdBtn: UIButton = UIButton(type: .Custom)
+//        resetPswdBtn.setTitle("Forgot Password", forState: .Normal)
+//        resetPswdBtn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+//        resetPswdBtn.titleLabel?.font = UIFont.WDTAgoraRegular(16)
+//        resetPswdBtn.addTarget(self, action: #selector(resetPswdBtnTapped), forControlEvents: .TouchUpInside)
+//        view.addSubview(resetPswdBtn)
+//        resetPswdBtn.snp_makeConstraints { (make) in
+//            make.bottom.equalTo(view).offset(-20)
+//            make.centerX.equalTo(view)
+//            make.width.equalTo(view).multipliedBy(0.7)
+//            make.height.equalTo(50)
+//        }
+        
         // Font of Label
         label.font = UIFont(name: "Pacifico", size: 35)
         
-           
+        
 //        configureFacebook()
 
     }
     
-//
-//    @IBAction func signInBtnTapped(sender: AnyObject) {
-//        
-//        self.view.endEditing(true)
-//        
-//        if usernameTxt.text!.isEmpty || passwordTxt.text!.isEmpty {
-//            
-//            let alert = UIAlertController(title: "Please", message: "Fill in all fields", preferredStyle: .Alert)
-//            let ok = UIAlertAction(title: "Fasho", style: .Cancel, handler: nil)
-//            alert.addAction(ok)
-//            self.presentViewController(alert, animated: true, completion: nil)
-//        }
-//        
-//        PFUser.logInWithUsernameInBackground(usernameTxt.text!, password: passwordTxt.text!) { (user: PFUser?, error: NSError?) -> Void in
-//            if error == nil {
-//                
-//                // Remember user or save in App Memory did the user login or not
-//                NSUserDefaults.standardUserDefaults().setObject(user!.username, forKey: "username")
-//                NSUserDefaults.standardUserDefaults().synchronize()
-//                
-//                // Call Login Function from AppDelegate.swift class
-//                let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//                appDelegate.login()
-//            } else {
-//                let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
-//                let ok = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
-//                alert.addAction(ok)
-//                self.presentViewController(alert, animated: true, completion: nil)
-//            
-//            }
-//        }
-//    }
-//    
-//    func loginToFacebook(sender: AnyObject?) {
-//        PFFacebookUtils.logInInBackgroundWithReadPermissions(["email"], block: { (user, err) in
-//            if err == nil {
-//                if let user = user {
-//                    if user.isNew {
-//                        print("User is new lets segue to customizations")
-//
-//                    } else {
-//                        print("User is in our DB already")
-//                        let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-//                        let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
-//                        self.view.window?.rootViewController = myTabBar
-//                    }
-//                }
-//            }
-//        })
-//    }
-//    
-//    //    MARK: FBSDKLoginButtonDelegate Methods
-//
-//    //WE NEED TO USE THIS BUTTON OR A CUSTOM IMAGE FOR IT
-//    
+    func signUpBtnTapped(sender: AnyObject) {
+                
+        let signUpMainStep1 = SignUpMainStep1()
+        signUpMainStep1.user = PFUser()
+        navigationController?.pushViewController(signUpMainStep1, animated: true)
+
+    }
+    
+    
+    func signInBtnTapped(sender: AnyObject) {
+        
+        self.view.endEditing(true)
+        
+        if usernameTF.text!.isEmpty {
+            
+            let alert = UIAlertController(title: "Please", message: "Fill in login field", preferredStyle: .Alert)
+            let ok = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(ok)
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
+        if passwordTF.text!.isEmpty {
+            
+            let alert = UIAlertController(title: "Please", message: "Fill in password field", preferredStyle: .Alert)
+            let ok = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(ok)
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
+        
+        PFUser.logInWithUsernameInBackground(usernameTF.text!.lowercaseString, password: passwordTF.text!.lowercaseString) { (user: PFUser?, error: NSError?) -> Void in
+            if error == nil {
+                
+                // Remember user or save in App Memory did the user login or not
+                NSUserDefaults.standardUserDefaults().setObject(user!.username?.lowercaseString, forKey: "username")
+                NSUserDefaults.standardUserDefaults().synchronize()
+                
+                // Call Login Function from AppDelegate.swift class
+                let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.login()
+            } else {
+                let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
+                let ok = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
+                alert.addAction(ok)
+                self.presentViewController(alert, animated: true, completion: nil)
+            
+            }
+        }
+    }
+
+    func loginToFacebook(sender: AnyObject?) {
+        PFFacebookUtils.logInInBackgroundWithReadPermissions(["email"], block: { (user, err) in
+            if err == nil {
+                if let user = user {
+                    if user.isNew {
+                        FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email"]).startWithCompletionHandler { (connection, result, error) -> Void in
+                            
+                            let strFirstName: String? = result.objectForKey("first_name") as? String
+                            //                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
+                            let strEmail: String? = result.objectForKey("email") as? String
+                            //                                    let strGender: String = (result.objectForKey("gender") as? String)!
+                            let userID = result.valueForKey("id") as! String
+                            let avaImage: UIImage? = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!)
+                            
+                            
+                            if let strEmail = strEmail {
+                                user["email"] = strEmail.lowercaseString
+                            }
+                            
+                            if let strFirstName = strFirstName {
+                                user["firstName"] = strFirstName.lowercaseString
+                            }
+                            
+                            if let avaImage = avaImage {
+                                let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
+                                let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+                                user["ava"] = avaFile
+                            }
+                            
+                            let signUpMainStep1 = SignUpMainStep1()
+                            signUpMainStep1.user = user
+                            signUpMainStep1.facebookMode = true
+                            self.navigationController?.pushViewController(signUpMainStep1, animated: true)
+                            
+                            
+                        }
+
+                    } else {
+                        NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
+                        NSUserDefaults.standardUserDefaults().synchronize()
+                        
+                        // Call Login Function from AppDelegate.swift class
+                        let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        appDelegate.login()
+                    }
+                }
+            }
+        })
+    }
+    
+    //    MARK: FBSDKLoginButtonDelegate Methods
+
+    //WE NEED TO USE THIS BUTTON OR A CUSTOM IMAGE FOR IT
+    
 //    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!)
 //    {
 //        print("User Logged In")
@@ -149,53 +250,48 @@ class SignInVC: UIViewController/*, FBSDKLoginButtonDelegate */{
 //                                if let object = objects!.first {
 //                                    print("User is in our DB")
 //                                    let user = object as! PFUser
-//                                    PFFacebookUtils.linkUserInBackground(user, withAccessToken: FBSDKAccessToken.currentAccessToken())
-//                                    let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-//                                    let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
-//                                    self.view.window?.rootViewController = myTabBar
+//                                    MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+//                                    PFFacebookUtils.linkUserInBackground(user, withAccessToken: FBSDKAccessToken.currentAccessToken(), block: { (success, error) in
+//                                        MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+//                                        // Remember user or save in App Memory did the user login or not
+//                                        NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
+//                                        NSUserDefaults.standardUserDefaults().synchronize()
+//                                        
+//                                        // Call Login Function from AppDelegate.swift class
+//                                        let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//                                        appDelegate.login()
+//                                    })
+//                                    
 //                                } else {
-//                                    let strFirstName: String = (result.objectForKey("first_name") as? String)!
+//                                    let strFirstName: String? = result.objectForKey("first_name") as? String
 ////                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
-//                                    let strEmail: String = (result.objectForKey("email") as? String)!
+//                                    let strEmail: String? = result.objectForKey("email") as? String
 ////                                    let strGender: String = (result.objectForKey("gender") as? String)!
 //                                    let userID = result.valueForKey("id") as! String
-//                                    let avaImage: UIImage = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!)!
+//                                    let avaImage: UIImage? = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!)
 //
-//
-//                                    self.info = FBInfo(image: avaImage, firstName: strFirstName, email: strEmail, gender: "")
-//                                    print("FBINFO: \(self.info)")
-//                                    self.avaImg = avaImage
-//                                    self.firstName = strFirstName
-//                                    self.emailTxt = strEmail
-//
-//
-//
-//
-//
-//                                    //             Send Data to Server
+//                                    
 //                                    let user = PFUser()
-//                                    user.email = strEmail.lowercaseString
-//                                    user["firstName"] = strFirstName.lowercaseString
-////                                    user["gender"] = strGender
-//
-//
-//                                    //             Convert image for sending to server
-//                                    let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
-//                                    let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-//                                    user["ava"] = avaFile
-//
-//                                    self.user = user
-//
-//                                    self.performSegueWithIdentifier("FBVerifyPin", sender: self)
-//
+//                                    if let strEmail = strEmail {
+//                                        user["email"] = strEmail.lowercaseString
+//                                    }
 //                                    
-//                                    print("Access token: \(FBSDKAccessToken.currentAccessToken())")
-//
+//                                    if let strFirstName = strFirstName {
+//                                        user["firstName"] = strFirstName.lowercaseString
+//                                    }
 //                                    
-//                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                        
-//                                        
-//                                    })
+//                                    if let avaImage = avaImage {
+//                                        let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
+//                                        let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+//                                        user["ava"] = avaFile
+//                                    }
+//                                    
+//                                    let editVC = ProfileEditVC()
+//                                    editVC.signUpMode = true
+//                                    editVC.facebookMode = true
+//                                    self.navigationController?.pushViewController(editVC, animated: true)
+//                                    
+//                                    
 //                                }
 //                            } else {
 //                                print(err)
@@ -217,27 +313,4 @@ class SignInVC: UIViewController/*, FBSDKLoginButtonDelegate */{
 //        
 // 
 //    }
-//    
-//    //    MARK: Other Methods
-//    
-//    func configureFacebook()
-//    {
-//        btnFacebook.readPermissions = ["public_profile", "email", "user_friends"]
-//        btnFacebook.delegate = self
-//        btnFacebook.loginBehavior = FBSDKLoginBehavior.SystemAccount
-//    }
-//
-//    
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        if segue.identifier == "FBVerifyPin" {
-//            let destVC = segue.destinationViewController as! TextVerifyViewController
-//            destVC.userInfo = self.info
-//
-//            destVC.user = self.user
-//
-//            destVC.FBAccessToken = FBSDKAccessToken.currentAccessToken()
-//        }
-//    }
-
-
 }

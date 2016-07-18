@@ -14,10 +14,13 @@ class ActivityCell: UITableViewCell {
     var username: UILabel = UILabel()
     var title: UILabel = UILabel()
     var postText: UILabel = UILabel()
-    
-    var downed: UILabel = UILabel()
+    var activityVC: UITableViewController!
     var replyButton: UIButton = UIButton(type: .Custom)
-    
+    var downCell: Bool = false
+    var toUser: PFUser!
+    var byUser: PFUser!
+    var whoRepliedLast: PFUser!
+    var post: PFObject!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -30,6 +33,11 @@ class ActivityCell: UITableViewCell {
     }
     
     func configureSubviews() {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(avaImgTapped(_:)))
+        avaImg.userInteractionEnabled = true
+        avaImg.addGestureRecognizer(tapGestureRecognizer)
+        
         
         backgroundColor = UIColor.WDTGrayBlueColor()
         selectionStyle = .None
@@ -47,66 +55,66 @@ class ActivityCell: UITableViewCell {
         postText.font = UIFont.WDTAgoraRegular(14)
         postText.textColor = UIColor.grayColor()
         
-        contentView.addSubview(downed)
-        downed.textColor = UIColor.WDTBlueColor()
-        downed.font = UIFont.WDTAgoraMedium(12)
-        downed.hidden = true
         
         contentView.addSubview(replyButton)
         replyButton.setTitle("Reply", forState: .Normal)
         replyButton.setTitleColor(UIColor.WDTBlueColor(), forState: .Normal)
         replyButton.titleLabel?.font = UIFont.WDTAgoraRegular(16)
         replyButton.selected = true
-
+        replyButton.addTarget(self, action: #selector(replyButtonTapped), forControlEvents: .TouchUpInside)
     }
     
     func fillCell(activityObject: PFObject) {
         let postText = activityObject["postText"] as! String
-        let byUser = activityObject["by"] as! PFUser
-        let type = WDTActivity.WDTActivityType(rawValue: activityObject["type"] as! String)
-        
-        
-        byUser["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-            self.avaImg.image = UIImage(data: data!)
-        }
-        
-        self.postText.text = postText
-        
+        byUser = activityObject["by"] as! PFUser
+        toUser = activityObject["to"] as! PFUser
+        post = activityObject["post"] as! PFObject
         
         if byUser.username == PFUser.currentUser()!.username {
-            downed.text = "Downed"
+            toUser["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                self.avaImg.image = UIImage(data: data!)
+            }
         } else {
-            let firstName = byUser["firstName"] as! String
-            downed.text = "Downed"
+            byUser["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                self.avaImg.image = UIImage(data: data!)
+            }
         }
         
         
         
-        if let whoRepliedLast = activityObject["whoRepliedLast"] as? PFUser {
-            if whoRepliedLast.username == PFUser.currentUser()!.username {
-                username.text = "You"
-                title.text = " replied for this post"
-            } else {
-                username.text = whoRepliedLast.username
-                title.text = " replied for this post"
-            }
-            
-            if type == .Down {
-                downed.hidden = false
-            } else {
-                downed.hidden = true
-            }
-            
-        } else {
-            downed.hidden = true
+        self.postText.text = postText
+        replyButton.hidden = false
+        
+        if downCell == true {
             if byUser.username == PFUser.currentUser()!.username {
                 username.text = "You"
                 title.text = " down for this post"
+                replyButton.hidden = true
                 
             } else {
-                let firstName = byUser["firstName"] as! String
-                username.text = firstName
+                username.text = byUser.username
                 title.text = " is down for your post"
+            }
+        } else {
+            
+            
+            if let whoRepliedLast = activityObject["whoRepliedLast"] as? PFUser {
+                if let firstMessage = activityObject["comeFromTheFeed"] as? Bool {
+                    if firstMessage {
+                        username.text = whoRepliedLast.username
+                        title.text = " replied to your post"
+                    } else {
+                        username.text = whoRepliedLast.username
+                        title.text = " replied back"
+                    }
+                }
+//                if whoRepliedLast.username == PFUser.currentUser()!.username {
+//                    username.text = "You"
+//                    title.text = " replied for this post"
+//                } else {
+//                    username.text = whoRepliedLast.username
+//                    title.text = " replied to your post"
+//                }
             }
         }
     }
@@ -134,15 +142,15 @@ class ActivityCell: UITableViewCell {
         postText.snp_remakeConstraints { (make) in
             make.left.equalTo(avaImg.snp_right).offset(10)
             make.top.equalTo(title.snp_bottom).offset(5)
-            make.right.equalTo(contentView).offset(-20)
+            make.right.equalTo(replyButton.snp_left).offset(-10)
             make.bottom.equalTo(contentView).offset(-20)
         }
         
-        downed.snp_remakeConstraints { (make) in
-            make.left.equalTo(avaImg.snp_right).offset(10)
-            make.top.equalTo(postText.snp_bottom).offset(5)
-            make.bottom.equalTo(contentView).offset(-5).priority(750)
-        }
+//        downed.snp_remakeConstraints { (make) in
+//            make.left.equalTo(avaImg.snp_right).offset(10)
+//            make.top.equalTo(postText.snp_bottom).offset(5)
+//            make.bottom.equalTo(contentView).offset(-5).priority(750)
+//        }
         
         replyButton.snp_remakeConstraints { (make) in
             make.top.equalTo(contentView)
@@ -152,6 +160,32 @@ class ActivityCell: UITableViewCell {
         }
         
         super.updateConstraints()
+    }
+    
+    func replyButtonTapped(sender: AnyObject?) {
+        
+        let destVC = ReplyViewController()
+
+        if byUser.username == PFUser.currentUser()!.username {
+            destVC.toUser = toUser
+        } else {
+            destVC.toUser = byUser
+        }
+        
+        destVC.usersPost = post
+        destVC.comeFromTheFeed = false
+        activityVC.navigationController?.pushViewController(destVC, animated: true)
+    }
+    
+    func avaImgTapped(sender: AnyObject) {
+        let destVC = ProfileVC()
+        if byUser.username == PFUser.currentUser()!.username {
+            destVC.user = toUser
+        } else {
+            destVC.user = byUser
+        }
+        
+        activityVC.navigationController?.pushViewController(destVC, animated: true)
     }
 }
 

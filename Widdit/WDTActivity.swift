@@ -99,13 +99,18 @@ class WDTActivity {
     
     func requestDowns(completion: (success: Bool) -> Void) {
         
-        let activitiesToMeQuery = PFQuery(className: "Activity")
-        activitiesToMeQuery.whereKey("by", equalTo: currentUser)
+//        let activitiesToMeQuery = PFQuery(className: "Activity")
+//        activitiesToMeQuery.whereKey("by", equalTo: currentUser)
+//        activitiesToMeQuery.whereKey("type", equalTo: "down")
+//        let activitiesFromMeQuery = PFQuery(className: "Activity")
+//        activitiesFromMeQuery.whereKey("to", equalTo: currentUser)
+//        activitiesFromMeQuery.whereKey("type", equalTo: "down")
         
-        let activitiesFromMeQuery = PFQuery(className: "Activity")
-        activitiesFromMeQuery.whereKey("to", equalTo: currentUser)
-        
-        let activitiesQuery = PFQuery.orQueryWithSubqueries([activitiesToMeQuery, activitiesFromMeQuery])
+        let activitiesQuery = PFQuery(className: "Activity")
+            //.orQueryWithSubqueries([activitiesToMeQuery, activitiesFromMeQuery])
+        activitiesQuery.whereKey("to", equalTo: currentUser)
+        activitiesQuery.whereKey("type", equalTo: "down")
+
         activitiesQuery.includeKey("post")
         activitiesQuery.includeKey("by")
         activitiesQuery.includeKey("to")
@@ -113,6 +118,7 @@ class WDTActivity {
         
         activitiesQuery.findObjectsInBackgroundWithBlock { (downs: [PFObject]?, error: NSError?) in
             if let downs = downs {
+                
                 self.downs = downs.filter({
                     if let _ = $0["post"] {
                         return true
@@ -126,61 +132,98 @@ class WDTActivity {
             }
         }
     }
-
-    func requestChats(competion: (success: Bool) -> Void) {
+    
+    func requestChats(completion: (success: Bool) -> Void) {
         
-        let repliesToMeQuery = PFQuery(className: "replies")
-        repliesToMeQuery.whereKey("recipient", equalTo: currentUser)
+        let activitiesToMeQuery = PFQuery(className: "Activity")
+        activitiesToMeQuery.whereKey("by", equalTo: currentUser)
+        activitiesToMeQuery.whereKey("whoRepliedLast", notEqualTo: currentUser)
+        activitiesToMeQuery.whereKeyExists("whoRepliedLast")
         
-        let repliesFromMeQuery = PFQuery(className: "replies")
-        repliesFromMeQuery.whereKey("sender", equalTo: currentUser)
         
-        let replyQuery = PFQuery.orQueryWithSubqueries([repliesToMeQuery, repliesFromMeQuery])
-        replyQuery.includeKey("sender")
-        replyQuery.includeKey("recipient")
-        replyQuery.includeKey("post")
-        replyQuery.addDescendingOrder("createdAt")
+        let activitiesFromMeQuery = PFQuery(className: "Activity")
+        activitiesFromMeQuery.whereKey("to", equalTo: currentUser)
+        activitiesFromMeQuery.whereKey("whoRepliedLast", notEqualTo: currentUser)
+        activitiesFromMeQuery.whereKeyExists("whoRepliedLast")
         
-        replyQuery.findObjectsInBackgroundWithBlock { (replies: [PFObject]?, error: NSError?) -> Void in
-            guard let replies = replies else {return}
-            
-            // filter replies to get chats
-            self.chats = replies.filter({
-                if let _ = $0["post"] {
-                    return true
-                } else {
-                    return false
-                }
-            })
-            
-            self.chats = replies.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
-                if acc.contains( {
-                    if $0["sender"].objectId == current["sender"].objectId{
+        let activitiesQuery = PFQuery.orQueryWithSubqueries([activitiesToMeQuery, activitiesFromMeQuery])
+        activitiesQuery.includeKey("post")
+        activitiesQuery.includeKey("by")
+        activitiesQuery.includeKey("to")
+        activitiesQuery.includeKey("whoRepliedLast")
+        activitiesQuery.addDescendingOrder("createdAt")
+        
+        activitiesQuery.findObjectsInBackgroundWithBlock { (chats: [PFObject]?, error: NSError?) in
+            if let chats = chats {
+                
+                self.chats = chats.filter({
+                    if let _ = $0["post"] {
                         return true
                     } else {
                         return false
                     }
-                }) {
-                    return acc
-                } else {
-                    return acc + [current]
-                }
-            }).filter({ // if post exists
-                if let _ = $0["post"] {
-                    if  $0["sender"].username != PFUser.currentUser()?.username {
-                        return true
-                    } else {
-                        return false
-                    }
-                    
-                } else {
-                    return false
-                }
-            })
-            
-            
-            competion(success: true)
-
+                })
+                completion(success: true)
+            } else {
+                completion(success: false)
+            }
         }
     }
+
+//    func requestChats(competion: (success: Bool) -> Void) {
+//        
+//        let repliesToMeQuery = PFQuery(className: "replies")
+//        repliesToMeQuery.whereKey("recipient", equalTo: currentUser)
+//        
+//        let repliesFromMeQuery = PFQuery(className: "replies")
+//        repliesFromMeQuery.whereKey("sender", equalTo: currentUser)
+//        
+//        let replyQuery = PFQuery.orQueryWithSubqueries([repliesToMeQuery, repliesFromMeQuery])
+//        replyQuery.includeKey("sender")
+//        replyQuery.includeKey("recipient")
+//        replyQuery.includeKey("post")
+//        replyQuery.addDescendingOrder("createdAt")
+//        
+//        replyQuery.findObjectsInBackgroundWithBlock { (replies: [PFObject]?, error: NSError?) -> Void in
+//            guard let replies = replies else {return}
+//            
+//            // filter replies to get chats
+//            self.chats = replies.filter({
+//                if let _ = $0["post"] {
+//                    return true
+//                } else {
+//                    return false
+//                }
+//            })
+//            
+//            self.chats = replies.reduce([], combine: { (acc: [PFObject], current: PFObject) -> [PFObject] in
+//                if acc.contains( {
+//                    if $0["sender"].objectId == current["sender"].objectId{
+//                        return true
+//                    } else {
+//                        return false
+//                    }
+//                }) {
+//                    return acc
+//                } else {
+//                    return acc + [current]
+//                }
+//            }).filter({ // if post exists
+//                if let _ = $0["post"] {
+//                    if  $0["sender"].username != PFUser.currentUser()?.username {
+//                        return true
+//                    } else {
+//                        return false
+//                    }
+//                    
+//                } else {
+//                    return false
+//                }
+//            })
+//            
+//            
+//            competion(success: true)
+//
+//        }
+//    }
 }

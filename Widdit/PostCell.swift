@@ -134,6 +134,9 @@ class PostCell: UITableViewCell {
         // Rounded Square Image
         avaImage.layer.cornerRadius = 8.0
         avaImage.clipsToBounds = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(avaImageTapped(_:)))
+        avaImage.userInteractionEnabled = true
+        avaImage.addGestureRecognizer(tapGestureRecognizer)
         
         userNameLbl.font = UIFont.WDTAgoraRegular(12)
         userNameLbl.textColor = UIColor.WDTBlueColor()
@@ -336,6 +339,11 @@ class PostCell: UITableViewCell {
         }
     }
     
+    func avaImageTapped(sender: AnyObject) {
+        let destVC = ProfileVC()
+        destVC.user = user
+        feed.navigationController?.pushViewController(destVC, animated: true)
+    }
     
     
     @IBAction func morePostsButtonPressed(sender: UIButton) {
