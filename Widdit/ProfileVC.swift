@@ -11,6 +11,7 @@ import Parse
 import ParseFacebookUtilsV4
 import ImageViewer
 import SimpleAlert
+import Whisper
 
 class ProfileVC: WDTFeed {
 
@@ -91,20 +92,6 @@ class ProfileVC: WDTFeed {
         wdtHeader.setImages(avatars)
         
         
-//        WDTAvatar.getAvatar(user, avaNum: 1) { (ava) in
-//            if let ava = ava {
-//                self.avatars.append(ava)
-//                
-//                WDTAvatar.getAvatar(self.user, avaNum: 2) { (ava2) in
-//                    if let ava2 = ava2 {
-//                        self.avatars.append(ava2)
-//                        wdtHeader.setImages([ava, ava2])
-//                    }
-//                    
-//                }
-//            }
-//        }
-        
         if let _ = user["phoneNumber"] {
             wdtHeader.phoneVerified.tintColor = UIColor.whiteColor()
             wdtHeader.phoneVerified.selected = true
@@ -116,7 +103,7 @@ class ProfileVC: WDTFeed {
             wdtHeader.emailVerified.selected = true
         }
         
-        if PFFacebookUtils.isLinkedWithUser(user) == true {
+        if let facebookVerified = user["facebookVerified"] as? Bool where facebookVerified == true {
             wdtHeader.facebookVerified.tintColor = UIColor.whiteColor()
             wdtHeader.facebookVerified.selected = true
         }
@@ -155,6 +142,7 @@ class ProfileVC: WDTFeed {
     
     
     func editButtonTapped() {
+        
         
         let alert = SimpleAlert.Controller(view: nil, style: .ActionSheet)
         alert.addAction(SimpleAlert.Action(title: "Edit", style: .Default) { action in

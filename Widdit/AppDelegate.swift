@@ -13,6 +13,7 @@ import Bolts
 import ParseFacebookUtilsV4
 import XCGLogger
 import IQKeyboardManagerSwift
+import Whisper
 
 let log = XCGLogger.defaultInstance()
 
@@ -29,6 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         log.debug("A debug message")
         IQKeyboardManager.sharedManager().enable = true
+//        IQKeyboardManager.sharedManager().enableAutoToolbar = false
+//        IQKeyboardManager.sharedManager().
+//        IQKeyboardManager.sharedManager().disabledToolbarClasses.insert("NewPostVC")
+        IQKeyboardManager.sharedManager().disableToolbarInViewControllerClass(NewPostVC.self)
+        IQKeyboardManager.sharedManager().disableToolbarInViewControllerClass(ReplyViewController.self)
+        
+        IQKeyboardManager.sharedManager().disableDistanceHandlingInViewControllerClass(ReplyViewController.self)
 
         //configure push notifications
         let userNotificationTypes: UIUserNotificationType = [.Alert, .Badge, .Sound]
@@ -80,20 +88,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         guard let launchOptions = launchOptions else {return true}
         if let userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject: AnyObject] {
-            
-            if let postObjectId = userInfo["post"], userObjectId = userInfo["who"] {
-                let post = PFObject(withoutDataWithClassName: "posts", objectId: postObjectId as? String)
-                let query = PFUser.query()
-                query?.whereKey("objectId", equalTo: userObjectId)
-                query?.getObjectInBackgroundWithId(userObjectId as! String, block: { (user: PFObject?, error: NSError?) in
-                    if let topController = UIApplication.topViewController() {
-                        let destVC = ReplyViewController()
-                        destVC.usersPost = post
-                        destVC.toUser = user as! PFUser
-                        topController.navigationController?.pushViewController(destVC, animated: true)
-                    }
-                })
+            if let topController = UIApplication.topViewController() {
+                let destVC = ActivityVC()
+                topController.navigationController?.pushViewController(destVC, animated: true)
             }
+            
+//            if let postObjectId = userInfo["post"], userObjectId = userInfo["who"] {
+//                let post = PFObject(withoutDataWithClassName: "posts", objectId: postObjectId as? String)
+//                let query = PFUser.query()
+//                query?.whereKey("objectId", equalTo: userObjectId)
+//                query?.getObjectInBackgroundWithId(userObjectId as! String, block: { (user: PFObject?, error: NSError?) in
+//                    if let topController = UIApplication.topViewController() {
+//                        let destVC = ReplyViewController()
+//                        destVC.usersPost = post
+//                        destVC.toUser = user as! PFUser
+//                        topController.navigationController?.pushViewController(destVC, animated: true)
+//                    }
+//                })
+//            }
         }
         
         return true
@@ -105,24 +117,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let topController = UIApplication.topViewController() {
             topController.presentViewController(alert2, animated: true, completion: nil)
         }
-
     }
     
     
     func login() {
         
-        // remember user's login
-        let username : String? = NSUserDefaults.standardUserDefaults().stringForKey("username")
-        
         // if loged in
-        if username != nil {
-            
-            let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
-            window?.rootViewController = myTabBar
-            
+        if let user = PFUser.currentUser() {
+            if let signUpFinished = user["signUpFinished"] as? Bool where signUpFinished == true {
+                let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let myTabBar = storyboard.instantiateViewControllerWithIdentifier("TabBar") as! UITabBarController
+                window?.rootViewController = myTabBar
+            }
         }
-        
     }
 
 
@@ -144,16 +151,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let query = PFUser.query()
             query?.whereKey("objectId", equalTo: userObjectId)
             
-            query?.getObjectInBackgroundWithId(userObjectId, block: { (user: PFObject?, error: NSError?) in
+            query?.getObjectInBackgroundWithId(userObjectId, block: { (userObject: PFObject?, error: NSError?) in
                 let destVC = ReplyViewController()
-                destVC.toUser = user as! PFUser
+                let user = userObject as! PFUser
+                destVC.toUser = user
                 destVC.usersPost = post
                 
                 if topController.isKindOfClass(ReplyViewController) {
                     let replyVC = topController as! ReplyViewController
                     replyVC.requestMessages()
                 } else {
-                    topController.navigationController?.pushViewController(destVC, animated: true)
+                    if let aps = userInfo["aps"] as? NSDictionary {
+                        if let alert = aps["alert"] as? NSDictionary {
+                            if let message = alert["message"] as? String {
+                                let newMessageMurmur = Murmur(title: message)
+                                Whistle(newMessageMurmur, action: .Show(2.5))
+                            }
+                        } else if let alert = aps["alert"] as? String {
+                            let newMessageMurmur = Murmur(title: alert)
+                            Whistle(newMessageMurmur, action: .Show(2.5))
+                        }
+                    }
+                    
+//                    if let alert = userInfo["alert"] as? String {
+//                        
+//                    }
+//                    topController.navigationController?.pushViewController(destVC, animated: true)
                 }
             })
         }

@@ -51,6 +51,7 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
         view.addSubview(sliderView)
         view.addSubview(deletePhotoButton)
         
+        
         postTxt.font = UIFont.WDTAgoraRegular(18)
         postTxt.placeholder = "What do you feel like doing?"
         postTxt.backgroundColor = UIColor.WDTGrayBlueColor()
@@ -125,6 +126,11 @@ class NewPostVC: UIViewController, UINavigationControllerDelegate, UITextViewDel
                 self.geoPoint = geoPoint
             }
         }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        postTxt.becomeFirstResponder()
     }
     
     

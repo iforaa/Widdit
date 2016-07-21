@@ -68,19 +68,22 @@ class ActivityCell: UITableViewCell {
         let postText = activityObject["postText"] as! String
         byUser = activityObject["by"] as! PFUser
         toUser = activityObject["to"] as! PFUser
+        
         post = activityObject["post"] as! PFObject
         
         if byUser.username == PFUser.currentUser()!.username {
-            toUser["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-                self.avaImg.image = UIImage(data: data!)
+            if let avaFile = toUser["ava"] as? PFFile {
+                avaFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                    self.avaImg.image = UIImage(data: data!)
+                }
             }
         } else {
-            byUser["ava"].getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
-                self.avaImg.image = UIImage(data: data!)
+            if let avaFile = byUser["ava"] as? PFFile {
+                avaFile.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                    self.avaImg.image = UIImage(data: data!)
+                }
             }
         }
-        
-        
         
         self.postText.text = postText
         replyButton.hidden = false
@@ -96,25 +99,21 @@ class ActivityCell: UITableViewCell {
                 title.text = " is down for your post"
             }
         } else {
-            
-            
             if let whoRepliedLast = activityObject["whoRepliedLast"] as? PFUser {
                 if let firstMessage = activityObject["comeFromTheFeed"] as? Bool {
                     if firstMessage {
                         username.text = whoRepliedLast.username
                         title.text = " replied to your post"
                     } else {
-                        username.text = whoRepliedLast.username
+                        if PFUser.currentUser()!.username == byUser.username {
+                            username.text = toUser.username
+                        } else {
+                            username.text = byUser.username
+                        }
+                        
                         title.text = " replied back"
                     }
                 }
-//                if whoRepliedLast.username == PFUser.currentUser()!.username {
-//                    username.text = "You"
-//                    title.text = " replied for this post"
-//                } else {
-//                    username.text = whoRepliedLast.username
-//                    title.text = " replied to your post"
-//                }
             }
         }
     }

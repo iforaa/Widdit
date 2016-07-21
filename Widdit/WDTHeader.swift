@@ -15,7 +15,7 @@ class WDTHeader: UIView, UIScrollViewDelegate {
     var scrollView = UIScrollView()
     var containerView = UIView()
     let firstNameLbl = UILabel()
-    let aboutLbl = UILabel()
+    let aboutLbl = UITextView()
     let line = UIView()
     
     let emailVerified = UIButton(type: .Custom)
@@ -231,9 +231,16 @@ class WDTHeader: UIView, UIScrollViewDelegate {
             make.height.equalTo(1)
         }
 
-        aboutLbl.numberOfLines = 4
+        
+        
+        
+        aboutLbl.editable = false
+        aboutLbl.scrollEnabled = false
+        aboutLbl.userInteractionEnabled = true;
+        aboutLbl.dataDetectorTypes = [.Link, .PhoneNumber]
         aboutLbl.textAlignment = .Center
         aboutLbl.font = UIFont.WDTAgoraRegular(16)
+        aboutLbl.backgroundColor = UIColor.clearColor()
         addSubview(aboutLbl)
         aboutLbl.snp_makeConstraints { (make) in
             make.left.equalTo(self).offset(10)

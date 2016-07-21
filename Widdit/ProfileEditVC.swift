@@ -81,7 +81,7 @@ class ProfileEditVC: UIViewController, UITextViewDelegate {
             navigationItem.title = "Settings"
         }
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .Done, target: self, action: #selector(doneButtonTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(doneButtonTapped))
         
         
         scrollView.addSubview(addAvatar1)
@@ -402,13 +402,10 @@ class ProfileEditVC: UIViewController, UITextViewDelegate {
                 (succeeded: Bool?, error: NSError?) -> Void in
                 if error == nil {
                     self.facebookLinkingBtn.setTitle("Unlink Facebook", forState: .Normal)
-                } else {
-                    let alert = SimpleAlert.Controller(view: nil, style: .Alert)
-                    alert.addAction(SimpleAlert.Action(title: "OK", style: .Cancel))
-                    alert.title = error?.localizedDescription
                     user["facebookVerified"] = true
                     user.saveInBackground()
-                    self.presentViewController(alert, animated: true, completion: nil)
+                } else {
+                    self.showAlert((error?.localizedDescription)!)
                 }
             })
         }

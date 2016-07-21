@@ -12,13 +12,13 @@ import Parse
 
 class ReplyViewController: SLKTextViewController {
     
-  lazy var dateFormatter: NSDateFormatter = {
+    lazy var dateFormatter: NSDateFormatter = {
         let formatter = NSDateFormatter()
         formatter.timeStyle = .ShortStyle
         formatter.dateStyle = .MediumStyle
         formatter.doesRelativeDateFormatting = true
         return formatter
-  }()
+    }()
     
 
     var messages = [MessageModel]()
@@ -28,41 +28,41 @@ class ReplyViewController: SLKTextViewController {
     var isDown = false
     var toUser: PFUser!
     var comeFromTheFeed = true
+    var body: String = ""
 
-
-  override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
-    return .Plain
-  }
-
-  // MARK: View Lifecycle
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
+    override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
+        return .Plain
+    }
     
-    // Associate the device with a user
-    let installation = PFInstallation.currentInstallation()
-    installation["user"] = PFUser.currentUser()
-    installation.saveInBackground()
-
-    tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
-    inverted = false
-    tableView!.rowHeight = UITableViewAutomaticDimension
-    tableView!.estimatedRowHeight = 64.0
-    tableView!.separatorStyle = .None
-    registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
-
-    textView.placeholder = "Message";
-
-    textView.registerMarkdownFormattingSymbol("*", withTitle: "Bold")
-    textView.registerMarkdownFormattingSymbol("_", withTitle: "Italics")
-    textView.registerMarkdownFormattingSymbol("~", withTitle: "Strike")
-    textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
-    textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
-    textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
-    
-    
-    requestMessages()
-  }
+    // MARK: View Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        
+        // Associate the device with a user
+        let installation = PFInstallation.currentInstallation()
+        installation["user"] = PFUser.currentUser()
+        installation.saveInBackground()
+        
+        tableView!.registerClass(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
+        inverted = false
+        tableView!.rowHeight = UITableViewAutomaticDimension
+        tableView!.estimatedRowHeight = 64.0
+        tableView!.separatorStyle = .None
+        registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
+        
+        textView.placeholder = "Message";
+        
+        textView.registerMarkdownFormattingSymbol("*", withTitle: "Bold")
+        textView.registerMarkdownFormattingSymbol("_", withTitle: "Italics")
+        textView.registerMarkdownFormattingSymbol("~", withTitle: "Strike")
+        textView.registerMarkdownFormattingSymbol("`", withTitle: "Code")
+        textView.registerMarkdownFormattingSymbol("```", withTitle: "Preformatted")
+        textView.registerMarkdownFormattingSymbol(">", withTitle: "Quote")
+        
+        
+        requestMessages()
+    }
 
     
     func requestMessages() {
@@ -110,36 +110,52 @@ class ReplyViewController: SLKTextViewController {
         }
     }
     
-  // MARK: UITableView Delegate
-  // Return number of rows in the table
-  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return messages.count
-  }
-
-  // Create table view rows
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
-    -> UITableViewCell {
-      let cell = tableView.dequeueReusableCellWithIdentifier("MessageTableViewCell", forIndexPath: indexPath) as! MessageTableViewCell
-      let message = messages[indexPath.row]
-
-      // Set table cell values
-      cell.nameLabel.text = message.name
-      cell.bodyLabel.text = message.body
-      cell.createdAtLabel.text = self.dateFormatter.stringFromDate(message.createdAt)
-      cell.selectionStyle = .None
-
-      return cell
-  }
-
-  // MARK: UITableViewDataSource Delegate
-  override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-    return 1
-  }
+    // MARK: UITableView Delegate
+    // Return number of rows in the table
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    // Create table view rows
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+        -> UITableViewCell {
+            let cell = tableView.dequeueReusableCellWithIdentifier("MessageTableViewCell", forIndexPath: indexPath) as! MessageTableViewCell
+            let message = messages[indexPath.row]
+            
+            // Set table cell values
+            cell.nameLabel.text = message.name
+            cell.bodyLabel.text = message.body
+            cell.createdAtLabel.text = self.dateFormatter.stringFromDate(message.createdAt)
+            cell.selectionStyle = .None
+            
+            return cell
+    }
+    
+    // MARK: UITableViewDataSource Delegate
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
 }
 
 extension ReplyViewController {
     override func didPressRightButton(sender: AnyObject?) {
-        // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+        let message = MessageModel(name: PFUser.currentUser()!["firstName"] as! String, body: self.textView.text, createdAt: NSDate())
+        
+        body = self.textView.text
+        
+        let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
+        let rowAnimation: UITableViewRowAnimation = .Bottom
+        let scrollPosition: UITableViewScrollPosition = .Bottom
+        self.tableView!.beginUpdates()
+        self.messages.append(message)
+        self.tableView!.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
+        self.tableView!.endUpdates()
+        self.tableView!.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
+        // Fixes the cell from blinking (because of the transform, when using translucent cells)
+        // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
+        self.tableView!.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        super.didPressRightButton(sender)
+        
         
         WDTActivity.isDownAndReverseDown(toUser, post: usersPost) { (down) in
             if let down = down  {
@@ -157,19 +173,18 @@ extension ReplyViewController {
     func sendMessage(sender: AnyObject?, activityObj: PFObject) {
         self.textView.refreshFirstResponder()
         
-        let message = MessageModel(name: PFUser.currentUser()!["firstName"] as! String, body: self.textView.text, createdAt: NSDate())
+        
         
         let parseMessage = PFObject(className: "replies")
         
         parseMessage["by"] = PFUser.currentUser()
         parseMessage["to"] = self.toUser
-        parseMessage["body"] = self.textView.text
+        parseMessage["body"] = body
         parseMessage["postText"] = self.usersPost["postText"]
         parseMessage["post"] = PFObject(withoutDataWithClassName: "posts", objectId: self.usersPost.objectId)
         
-        WDTPush.sendPushAfterReply(self.toUser.username!, msg: self.textView.text, postId: self.usersPost.objectId!, comeFromTheFeed: comeFromTheFeed)
+        WDTPush.sendPushAfterReply(self.toUser.username!, msg: body, postId: self.usersPost.objectId!, comeFromTheFeed: comeFromTheFeed)
         
-        let indexPath = NSIndexPath(forRow: self.messages.count, inSection: 0)
         
         parseMessage.saveInBackgroundWithBlock { (bool, error) in
             let relation = activityObj.relationForKey("replies")
@@ -178,23 +193,7 @@ extension ReplyViewController {
             //sends message
             activityObj["comeFromTheFeed"] = self.comeFromTheFeed
             activityObj["whoRepliedLast"] = PFUser.currentUser()
-            activityObj.saveInBackgroundWithBlock { (bool, error) in
-                if bool {
-                    let rowAnimation: UITableViewRowAnimation = .Bottom
-                    let scrollPosition: UITableViewScrollPosition = .Bottom
-                    self.tableView!.beginUpdates()
-                    self.messages.append(message)
-                    self.tableView!.insertRowsAtIndexPaths([indexPath], withRowAnimation: rowAnimation)
-                    self.tableView!.endUpdates()
-                    self.tableView!.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: true)
-                    // Fixes the cell from blinking (because of the transform, when using translucent cells)
-                    // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
-                    self.tableView!.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                    super.didPressRightButton(sender)
-                } else {
-                    print("Error sending message: \(error)")
-                }
-            }
+            activityObj.saveInBackground()
         }
     }
 }

@@ -10,14 +10,12 @@
 		2E3924CE6F8E5329D9A2B301 /* Pods_Widdit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B0032CE04787FA854080E9E /* Pods_Widdit.framework */; };
 		3111475C1CAB210F00150ECD /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3111475A1CAB210F00150ECD /* FBSDKCoreKit.framework */; };
 		3111475D1CAB210F00150ECD /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3111475B1CAB210F00150ECD /* FBSDKLoginKit.framework */; };
-		311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311147631CAB335A00150ECD /* FBSignUpVC.swift */; };
 		311147671CAB42AE00150ECD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 311147651CAB42AE00150ECD /* Main.storyboard */; };
 		31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */; };
 		31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 31F12E911C9E115B00E63A2E /* Widdit.xcdatamodeld */; };
 		31F12E951C9E115B00E63A2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31F12E941C9E115B00E63A2E /* Assets.xcassets */; };
 		31F12E981C9E115B00E63A2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31F12E961C9E115B00E63A2E /* LaunchScreen.storyboard */; };
 		31F12EA01C9E122B00E63A2E /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12E9F1C9E122B00E63A2E /* SignInVC.swift */; };
-		31F12EA41C9E125900E63A2E /* ResetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12EA31C9E125900E63A2E /* ResetPasswordVC.swift */; };
 		31F12EA71C9E12D400E63A2E /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EA51C9E12D400E63A2E /* Bolts.framework */; };
 		31F12EA81C9E12D400E63A2E /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EA61C9E12D400E63A2E /* Parse.framework */; };
 		31F12EAF1C9E135800E63A2E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */; };
@@ -41,15 +39,11 @@
 		31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F12ED91C9E6A5700E63A2E /* ActivityCell.swift */; };
 		31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FF6CF31CAF84D4001D1654 /* FBInfo.swift */; };
 		7994B5471CE16D7B008EB1D8 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7994B5461CE16D7B008EB1D8 /* notification.mp3 */; };
-		79B4230C1CEE675D00888461 /* PhoneVerifyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4230B1CEE675D00888461 /* PhoneVerifyVC.swift */; };
-		79B4230E1CEE824100888461 /* PinVerifyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4230D1CEE824100888461 /* PinVerifyVC.swift */; };
 		79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */; };
 		79B4D4841CC80D150073B65D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */; };
 		79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4D4851CC8102B0073B65D /* MessageModel.swift */; };
-		A61AE1301D2FD245000CCC95 /* WDTButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61AE12F1D2FD245000CCC95 /* WDTButton.swift */; };
 		A62E342E1D37E3A7001762F9 /* SignUpProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62E342D1D37E3A7001762F9 /* SignUpProcess.swift */; };
 		A638AC6E1D2A617400AC5781 /* WDTHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A638AC6D1D2A617400AC5781 /* WDTHeader.swift */; };
-		A66018FF1D3821EE00FC9F9B /* WDTString.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66018FE1D3821EE00FC9F9B /* WDTString.swift */; };
 		A66019011D3832ED00FC9F9B /* DatePickerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66019001D3832ED00FC9F9B /* DatePickerDialog.swift */; };
 		A67240FB1D1808440060FAC0 /* WDTPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67240FA1D1808440060FAC0 /* WDTPush.swift */; };
 		A67241011D1812D60060FAC0 /* AgoraSansProItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67240FC1D1812D60060FAC0 /* AgoraSansProItalic.ttf */; };
@@ -59,26 +53,20 @@
 		A67241051D1812D60060FAC0 /* AgoraSansProThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A67241001D1812D60060FAC0 /* AgoraSansProThinItalic.ttf */; };
 		A67241081D18177D0060FAC0 /* WDTActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241071D18177D0060FAC0 /* WDTActivity.swift */; };
 		A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241121D1851F90060FAC0 /* WDTPost.swift */; };
-		A67241151D1853740060FAC0 /* WDTArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241141D1853740060FAC0 /* WDTArray.swift */; };
-		A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */; };
 		A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67241181D19326F0060FAC0 /* FeedFooter.swift */; };
 		A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */; };
 		A672411D1D1C14B20060FAC0 /* UIImageEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */; };
-		A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */; };
 		A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */; };
-		A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */; };
+		A6B893661D3D43870013234E /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B893651D3D43870013234E /* Extension.swift */; };
 		A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */; };
 		A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */; };
 		A6B9D0051D1D87640099F907 /* WDTImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */; };
-		A6E153081CFD96B000787394 /* WDTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E153071CFD96B000787394 /* WDTColor.swift */; };
-		A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1530B1CFE09B600787394 /* WDTFont.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3111475A1CAB210F00150ECD /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		3111475B1CAB210F00150ECD /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		3111475E1CAB246300150ECD /* Widdit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Widdit-Bridging-Header.h"; sourceTree = "<group>"; };
-		311147631CAB335A00150ECD /* FBSignUpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBSignUpVC.swift; sourceTree = "<group>"; };
 		311147661CAB42AE00150ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		31F12E871C9E115B00E63A2E /* Widdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Widdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31F12E8A1C9E115B00E63A2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,7 +75,6 @@
 		31F12E971C9E115B00E63A2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		31F12E991C9E115B00E63A2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		31F12E9F1C9E122B00E63A2E /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
-		31F12EA31C9E125900E63A2E /* ResetPasswordVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordVC.swift; sourceTree = "<group>"; };
 		31F12EA51C9E12D400E63A2E /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Widdit/Bolts.framework; sourceTree = "<group>"; };
 		31F12EA61C9E12D400E63A2E /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Widdit/Parse.framework; sourceTree = "<group>"; };
 		31F12EAE1C9E135800E63A2E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -114,15 +101,11 @@
 		6B0032CE04787FA854080E9E /* Pods_Widdit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Widdit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D40BFB75DA61F740B7C5F63 /* Pods-Widdit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Widdit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Widdit/Pods-Widdit.release.xcconfig"; sourceTree = "<group>"; };
 		7994B5461CE16D7B008EB1D8 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification.mp3; sourceTree = "<group>"; };
-		79B4230B1CEE675D00888461 /* PhoneVerifyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneVerifyVC.swift; sourceTree = "<group>"; };
-		79B4230D1CEE824100888461 /* PinVerifyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinVerifyVC.swift; sourceTree = "<group>"; };
 		79B4D4811CC80ABE0073B65D /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		79B4D4831CC80D150073B65D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		79B4D4851CC8102B0073B65D /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
-		A61AE12F1D2FD245000CCC95 /* WDTButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTButton.swift; sourceTree = "<group>"; };
 		A62E342D1D37E3A7001762F9 /* SignUpProcess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpProcess.swift; sourceTree = "<group>"; };
 		A638AC6D1D2A617400AC5781 /* WDTHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTHeader.swift; sourceTree = "<group>"; };
-		A66018FE1D3821EE00FC9F9B /* WDTString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTString.swift; sourceTree = "<group>"; };
 		A66019001D3832ED00FC9F9B /* DatePickerDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerDialog.swift; sourceTree = "<group>"; };
 		A67240FA1D1808440060FAC0 /* WDTPush.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPush.swift; sourceTree = "<group>"; };
 		A67240FC1D1812D60060FAC0 /* AgoraSansProItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProItalic.ttf; sourceTree = "<group>"; };
@@ -132,19 +115,14 @@
 		A67241001D1812D60060FAC0 /* AgoraSansProThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AgoraSansProThinItalic.ttf; sourceTree = "<group>"; };
 		A67241071D18177D0060FAC0 /* WDTActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTActivity.swift; sourceTree = "<group>"; };
 		A67241121D1851F90060FAC0 /* WDTPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPost.swift; sourceTree = "<group>"; };
-		A67241141D1853740060FAC0 /* WDTArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTArray.swift; sourceTree = "<group>"; };
-		A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTNavigationBar.swift; sourceTree = "<group>"; };
 		A67241181D19326F0060FAC0 /* FeedFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFooter.swift; sourceTree = "<group>"; };
 		A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPlaceholderTextView.swift; sourceTree = "<group>"; };
 		A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageEffects.swift; sourceTree = "<group>"; };
-		A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImage.swift; sourceTree = "<group>"; };
 		A6B3FE9D1D07318100DC1FFF /* WDTPostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTPostModel.swift; sourceTree = "<group>"; };
-		A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTDateFormatter.swift; sourceTree = "<group>"; };
+		A6B893651D3D43870013234E /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		A6B9D0001D1D12F50099F907 /* WDTAvatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTAvatar.swift; sourceTree = "<group>"; };
 		A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTCircleSlider.swift; sourceTree = "<group>"; };
 		A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTImageProvider.swift; sourceTree = "<group>"; };
-		A6E153071CFD96B000787394 /* WDTColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTColor.swift; sourceTree = "<group>"; };
-		A6E1530B1CFE09B600787394 /* WDTFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WDTFont.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,24 +211,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A62E342C1D37E372001762F9 /* SignUpProcess */ = {
-			isa = PBXGroup;
-			children = (
-				A62E342D1D37E3A7001762F9 /* SignUpProcess.swift */,
-			);
-			name = SignUpProcess;
-			sourceTree = "<group>";
-		};
 		A67240F91D1808220060FAC0 /* WDTUtils */ = {
 			isa = PBXGroup;
 			children = (
-				A66019001D3832ED00FC9F9B /* DatePickerDialog.swift */,
-				A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */,
-				A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */,
-				A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */,
 				A67241101D1847530060FAC0 /* Parse */,
-				A6E153061CFD967F00787394 /* Extension */,
+				A6B9D0021D1D16710099F907 /* WDTCircleSlider.swift */,
+				A672411A1D1ACD090060FAC0 /* WDTPlaceholderTextView.swift */,
 				A6B9D0041D1D87630099F907 /* WDTImageProvider.swift */,
+				A66019001D3832ED00FC9F9B /* DatePickerDialog.swift */,
+				A672411C1D1C14B20060FAC0 /* UIImageEffects.swift */,
+				A6B893651D3D43870013234E /* Extension.swift */,
 			);
 			name = WDTUtils;
 			sourceTree = "<group>";
@@ -313,21 +283,6 @@
 			name = Reply;
 			sourceTree = "<group>";
 		};
-		A6E153061CFD967F00787394 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				A6E153071CFD96B000787394 /* WDTColor.swift */,
-				A6E1530B1CFE09B600787394 /* WDTFont.swift */,
-				A6B3FE9B1D05FB0700DC1FFF /* WDTImage.swift */,
-				A6B3FE9F1D0842DF00DC1FFF /* WDTDateFormatter.swift */,
-				A67241141D1853740060FAC0 /* WDTArray.swift */,
-				A67241161D192F9C0060FAC0 /* WDTNavigationBar.swift */,
-				A61AE12F1D2FD245000CCC95 /* WDTButton.swift */,
-				A66018FE1D3821EE00FC9F9B /* WDTString.swift */,
-			);
-			name = Extension;
-			sourceTree = "<group>";
-		};
 		A6E1530D1CFEB59400787394 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,12 +337,8 @@
 		A6E153131CFEB75200787394 /* SignUpSignIn */ = {
 			isa = PBXGroup;
 			children = (
-				A62E342C1D37E372001762F9 /* SignUpProcess */,
 				31F12E9F1C9E122B00E63A2E /* SignInVC.swift */,
-				79B4230B1CEE675D00888461 /* PhoneVerifyVC.swift */,
-				79B4230D1CEE824100888461 /* PinVerifyVC.swift */,
-				311147631CAB335A00150ECD /* FBSignUpVC.swift */,
-				31F12EA31C9E125900E63A2E /* ResetPasswordVC.swift */,
+				A62E342D1D37E3A7001762F9 /* SignUpProcess.swift */,
 			);
 			name = SignUpSignIn;
 			sourceTree = "<group>";
@@ -534,8 +485,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				31F12EC81C9E181F00E63A2E /* ActivityVC.swift in Sources */,
-				31F12EA41C9E125900E63A2E /* ResetPasswordVC.swift in Sources */,
 				A62E342E1D37E3A7001762F9 /* SignUpProcess.swift in Sources */,
+				A6B893661D3D43870013234E /* Extension.swift in Sources */,
 				A6B9D0051D1D87640099F907 /* WDTImageProvider.swift in Sources */,
 				A67241081D18177D0060FAC0 /* WDTActivity.swift in Sources */,
 				31F12E8B1C9E115B00E63A2E /* AppDelegate.swift in Sources */,
@@ -543,35 +494,24 @@
 				31F12ECC1C9E185600E63A2E /* MorePostsVC.swift in Sources */,
 				A67241191D19326F0060FAC0 /* FeedFooter.swift in Sources */,
 				31F12ECE1C9E188600E63A2E /* HeaderView.swift in Sources */,
-				A6B3FEA01D0842DF00DC1FFF /* WDTDateFormatter.swift in Sources */,
-				A67241151D1853740060FAC0 /* WDTArray.swift in Sources */,
 				31F12EDA1C9E6A5700E63A2E /* ActivityCell.swift in Sources */,
-				A6E153081CFD96B000787394 /* WDTColor.swift in Sources */,
 				A66019011D3832ED00FC9F9B /* DatePickerDialog.swift in Sources */,
 				31F12ED81C9E65E300E63A2E /* PostCell.swift in Sources */,
-				79B4230E1CEE824100888461 /* PinVerifyVC.swift in Sources */,
 				31F12ECA1C9E184100E63A2E /* FeedVC.swift in Sources */,
 				A6B9D0011D1D12F60099F907 /* WDTAvatar.swift in Sources */,
-				A6B3FE9C1D05FB0700DC1FFF /* WDTImage.swift in Sources */,
-				79B4230C1CEE675D00888461 /* PhoneVerifyVC.swift in Sources */,
 				A638AC6E1D2A617400AC5781 /* WDTHeader.swift in Sources */,
-				A6E1530C1CFE09B600787394 /* WDTFont.swift in Sources */,
 				A6B3FE9E1D07318100DC1FFF /* WDTPostModel.swift in Sources */,
 				A672411D1D1C14B20060FAC0 /* UIImageEffects.swift in Sources */,
-				A66018FF1D3821EE00FC9F9B /* WDTString.swift in Sources */,
 				31F12EC41C9E17D700E63A2E /* ProfileVC.swift in Sources */,
 				A67240FB1D1808440060FAC0 /* WDTPush.swift in Sources */,
 				31F12E931C9E115B00E63A2E /* Widdit.xcdatamodeld in Sources */,
 				79B4D4821CC80ABE0073B65D /* ReplyViewController.swift in Sources */,
 				31FF6CF41CAF84D4001D1654 /* FBInfo.swift in Sources */,
 				31F12ED01C9E191000E63A2E /* NewPostVC.swift in Sources */,
-				A67241171D192F9D0060FAC0 /* WDTNavigationBar.swift in Sources */,
-				311147641CAB335A00150ECD /* FBSignUpVC.swift in Sources */,
 				A6B9D0031D1D16710099F907 /* WDTCircleSlider.swift in Sources */,
 				79B4D4861CC8102B0073B65D /* MessageModel.swift in Sources */,
 				A67241131D1851F90060FAC0 /* WDTPost.swift in Sources */,
 				A672411B1D1ACD0A0060FAC0 /* WDTPlaceholderTextView.swift in Sources */,
-				A61AE1301D2FD245000CCC95 /* WDTButton.swift in Sources */,
 				31F12EA01C9E122B00E63A2E /* SignInVC.swift in Sources */,
 				31F12ED61C9E3A6900E63A2E /* ProfileEditVC.swift in Sources */,
 			);
@@ -726,7 +666,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.widdit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2db7da39-ac59-4532-b618-175524bff1fe";
+				PROVISIONING_PROFILE = "ae17d490-f50f-408c-b2b2-c5aa307b2873";
 				SWIFT_OBJC_BRIDGING_HEADER = "Widdit/Widdit-Bridging-Header.h";
 			};
 			name = Release;

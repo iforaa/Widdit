@@ -137,13 +137,13 @@ class WDTActivity {
         
         let activitiesToMeQuery = PFQuery(className: "Activity")
         activitiesToMeQuery.whereKey("by", equalTo: currentUser)
-        activitiesToMeQuery.whereKey("whoRepliedLast", notEqualTo: currentUser)
+//        activitiesToMeQuery.whereKey("whoRepliedLast", notEqualTo: currentUser)
+        activitiesToMeQuery.whereKey("comeFromTheFeed", equalTo: false)
         activitiesToMeQuery.whereKeyExists("whoRepliedLast")
         
         
         let activitiesFromMeQuery = PFQuery(className: "Activity")
         activitiesFromMeQuery.whereKey("to", equalTo: currentUser)
-        activitiesFromMeQuery.whereKey("whoRepliedLast", notEqualTo: currentUser)
         activitiesFromMeQuery.whereKeyExists("whoRepliedLast")
         
         let activitiesQuery = PFQuery.orQueryWithSubqueries([activitiesToMeQuery, activitiesFromMeQuery])

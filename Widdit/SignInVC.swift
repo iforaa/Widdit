@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import ParseFacebookUtilsV4
-import MBProgressHUD
+
 
 enum VerificationMode {
     case SignIn
@@ -46,7 +46,7 @@ class SignInVC: UIViewController {
         passwordTF.WDTRoundedWhite(nil, height: 50)
         passwordTF.WDTFontSettings("Enter Password")
         passwordTF.autocapitalizationType = .None
-        
+        passwordTF.secureTextEntry = true
         view.addSubview(passwordTF)
         passwordTF.snp_makeConstraints { (make) in
             make.top.equalTo(usernameTF.snp_bottom).offset(20)
@@ -147,8 +147,9 @@ class SignInVC: UIViewController {
             return
         }
         
-        
+        showHud()
         PFUser.logInWithUsernameInBackground(usernameTF.text!.lowercaseString, password: passwordTF.text!.lowercaseString) { (user: PFUser?, error: NSError?) -> Void in
+            self.hideHud()
             if error == nil {
                 
                 // Remember user or save in App Memory did the user login or not
@@ -169,32 +170,70 @@ class SignInVC: UIViewController {
     }
 
     func loginToFacebook(sender: AnyObject?) {
+        showHud()
         PFFacebookUtils.logInInBackgroundWithReadPermissions(["email"], block: { (user, err) in
+            self.hideHud()
             if err == nil {
                 if let user = user {
-                    if user.isNew {
-                        FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email"]).startWithCompletionHandler { (connection, result, error) -> Void in
+                    if let signUpFinished = user["signUpFinished"] as? Bool where signUpFinished == true {
+                        
+                        NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
+                        NSUserDefaults.standardUserDefaults().synchronize()
+                        
+                        // Call Login Function from AppDelegate.swift class
+                        let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        appDelegate.login()
+                        
+                    } else {
+                        
+                    
+                        self.showHud()
+                        FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, email, birthday, gender, age_range"]).startWithCompletionHandler { (connection, result, error) -> Void in
+                            self.hideHud()
                             
-                            let strFirstName: String? = result.objectForKey("first_name") as? String
-                            //                                    let strPictureURL: String = (result.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as? String)!
-                            let strEmail: String? = result.objectForKey("email") as? String
-                            //                                    let strGender: String = (result.objectForKey("gender") as? String)!
-                            let userID = result.valueForKey("id") as! String
-                            let avaImage: UIImage? = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!)
-                            
-                            
-                            if let strEmail = strEmail {
-                                user["email"] = strEmail.lowercaseString
+                            guard let result = result else {
+                                return
+                                
                             }
                             
-                            if let strFirstName = strFirstName {
-                                user["firstName"] = strFirstName.lowercaseString
+                            if let firstName = result.objectForKey("first_name") as? String {
+                                user["firstName"] = firstName.lowercaseString
                             }
                             
-                            if let avaImage = avaImage {
-                                let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
-                                let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-                                user["ava"] = avaFile
+                            if let gender = result.objectForKey("gender") as? String {
+                                if gender == "male" {
+                                    user["gender"] = 0
+                                } else if gender == "female" {
+                                    user["gender"] = 1
+                                } else {
+                                    user["gender"] = 2
+                                }
+                            } else {
+                                user["gender"] = -1
+                            }
+                            
+                            if let age_range = result.objectForKey("age_range") {
+                                if let min = age_range.objectForKey("min") as? Int {
+                                    user["minAge"] = min
+                                } else {
+                                    self.showAlert("You must be over the age of 18")
+                                    return
+                                }
+                            }
+                            
+                            if let email = result.objectForKey("email") as? String {
+                                user["email"] = email.lowercaseString
+                            }
+                            
+                            
+                            if let userID = result.valueForKey("id") as? String {
+                                if let avaImage = UIImage(data: NSData(contentsOfURL: NSURL(string: "https://graph.facebook.com/\(userID)/picture?type=large")!)!) {
+                                    
+                                    let avaData = UIImageJPEGRepresentation(avaImage, 0.5)
+                                    let avaFile = PFFile(name: "ava.jpg", data: avaData!)
+                                    user["ava"] = avaFile
+                                }
+                                
                             }
                             
                             let signUpMainStep1 = SignUpMainStep1()
@@ -202,16 +241,7 @@ class SignInVC: UIViewController {
                             signUpMainStep1.facebookMode = true
                             self.navigationController?.pushViewController(signUpMainStep1, animated: true)
                             
-                            
                         }
-
-                    } else {
-                        NSUserDefaults.standardUserDefaults().setObject(user.username, forKey: "username")
-                        NSUserDefaults.standardUserDefaults().synchronize()
-                        
-                        // Call Login Function from AppDelegate.swift class
-                        let appDelegate : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                        appDelegate.login()
                     }
                 }
             }

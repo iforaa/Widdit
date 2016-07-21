@@ -30,6 +30,7 @@ class ActivityVC: UITableViewController {
         tableView.separatorStyle = .None
         tableView.rowHeight = UITableViewAutomaticDimension;
         tableView.estimatedRowHeight = 60;
+
         
     }
     
@@ -69,7 +70,7 @@ class ActivityVC: UITableViewController {
             cell.downCell = true
             cell.fillCell(self.activity.downs[indexPath.row])
         }
-        
+        cell.selectionStyle = .Gray
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         

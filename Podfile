@@ -22,5 +22,6 @@ pod 'ALCameraViewController'
 pod 'SimpleAlert'
 pod 'IQKeyboardManagerSwift'
 pod 'SwiftDate'
+pod 'Whisper'
 end
 

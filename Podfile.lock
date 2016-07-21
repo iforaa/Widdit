@@ -31,6 +31,7 @@ PODS:
   - SlackTextViewController (1.9.3)
   - SnapKit (0.21.0)
   - SwiftDate (3.0.8)
+  - Whisper (3.0.0)
   - XCGLogger (3.3)
 
 DEPENDENCIES:
@@ -50,6 +51,7 @@ DEPENDENCIES:
   - SlackTextViewController
   - SnapKit
   - SwiftDate
+  - Whisper
   - XCGLogger (~> 3.3)
 
 SPEC CHECKSUMS:
@@ -72,8 +74,9 @@ SPEC CHECKSUMS:
   SlackTextViewController: bd2a34c188d4f7dec93cf42388f38551263fac82
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
+  Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-PODFILE CHECKSUM: 9d1783c2872a96ffc92836f37de115baa9c4c549
+PODFILE CHECKSUM: 39311046766eb92e95b6fabcdafc450439af1d0e
 
 COCOAPODS: 1.0.0
